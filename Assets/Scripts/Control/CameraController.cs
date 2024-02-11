@@ -1,5 +1,6 @@
 using AmalgamGames.Core;
 using AmalgamGames.UpdateLoop;
+using AmalgamGames.Utils;
 using Cinemachine;
 using Sirenix.OdinInspector;
 using System.Collections;
@@ -14,6 +15,7 @@ namespace AmalgamGames.Control
         [SerializeField] private float _verticalSpeed;
         [Range(0f,1f)]
         [SerializeField] private float _burnSpeedLimit;
+        [SerializeField] private float _speedLimitTransitionTime = 1;
         [Space]
         [Title("Rotation")]
         [MinMaxSlider(-90, 90)]
@@ -23,6 +25,8 @@ namespace AmalgamGames.Control
         [SerializeField] private float _zoomTime = 1;
         [SerializeField] private float _normalCamDistance = 10;
         [SerializeField] private float _chargingCamDistance = 5;
+        [SerializeField] private Vector3 _chargeOffset = Vector3.zero;
+        [SerializeField] private float _offsetLerpTime = 1;
         [Space]
         [Title("Components")]
         [SerializeField] private Transform _followTarget;
@@ -30,19 +34,32 @@ namespace AmalgamGames.Control
         
         // STATE
         
+        // Rotation
         private float _currentHorizontalRotation = 0;
         private float _currentVerticalRotation = 0;
-        
-        private bool _isSubscribedToInput = false;
-        private bool _isSubscribedToCharging = false;
-        
         private Vector2 _currentRotationSpeed;
 
-        private Coroutine _zoomRoutine = null;
+        // Position
+        private Vector3 _offset = Vector3.zero;
 
+        // Subscriptions
+        private bool _isSubscribedToInput = false;
+        private bool _isSubscribedToCharging = false;
+
+        // Coroutines
+        private Coroutine _zoomRoutine = null;
+        private Coroutine _speedLimitRoutine = null;
+        private Coroutine _offsetRoutine = null;
+
+        // Active
         private bool _isActive = true;
 
+        // Charging
+        private bool _isCharging = false;
+
+        // Burning
         private bool _isBurning = false;
+        private float _speedLimit = 1;
 
         // COMPONENTS
         
@@ -109,7 +126,18 @@ namespace AmalgamGames.Control
 
         private void OnChargingStart()
         {
-            if(_zoomRoutine != null)
+            // Lerp offset to charge offset over duration
+            
+            if(_offsetRoutine != null)
+            {
+                StopCoroutine(_offsetRoutine);
+            }
+            _offsetRoutine = StartCoroutine(Tools.lerpVector3OverTime(_offset, _chargeOffset, _offsetLerpTime, (value) =>
+            {
+                _offset = value;
+            },() => _offsetRoutine = null));
+
+            if (_zoomRoutine != null)
             {
                 StopCoroutine(_zoomRoutine);
             }
@@ -119,12 +147,19 @@ namespace AmalgamGames.Control
 
         private void OnLaunch()
         {
+            if (_offsetRoutine != null)
+            {
+                StopCoroutine(_offsetRoutine);
+            }
+            // Lerp offset to zero over duration
+            StartCoroutine(Tools.lerpVector3OverTime(_offset, Vector3.zero, _offsetLerpTime, (value) =>
+            {
+                _offset = value;
+            }, () => _offsetRoutine = null));
+
+            _isCharging = false;
             _isBurning = true;
-        }
-       
-        private void OnBurnComplete()
-        {
-            _isBurning = false;
+            _speedLimit = _burnSpeedLimit;
 
             if (_zoomRoutine != null)
             {
@@ -132,6 +167,23 @@ namespace AmalgamGames.Control
             }
 
             _zoomRoutine = StartCoroutine(updateCameraDistance(_normalCamDistance));
+        }
+       
+        private void OnBurnComplete()
+        {
+            _isBurning = false;
+            if(_speedLimitRoutine == null)
+            {
+                _speedLimitRoutine = StartCoroutine(Tools.lerpFloatOverTime(_speedLimit, 1, _speedLimitTransitionTime, (value) =>
+                {
+                    _speedLimit = value;
+                }, () => _speedLimitRoutine = null));
+            }
+            else
+            {
+                Debug.LogError("Speed limit routine not null. This shouldn't happen");
+            }
+            
         }
 
         private void UnsubscribeFromInput()
@@ -180,13 +232,13 @@ namespace AmalgamGames.Control
 
         private void UpdatePosition(float deltaTime)
         {
-            transform.position = _followTarget.position;
+            transform.position = _followTarget.position + transform.TransformDirection(_offset);
         }
 
         private void UpdateCameraRotation(float deltaTime)
         {
-            float horizontalSpeed = _isBurning ? _horizontalSpeed * _burnSpeedLimit : _horizontalSpeed;
-            float verticalSpeed = _isBurning ? _verticalSpeed * _burnSpeedLimit : _verticalSpeed;
+            float horizontalSpeed = _horizontalSpeed * _speedLimit;
+            float verticalSpeed = _verticalSpeed * _speedLimit;
             _currentHorizontalRotation += _currentRotationSpeed.x * deltaTime * horizontalSpeed;
 
             _currentVerticalRotation += _currentRotationSpeed.y * deltaTime * verticalSpeed;
@@ -221,7 +273,6 @@ namespace AmalgamGames.Control
             }
 
             _zoomRoutine = null;
-            
         }
 
         #endregion

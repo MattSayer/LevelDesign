@@ -36,6 +36,7 @@ namespace AmalgamGames.Core
         private float _delayedChargeForce = 0;
         private bool _isBurning = false;
         private float _burnForce = 0;
+        private bool _canLaunch = true;
 
         // COROUTINES
         private Coroutine _engineBurnRoutine = null;
@@ -82,6 +83,11 @@ namespace AmalgamGames.Core
                 _rb.AddForce(transform.forward * _burnForce * deltaTime, ForceMode.Force);
             }
             OnValueChanged?.Invoke(_rb.velocity.magnitude*10);
+        }
+
+        public void ToggleLaunchAbility(bool toEnable)
+        {
+            _canLaunch = toEnable;
         }
 
         public void ToggleEnabled(bool toEnable)
@@ -161,7 +167,7 @@ namespace AmalgamGames.Core
                 }
 
                 float delta = _chargeLevel - chargeLevel;
-                if (delta >= _chargeDeltaThreshold || (chargeLevel == 0 && _isCharging))
+                if (_canLaunch && (delta >= _chargeDeltaThreshold || (chargeLevel == 0 && _isCharging)))
                 {
                     Launch();
                 }

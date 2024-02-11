@@ -1,5 +1,8 @@
+using AmalgamGames.Utils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 
 namespace AmalgamGames.Core
@@ -130,5 +133,99 @@ namespace AmalgamGames.Core
 
             return default(T);
         }
+
+
+        /// <summary>
+        /// Coroutine that lerps a float from the specified 'from' value to the 'to' value over 'duration'. 
+        /// The returnSetter function is called on every frame passing in the current value. This function
+        /// should be used to update the source value. 
+        /// You can also provide a callback function for when the lerp has completed, as well as specify an easing
+        /// function for the lerp.
+        /// </summary>
+        /// <param name="from">The value to lerp form</param>
+        /// <param name="to">The value to lerp to</param>
+        /// <param name="duration">The duration of the lerp</param>
+        /// <param name="returnSetter">Function that gets passed the updated float value every frame</param>
+        /// <param name="onComplete">Optional function that gets called once the lerp has completed</param>
+        /// <param name="easingFunction">The easing to apply to the lerp</param>
+        /// <returns></returns>
+        public static IEnumerator lerpFloatOverTime(float from, float to, float duration, Action<float> returnSetter, Action onComplete = null, EasingFunction.Ease easingFunction = EasingFunction.Ease.Linear)
+        {
+            float time = 0;
+            EasingFunction.Function func = EasingFunction.GetEasingFunction(easingFunction);
+            float val;
+            while(time < duration)
+            {
+                val = func(from, to, time / duration);
+                returnSetter(val);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            returnSetter(to);
+            onComplete?.Invoke();
+        }
+        /// <summary>
+        /// Coroutine that lerps a Vector3 from the specified 'from' value to the 'to' value over 'duration'. 
+        /// The returnSetter function is called on every frame passing in the current value. This function
+        /// should be used to update the source value. 
+        /// You can also provide a callback function for when the lerp has completed.
+        /// </summary>
+        /// <param name="from">The value to lerp form</param>
+        /// <param name="to">The value to lerp to</param>
+        /// <param name="duration">The duration of the lerp</param>
+        /// <param name="returnSetter">Function that gets passed the updated float value every frame</param>
+        /// <param name="onComplete">Optional function that gets called once the lerp has completed</param>
+        /// <returns></returns>
+        public static IEnumerator lerpVector3OverTime(Vector3 from, Vector3 to, float duration, Action<Vector3> returnSetter, Action onComplete = null)
+        {
+            float time = 0;
+            Vector3 val;
+            while (time < duration)
+            {
+                val = Vector3.Lerp(from, to, time / duration);
+                returnSetter(val);
+                time += Time.deltaTime;
+                yield return null;
+            }
+            returnSetter(to);
+            onComplete?.Invoke();
+        }
+
+        /// <summary>
+        /// Dynamically wires up the specified method on the caller object to execute when the 
+        /// specified event is fired on the source object
+        /// </summary>
+        /// <param name="source">The object housing the event to subscribe to</param>
+        /// <param name="sourceEventName">The name of the event to subscribe to</param>
+        /// <param name="caller">The calling object containing the method to run when the event fires</param>
+        /// <param name="callerMethodName">The name of the method to run</param>
+        /// <returns>The delegate handling the event, for use in unsubscribing</returns>
+        public static Delegate WireUpEvent(object source, string sourceEventName, object caller, string callerMethodName)
+        {
+            EventInfo? eventInfo = source.GetType().GetEvent(sourceEventName);
+
+            MethodInfo? methodInfo = caller.GetType().GetMethod(callerMethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+
+            Delegate handler = Delegate.CreateDelegate(eventInfo?.EventHandlerType, caller, methodInfo);
+
+            eventInfo.AddEventHandler(source, handler);
+
+            return handler;
+        }
+
+        /// <summary>
+        /// Disconnects the provided delegate from the 'sourceEventName' event on the 'source' object
+        /// </summary>
+        /// <param name="source">The object housing the event to unsubscribe from</param>
+        /// <param name="sourceEventName">The name of the event to unsubscribe from</param>
+        /// <param name="handler">The delegate hooked up to the event</param>
+        public static void DisconnectEvent(object source, string sourceEventName, Delegate handler)
+        {
+            EventInfo? eventInfo = source.GetType().GetEvent(sourceEventName);
+
+            eventInfo.RemoveEventHandler(source, handler);
+        }
+
+
     }
 }

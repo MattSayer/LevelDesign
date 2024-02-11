@@ -76,6 +76,7 @@
     <Compile Include="Assets\Scripts\UI\DynamicText.cs" />
     <Compile Include="Assets\Scripts\CustomEditor\RequireInterfaceAttribute.cs" />
     <Compile Include="Assets\Scripts\CustomEditor\RequireInterfaceDrawer.cs" />
+    <Compile Include="Assets\Scripts\Core\ObjectToggler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
