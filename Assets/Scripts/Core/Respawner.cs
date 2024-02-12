@@ -1,5 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using AmalgamGames.Utils;
 using AmalgamGames.Visuals;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -32,6 +34,8 @@ namespace AmalgamGames.Core
         private IRocketController _rocketController;
         private IVFXPlayer _vfxPlayer;
 
+        private List<IRespawnable> _respawnables;
+
         // STATE
         private bool _isSubscribedToInput = false;
         private bool _canCollide = true;
@@ -49,6 +53,15 @@ namespace AmalgamGames.Core
             SubscribeToInput();
             _lastCheckpoint = _respawnPoint;
             _getVFXPlayer.RequestDependency(ReceiveVFXPlayer);
+
+
+            // Get all respawnables in the level
+            _respawnables = new List<IRespawnable>();
+            var respawnables = FindObjectsOfType<MonoBehaviour>().OfType<IRespawnable>();
+            foreach(IRespawnable respawnable in respawnables)
+            {
+                _respawnables.Add(respawnable);
+            }
         }
 
         private void OnDisable()
@@ -83,14 +96,27 @@ namespace AmalgamGames.Core
         {
             // Fade screen down
 
+            foreach (IRespawnable respawnable in _respawnables)
+            {
+                respawnable.OnRespawnEvent(RespawnEvent.OnRespawnStart);
+            }
+
 
             transform.position = _lastCheckpoint.position;
             transform.rotation = _lastCheckpoint.rotation;
             _canCollide = true;
             _rocketController.ToggleEnabled(true);
 
+
+
             // Fade screen back up
 
+            // Countdown
+
+            foreach (IRespawnable respawnable in _respawnables)
+            {
+                respawnable.OnRespawnEvent(RespawnEvent.OnRespawnEnd);
+            }
 
         }
 
@@ -194,6 +220,11 @@ namespace AmalgamGames.Core
         private IEnumerator explodeThenRespawn()
         {
             Explode();
+
+            foreach (IRespawnable respawnable in _respawnables)
+            {
+                respawnable.OnRespawnEvent(RespawnEvent.OnCollision);
+            }
 
             yield return new WaitForSeconds(_respawnDelay);
 

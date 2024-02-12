@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AmalgamGames.Core
+namespace AmalgamGames.Utils
 {
     [CreateAssetMenu(menuName ="Dependency Request", fileName ="NewDependencyRequest")]
     public class DependencyRequest : ScriptableObject

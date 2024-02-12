@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Control
 {
-    public class CameraController : ManagedBehaviour, IPausable
+    public class CameraController : ManagedBehaviour, IPausable, IRespawnable
     {
         [Title("Speed")]
         [SerializeField] private float _horizontalSpeed;
@@ -73,9 +73,17 @@ namespace AmalgamGames.Control
         {
             _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(transform.parent);
             _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(transform.parent);
+            _bodyTransposer = _playerCam?.GetCinemachineComponent<CinemachineTransposer>();
+            
             SubscribeToInput();
             SubscribeToCharging();
-            _bodyTransposer = _playerCam?.GetCinemachineComponent<CinemachineTransposer>();
+        }
+
+        protected override void OnEnable()
+        {
+            base.OnEnable();
+            SubscribeToInput();
+            SubscribeToCharging();
         }
 
         protected override void OnDisable()
@@ -96,8 +104,8 @@ namespace AmalgamGames.Control
         {
             if(_isActive)
             {
-                UpdatePosition(deltaTime);
-                UpdateCameraRotation(deltaTime);
+                UpdatePosition(Time.unscaledDeltaTime);
+                UpdateCameraRotation(Time.unscaledDeltaTime);
             }
         }
 
@@ -113,6 +121,37 @@ namespace AmalgamGames.Control
         public void Resume()
         {
             _isActive = true;
+        }
+
+        #endregion
+
+        #region Respawning
+
+        public void OnRespawnEvent(RespawnEvent evt)
+        {
+            switch(evt)
+            {
+                case RespawnEvent.OnRespawnStart:
+                    OnRespawnStart();
+                    break;
+            }
+            
+        }
+
+        private void OnRespawnStart()
+        {
+            // Reset coroutines
+            StopAllCoroutines();
+            _zoomRoutine = null;
+            _speedLimitRoutine = null;
+            _offsetRoutine = null;
+
+            // Reset variables
+            _speedLimit = 1;
+            _isBurning = false;
+            _isCharging = false;
+            _isActive = true;
+            _offset = Vector3.zero;
         }
 
         #endregion
@@ -159,6 +198,13 @@ namespace AmalgamGames.Control
 
             _isCharging = false;
             _isBurning = true;
+            
+            // If the camera speed coroutine is still running, kill it since we'll create a new one after the next burn
+            if(_speedLimitRoutine != null)
+            {
+                StopCoroutine(_speedLimitRoutine);
+                _speedLimitRoutine = null;
+            }
             _speedLimit = _burnSpeedLimit;
 
             if (_zoomRoutine != null)
@@ -177,7 +223,10 @@ namespace AmalgamGames.Control
                 _speedLimitRoutine = StartCoroutine(Tools.lerpFloatOverTime(_speedLimit, 1, _speedLimitTransitionTime, (value) =>
                 {
                     _speedLimit = value;
-                }, () => _speedLimitRoutine = null));
+                }, () =>
+                {
+                    _speedLimitRoutine = null;
+                }));
             }
             else
             {

@@ -1,10 +1,9 @@
 using Sirenix.OdinInspector;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace AmalgamGames.Core
+
+namespace AmalgamGames.Utils
 {
     public class ObjectToggler : MonoBehaviour
     {

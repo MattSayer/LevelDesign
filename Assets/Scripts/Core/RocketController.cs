@@ -10,7 +10,7 @@ using AmalgamGames.UI;
 namespace AmalgamGames.Core
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class RocketController : ManagedFixedBehaviour, IRocketController, IPausable, IValueProvider
+    public class RocketController : ManagedFixedBehaviour, IRocketController, IPausable, IValueProvider, IRespawnable
     {
         [Title("Charging")]
         [SerializeField] private float _chargeDeltaThreshold = 0.1f;
@@ -100,7 +100,6 @@ namespace AmalgamGames.Core
                     StopCoroutine(_engineBurnRoutine);
                     FinishBurn();
                 }
-                _rb.freezeRotation = false;
                 _rb.useGravity = false;
                 _rb.velocity = Vector3.zero;
                 _rb.angularVelocity = Vector3.zero;
@@ -110,13 +109,62 @@ namespace AmalgamGames.Core
             else
             {
                 _canCharge = true;
-                _rb.freezeRotation = true;
                 _rb.useGravity = true;
                 _rb.velocity = Vector3.zero;
                 _rb.angularVelocity = Vector3.zero;
                 _targetOrienter.ToggleEnabled(true);
                 _targetOrienter.ToggleMode(OrientMode.Velocity);
             }
+        }
+
+        #endregion
+
+        #region Respawning/restarting
+
+        public void OnRespawnEvent(RespawnEvent evt)
+        {
+            switch(evt)
+            {
+                case RespawnEvent.OnCollision:
+                case RespawnEvent.OnRespawnStart:
+                    ResetRocket();
+                    break;
+                case RespawnEvent.OnRespawnEnd:
+                    RestartRocket();
+                    break;
+            }
+        }
+
+        private void ResetRocket()
+        {
+            if (_engineBurnRoutine != null)
+            {
+                StopCoroutine(_engineBurnRoutine);
+                _engineBurnRoutine = null;
+                FinishBurn();
+            }
+            _rb.useGravity = false;
+            _rb.velocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
+
+            //_targetOrienter.ToggleEnabled(false);
+        }
+
+        private void RestartRocket()
+        {
+            if (_engineBurnRoutine != null)
+            {
+                StopCoroutine(_engineBurnRoutine);
+                _engineBurnRoutine = null;
+                FinishBurn();
+            }
+
+            _canCharge = true;
+            _rb.useGravity = true;
+            _rb.velocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
+            //_targetOrienter.ToggleEnabled(true);
+            _targetOrienter.ToggleMode(OrientMode.Velocity);
         }
 
         #endregion

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.Reflection;
 using UnityEngine;
 
-namespace AmalgamGames.Core
+namespace AmalgamGames.Utils
 {
     public static class Tools
     {
@@ -164,6 +164,39 @@ namespace AmalgamGames.Core
             returnSetter(to);
             onComplete?.Invoke();
         }
+
+
+        /// <summary>
+        /// Coroutine that lerps a float from the specified 'from' value to the 'to' value over 'duration', using unscaled delta time. 
+        /// The returnSetter function is called on every frame passing in the current value. This function
+        /// should be used to update the source value. 
+        /// You can also provide a callback function for when the lerp has completed, as well as specify an easing
+        /// function for the lerp.
+        /// </summary>
+        /// <param name="from">The value to lerp form</param>
+        /// <param name="to">The value to lerp to</param>
+        /// <param name="duration">The duration of the lerp</param>
+        /// <param name="returnSetter">Function that gets passed the updated float value every frame</param>
+        /// <param name="onComplete">Optional function that gets called once the lerp has completed</param>
+        /// <param name="easingFunction">The easing to apply to the lerp</param>
+        /// <returns></returns>
+        public static IEnumerator lerpFloatOverTimeUnscaled(float from, float to, float duration, Action<float> returnSetter, Action onComplete = null, EasingFunction.Ease easingFunction = EasingFunction.Ease.Linear)
+        {
+            float time = 0;
+            EasingFunction.Function func = EasingFunction.GetEasingFunction(easingFunction);
+            float val;
+            while (time < duration)
+            {
+                val = func(from, to, time / duration);
+                returnSetter(val);
+                time += Time.unscaledDeltaTime;
+                yield return null;
+            }
+            returnSetter(to);
+            onComplete?.Invoke();
+        }
+
+
         /// <summary>
         /// Coroutine that lerps a Vector3 from the specified 'from' value to the 'to' value over 'duration'. 
         /// The returnSetter function is called on every frame passing in the current value. This function
@@ -191,6 +224,8 @@ namespace AmalgamGames.Core
             onComplete?.Invoke();
         }
 
+
+
         /// <summary>
         /// Dynamically wires up the specified method on the caller object to execute when the 
         /// specified event is fired on the source object
@@ -202,12 +237,13 @@ namespace AmalgamGames.Core
         /// <returns>The delegate handling the event, for use in unsubscribing</returns>
         public static Delegate WireUpEvent(object source, string sourceEventName, object caller, string callerMethodName)
         {
+#nullable enable
             EventInfo? eventInfo = source.GetType().GetEvent(sourceEventName);
 
             MethodInfo? methodInfo = caller.GetType().GetMethod(callerMethodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 
             Delegate handler = Delegate.CreateDelegate(eventInfo?.EventHandlerType, caller, methodInfo);
-
+#nullable disable
             eventInfo.AddEventHandler(source, handler);
 
             return handler;
@@ -221,8 +257,9 @@ namespace AmalgamGames.Core
         /// <param name="handler">The delegate hooked up to the event</param>
         public static void DisconnectEvent(object source, string sourceEventName, Delegate handler)
         {
+#nullable enable
             EventInfo? eventInfo = source.GetType().GetEvent(sourceEventName);
-
+#nullable disable
             eventInfo.RemoveEventHandler(source, handler);
         }
 
