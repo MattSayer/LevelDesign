@@ -14,7 +14,7 @@ namespace AmalgamGames.Control
         [SerializeField] private float _horizontalSpeed;
         [SerializeField] private float _verticalSpeed;
         [Range(0f,1f)]
-        [SerializeField] private float _burnSpeedLimit;
+        [SerializeField] private float _burnRotationSpeedLimit = 0.1f;
         [SerializeField] private float _speedLimitTransitionTime = 1;
         [Space]
         [Title("Rotation")]
@@ -27,6 +27,16 @@ namespace AmalgamGames.Control
         [SerializeField] private float _chargingCamDistance = 5;
         [SerializeField] private Vector3 _chargeOffset = Vector3.zero;
         [SerializeField] private float _offsetLerpTime = 1;
+        [Space]
+        [Title("Damping")]
+        [SerializeField] private float _dampingTransitionTime = 1;
+        [SerializeField] private float _launchDamping = 3;
+        [Space]
+        [Title("Screen shake")]
+        [SerializeField] private float _launchShakeAmplitude = 10f;
+        [SerializeField] private float _launchShakeFrequency = 1;
+        [SerializeField] private float _launchShakeDuration = 0.5f;
+        [SerializeField] private EasingFunction.Ease _launchShakeEasing = EasingFunction.Ease.Linear;
         [Space]
         [Title("Components")]
         [SerializeField] private Transform _followTarget;
@@ -50,6 +60,8 @@ namespace AmalgamGames.Control
         private Coroutine _zoomRoutine = null;
         private Coroutine _speedLimitRoutine = null;
         private Coroutine _offsetRoutine = null;
+        private Coroutine _screenShakeRoutine = null;
+        private Coroutine _dampingRoutine = null;
 
         // Active
         private bool _isActive = true;
@@ -59,13 +71,14 @@ namespace AmalgamGames.Control
 
         // Burning
         private bool _isBurning = false;
-        private float _speedLimit = 1;
+        private float _rotationSpeedLimit = 1;
 
         // COMPONENTS
         
         private IInputProcessor _inputProcessor;
         private IRocketController _rocketController;
         private CinemachineTransposer _bodyTransposer;
+        private CinemachineBasicMultiChannelPerlin _screenShake;
 
         #region Lifecycle
 
@@ -74,7 +87,8 @@ namespace AmalgamGames.Control
             _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(transform.parent);
             _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(transform.parent);
             _bodyTransposer = _playerCam?.GetCinemachineComponent<CinemachineTransposer>();
-            
+            _screenShake = _playerCam?.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
             SubscribeToInput();
             SubscribeToCharging();
         }
@@ -146,8 +160,12 @@ namespace AmalgamGames.Control
             _speedLimitRoutine = null;
             _offsetRoutine = null;
 
+            // Reset screen shake
+            _screenShake.m_AmplitudeGain = 0;
+            _screenShake.m_FrequencyGain = 0;
+
             // Reset variables
-            _speedLimit = 1;
+            _rotationSpeedLimit = 1;
             _isBurning = false;
             _isCharging = false;
             _isActive = true;
@@ -163,7 +181,7 @@ namespace AmalgamGames.Control
             _currentRotationSpeed = rotation;
         }
 
-        private void OnChargingStart()
+        private void OnChargingStart(ChargingType chargingType)
         {
             // Lerp offset to charge offset over duration
             
@@ -181,11 +199,44 @@ namespace AmalgamGames.Control
                 StopCoroutine(_zoomRoutine);
             }
 
+            // Reset damping
+
+            if (_dampingRoutine != null)
+            {
+                StopCoroutine(_dampingRoutine);
+                _dampingRoutine = null;
+            }
+            _bodyTransposer.m_XDamping = 0;
+            _bodyTransposer.m_YDamping = 0;
+            _bodyTransposer.m_ZDamping = 0;
+
             _zoomRoutine = StartCoroutine(updateCameraDistance(_chargingCamDistance));
         }
 
-        private void OnLaunch()
+        private void OnLaunch(LaunchInfo launchInfo)
         {
+            // screen shake
+            ScreenShake(_launchShakeAmplitude, _launchShakeFrequency, launchInfo.BurnDuration, _launchShakeEasing);
+
+            // Increase damping temporarily
+            if (_dampingRoutine == null)
+            {
+                _dampingRoutine = StartCoroutine(Tools.lerpFloatOverTime(_launchDamping, 0, launchInfo.BurnDuration, (value) =>
+                {
+                    _bodyTransposer.m_XDamping = value;
+                    _bodyTransposer.m_YDamping = value;
+                    _bodyTransposer.m_ZDamping = value;
+                },
+                () =>
+                {
+                    _dampingRoutine = null;
+                }));
+            }
+            else
+            {
+                Debug.LogError("Damping routine not null. This shouldn't happen");
+            }
+
             if (_offsetRoutine != null)
             {
                 StopCoroutine(_offsetRoutine);
@@ -205,7 +256,7 @@ namespace AmalgamGames.Control
                 StopCoroutine(_speedLimitRoutine);
                 _speedLimitRoutine = null;
             }
-            _speedLimit = _burnSpeedLimit;
+            _rotationSpeedLimit = _burnRotationSpeedLimit;
 
             if (_zoomRoutine != null)
             {
@@ -218,11 +269,12 @@ namespace AmalgamGames.Control
         private void OnBurnComplete()
         {
             _isBurning = false;
-            if(_speedLimitRoutine == null)
+            
+            if (_speedLimitRoutine == null)
             {
-                _speedLimitRoutine = StartCoroutine(Tools.lerpFloatOverTime(_speedLimit, 1, _speedLimitTransitionTime, (value) =>
+                _speedLimitRoutine = StartCoroutine(Tools.lerpFloatOverTime(_rotationSpeedLimit, 1, _speedLimitTransitionTime, (value) =>
                 {
-                    _speedLimit = value;
+                    _rotationSpeedLimit = value;
                 }, () =>
                 {
                     _speedLimitRoutine = null;
@@ -286,8 +338,8 @@ namespace AmalgamGames.Control
 
         private void UpdateCameraRotation(float deltaTime)
         {
-            float horizontalSpeed = _horizontalSpeed * _speedLimit;
-            float verticalSpeed = _verticalSpeed * _speedLimit;
+            float horizontalSpeed = _horizontalSpeed * _rotationSpeedLimit;
+            float verticalSpeed = _verticalSpeed * _rotationSpeedLimit;
             _currentHorizontalRotation += _currentRotationSpeed.x * deltaTime * horizontalSpeed;
 
             _currentVerticalRotation += _currentRotationSpeed.y * deltaTime * verticalSpeed;
@@ -302,7 +354,50 @@ namespace AmalgamGames.Control
 
         #endregion
 
+        #region Screen shake
+
+        private void ScreenShake(float amplitude, float frequency, float duration, EasingFunction.Ease easingFunction = EasingFunction.Ease.Linear)
+        {
+            if(_screenShakeRoutine != null)
+            {
+                StopCoroutine(_screenShakeRoutine);
+            }
+            _screenShakeRoutine = StartCoroutine(screenShake(amplitude, frequency, duration, easingFunction));
+        }
+
+        #endregion
+
         #region Coroutines
+
+        private IEnumerator screenShake(float amplitude, float frequency, float duration, EasingFunction.Ease easingFunction = EasingFunction.Ease.Linear) 
+        {
+            _screenShake.m_AmplitudeGain = amplitude;
+            _screenShake.m_FrequencyGain = frequency;
+
+            float time = 0;
+
+            float newAmplitude;
+            float newFrequency;
+
+            EasingFunction.Function func = EasingFunction.GetEasingFunction(easingFunction);
+
+            while(time < duration)
+            {
+                float lerpVal = time / duration;
+                newAmplitude = func(amplitude, 0, lerpVal);
+                newFrequency = func(frequency, 0, lerpVal);
+                _screenShake.m_AmplitudeGain = newAmplitude;
+                _screenShake.m_FrequencyGain = newFrequency;
+
+                time += Time.deltaTime;
+                yield return null;
+            }
+
+            _screenShake.m_AmplitudeGain = 0;
+            _screenShake.m_FrequencyGain = 0;
+
+            _screenShakeRoutine = null;
+        }
 
         private IEnumerator updateCameraDistance(float newDistance)
         {

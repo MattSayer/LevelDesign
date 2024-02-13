@@ -10,6 +10,7 @@ namespace AmalgamGames.UI
         [Title("Target")]
         [RequireInterface(typeof(IValueProvider))]
         [SerializeField] private UnityEngine.Object valueProvider;
+        [SerializeField] private string _valueKey;
         [Space]
         [Title("Settings")]
         [SerializeField] private ConversionType _convertTo;
@@ -17,7 +18,9 @@ namespace AmalgamGames.UI
         [Space]
         [Title("UI")]
         [SerializeField] private TMPro.TextMeshProUGUI _text;
-        
+
+        // STATE
+        private bool _isSubscribed = false;
 
         private IValueProvider _valueProvider => valueProvider as IValueProvider;
 
@@ -25,17 +28,28 @@ namespace AmalgamGames.UI
 
         private void OnEnable()
         {
-            _valueProvider.OnValueChanged += OnValueChanged;
+            _valueProvider.SubscribeToValue(_valueKey, OnValueChanged);
+            _isSubscribed = true;
         }
 
         private void OnDisable()
         {
-            _valueProvider.OnValueChanged -= OnValueChanged;
+            UnsubscribeFromValue();
         }
 
         private void OnDestroy()
         {
-            _valueProvider.OnValueChanged -= OnValueChanged;
+            UnsubscribeFromValue();
+        }
+
+
+        private void UnsubscribeFromValue()
+        {
+            if (_isSubscribed)
+            {
+                _valueProvider.UnsubscribeFromValue(_valueKey, OnValueChanged);
+                _isSubscribed = false;
+            }
         }
 
         #endregion
@@ -71,7 +85,8 @@ namespace AmalgamGames.UI
 
     public interface IValueProvider
     {
-        public event System.Action<object> OnValueChanged;
+        public void SubscribeToValue(string valueName, System.Action<object> callback);
+        public void UnsubscribeFromValue(string valueName, System.Action<object> callback);
     }
 
     public enum ConversionType

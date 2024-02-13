@@ -100,6 +100,23 @@ namespace AmalgamGames.Abilities
 
         #endregion
 
+        #region Charging/Launching
+
+        private void OnChargingStart(ChargingType chargingType)
+        {
+            if(chargingType == ChargingType.Slowmo)
+            {
+                ActivateSlowmo();
+            }
+        }
+
+        private void OnLaunch(LaunchInfo launchInfo)
+        {
+            EndSlowmo();
+        }
+
+        #endregion
+
         #region Slow-mo
 
         private void ActivateSlowmo()
@@ -206,8 +223,8 @@ namespace AmalgamGames.Abilities
         {
             if (!_isSubscribedToCharging && _rocketController != null)
             {
-                _rocketController.OnChargingStart += ActivateSlowmo;
-                _rocketController.OnLaunch += EndSlowmo;
+                _rocketController.OnChargingStart += OnChargingStart;
+                _rocketController.OnLaunch += OnLaunch;
                 _isSubscribedToCharging = true;
             }
         }
@@ -216,8 +233,8 @@ namespace AmalgamGames.Abilities
         {
             if (_isSubscribedToCharging && _rocketController != null)
             {
-                _rocketController.OnChargingStart -= ActivateSlowmo;
-                _rocketController.OnLaunch -= EndSlowmo;
+                _rocketController.OnChargingStart -= OnChargingStart;
+                _rocketController.OnLaunch -= OnLaunch;
                 _isSubscribedToCharging = false;
             }
         }

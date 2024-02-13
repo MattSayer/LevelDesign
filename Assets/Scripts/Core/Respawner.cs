@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AmalgamGames.Utils;
-using AmalgamGames.Visuals;
+using AmalgamGames.Effects;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -31,7 +31,6 @@ namespace AmalgamGames.Core
 
         // COMPONENTS
         private IInputProcessor _inputProcessor;
-        private IRocketController _rocketController;
         private IVFXPlayer _vfxPlayer;
 
         private List<IRespawnable> _respawnables;
@@ -49,7 +48,6 @@ namespace AmalgamGames.Core
         private void Start()
         {
             _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(transform.parent);
-            _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(transform.parent);
             SubscribeToInput();
             _lastCheckpoint = _respawnPoint;
             _getVFXPlayer.RequestDependency(ReceiveVFXPlayer);
@@ -105,9 +103,6 @@ namespace AmalgamGames.Core
             transform.position = _lastCheckpoint.position;
             transform.rotation = _lastCheckpoint.rotation;
             _canCollide = true;
-            _rocketController.ToggleEnabled(true);
-
-
 
             // Fade screen back up
 
@@ -208,7 +203,6 @@ namespace AmalgamGames.Core
 
             Debug.Log("Boom!");
 
-            _rocketController.ToggleEnabled(false);
 
             _canCollide = false;
         }

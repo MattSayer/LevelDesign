@@ -1,11 +1,12 @@
 using AmalgamGames.UpdateLoop;
-using AmalgamGames.Visuals;
+using AmalgamGames.Control;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using UnityEngine;
 using AmalgamGames.Utils;
 using AmalgamGames.UI;
+using UnityEngine.Rendering;
 
 namespace AmalgamGames.Core
 {
@@ -22,21 +23,33 @@ namespace AmalgamGames.Core
         [SerializeField] private float _engineBurnForce = 10f;
 
         // EVENTS
-        public event Action OnChargingStart;
-        public event Action OnLaunch;
+        public event Action<ChargingType> OnChargingStart;
+        public event Action<LaunchInfo> OnLaunch;
         public event Action OnBurnComplete;
-        public event Action<object> OnValueChanged;
+        public event Action<object> OnVelocityChanged;
+        public event Action<object> OnChargeLevelChanged;
 
         // STATE
-        private float _chargeLevel = 0;
+        
+        // Subscriptions
         private bool _isSubscribedToInput = false;
+        
+        // Launch
+        private bool _canLaunch = true;
+
+        // Charging
+        private float _chargeLevel = 0;
+        private ChargingType _chargingType;
         private bool _isCharging = false;
         private bool _canCharge = true;
         private bool _cachedCanCharge = true;
+        private ChargingType _delayedChargingType;
         private float _delayedChargeForce = 0;
+        
+        // Burning
         private bool _isBurning = false;
         private float _burnForce = 0;
-        private bool _canLaunch = true;
+        
 
         // COROUTINES
         private Coroutine _engineBurnRoutine = null;
@@ -45,7 +58,6 @@ namespace AmalgamGames.Core
         private IInputProcessor _inputProcessor;
         private ITargetOrienter _targetOrienter;
         private Rigidbody _rb;
-
 
         #region Lifecycle
 
@@ -82,39 +94,14 @@ namespace AmalgamGames.Core
             {
                 _rb.AddForce(transform.forward * _burnForce * deltaTime, ForceMode.Force);
             }
-            OnValueChanged?.Invoke(_rb.velocity.magnitude*10);
+
+            // TODO Normalize value based on max velocity
+            OnVelocityChanged?.Invoke(_rb.velocity.magnitude*10);
         }
 
         public void ToggleLaunchAbility(bool toEnable)
         {
             _canLaunch = toEnable;
-        }
-
-        public void ToggleEnabled(bool toEnable)
-        {
-            enabled = toEnable;
-            if (!enabled)
-            {
-                if (_engineBurnRoutine != null)
-                {
-                    StopCoroutine(_engineBurnRoutine);
-                    FinishBurn();
-                }
-                _rb.useGravity = false;
-                _rb.velocity = Vector3.zero;
-                _rb.angularVelocity = Vector3.zero;
-
-                _targetOrienter.ToggleEnabled(false);
-            }
-            else
-            {
-                _canCharge = true;
-                _rb.useGravity = true;
-                _rb.velocity = Vector3.zero;
-                _rb.angularVelocity = Vector3.zero;
-                _targetOrienter.ToggleEnabled(true);
-                _targetOrienter.ToggleMode(OrientMode.Velocity);
-            }
         }
 
         #endregion
@@ -126,6 +113,8 @@ namespace AmalgamGames.Core
             switch(evt)
             {
                 case RespawnEvent.OnCollision:
+                    DisableRocket();
+                    break;
                 case RespawnEvent.OnRespawnStart:
                     ResetRocket();
                     break;
@@ -135,7 +124,13 @@ namespace AmalgamGames.Core
             }
         }
 
-        private void ResetRocket()
+        private void SetVelocityToZero()
+        {
+            _rb.velocity = Vector3.zero;
+            _rb.angularVelocity = Vector3.zero;
+        }
+
+        private void StopBurnRoutine()
         {
             if (_engineBurnRoutine != null)
             {
@@ -143,27 +138,46 @@ namespace AmalgamGames.Core
                 _engineBurnRoutine = null;
                 FinishBurn();
             }
-            _rb.useGravity = false;
-            _rb.velocity = Vector3.zero;
-            _rb.angularVelocity = Vector3.zero;
+        }
 
-            //_targetOrienter.ToggleEnabled(false);
+        private void ResetChargeState()
+        {
+            _isCharging = false;
+            _chargeLevel = 0;
+        }
+
+        private void DisableRocket()
+        {
+            ResetChargeState();
+            
+            StopBurnRoutine();
+            _rb.useGravity = false;
+            SetVelocityToZero();
+
+            _canCharge = false;
+        }
+
+        private void ResetRocket()
+        {
+            ResetChargeState();
+
+            StopBurnRoutine();
+            _rb.useGravity = false;
+            SetVelocityToZero();
+
+            _canCharge = true;
+            _canLaunch = false;
         }
 
         private void RestartRocket()
         {
-            if (_engineBurnRoutine != null)
-            {
-                StopCoroutine(_engineBurnRoutine);
-                _engineBurnRoutine = null;
-                FinishBurn();
-            }
-
-            _canCharge = true;
+            StopBurnRoutine();
             _rb.useGravity = true;
-            _rb.velocity = Vector3.zero;
-            _rb.angularVelocity = Vector3.zero;
-            //_targetOrienter.ToggleEnabled(true);
+            SetVelocityToZero();
+
+            _canLaunch = true;
+            _canCharge = true;
+
             _targetOrienter.ToggleMode(OrientMode.Velocity);
         }
 
@@ -184,7 +198,7 @@ namespace AmalgamGames.Core
             // Start charge immediately if trigger was held down while game was paused
             if (_chargeLevel == 0 && _delayedChargeForce > 0)
             {
-                OnSlowMoCharge(_delayedChargeForce);
+                OnCharge(_delayedChargingType, _delayedChargeForce);
                 _delayedChargeForce = 0;
             }
             // If player was holding trigger when they paused, and they're still holding it now
@@ -200,15 +214,33 @@ namespace AmalgamGames.Core
 
         #region Charging
 
-        private void OnSlowMoCharge(float chargeLevel)
+        private void OnSlowmoCharge(float chargeLevel)
         {
+            OnCharge(ChargingType.Slowmo, chargeLevel);
+        }
+
+        private void OnRealtimeCharge(float chargeLevel)
+        {
+            OnCharge(ChargingType.Realtime, chargeLevel);
+        }
+
+        private void OnCharge(ChargingType chargingType, float chargeLevel)
+        {
+            // If player is already charging one trigger and pulls the other trigger, just ignore it
+            if(_isCharging && _chargingType != chargingType)
+            {
+                return;
+            }
+
             if (_canCharge)
             {
                 // Just started charging
                 if (!_isCharging && _chargeLevel == 0 && chargeLevel > 0)
                 {
                     _isCharging = true;
-                    OnChargingStart?.Invoke();
+                    _chargingType = chargingType;
+                    OnChargingStart?.Invoke(chargingType);
+
                     _targetOrienter.ToggleMode(OrientMode.Source);
 
                     Debug.Log("Charging");
@@ -223,9 +255,11 @@ namespace AmalgamGames.Core
                 {
                     _chargeLevel = chargeLevel;
                 }
+                OnChargeLevelChanged?.Invoke(_chargeLevel);
             }
             else
             {
+                _delayedChargingType = chargingType;
                 _delayedChargeForce = chargeLevel;
             }
         }
@@ -233,14 +267,18 @@ namespace AmalgamGames.Core
         private void Launch()
         {
             Debug.Log("Launch");
-            OnLaunch?.Invoke();
+
+            float engineBurnTime = _engineBurnTime * _chargeLevel;
+
+            LaunchInfo launchInfo = new LaunchInfo(_chargeLevel, engineBurnTime);
+
+            OnLaunch?.Invoke(launchInfo);
+
             _targetOrienter.ToggleMode(OrientMode.Velocity);
 
             float launchStrength = _minChargeForce + (_chargeLevel * _playerChargeForce);
 
-            // Zero out velocity first
-            _rb.velocity = Vector3.zero;
-            _rb.angularVelocity = Vector3.zero;
+            SetVelocityToZero();
 
             // Launch
             _rb.AddForce(transform.forward * launchStrength, ForceMode.Impulse);
@@ -252,10 +290,11 @@ namespace AmalgamGames.Core
                 Debug.LogError("Multiple burn routines active. This shouldn't happen");
                 StopCoroutine(_engineBurnRoutine);
             }
-            _engineBurnRoutine = StartCoroutine(engineBurn(_chargeLevel));
+            _engineBurnRoutine = StartCoroutine(engineBurn(launchInfo));
 
             _isCharging = false;
             _chargeLevel = 0;
+            OnChargeLevelChanged?.Invoke(_chargeLevel);
         }
 
         private void FinishBurn()
@@ -270,7 +309,7 @@ namespace AmalgamGames.Core
             // Start charge immediately if trigger was held down during burn
             if (_delayedChargeForce > 0)
             {
-                OnSlowMoCharge(_delayedChargeForce);
+                OnSlowmoCharge(_delayedChargeForce);
                 _delayedChargeForce = 0;
             }
 
@@ -286,23 +325,52 @@ namespace AmalgamGames.Core
         /// Player cannot start another charge while engine is burning
         /// </summary>
         /// <returns></returns>
-        private IEnumerator engineBurn(float chargeLevel)
+        private IEnumerator engineBurn(LaunchInfo launchInfo)
         {
             _isBurning = true;
 
-            float initialBurnForce = _engineBurnForce * chargeLevel;
+            float initialBurnForce = _engineBurnForce * launchInfo.ChargeLevel;
 
-            float burnTime = _engineBurnTime * chargeLevel;
             float burnLerp = 0;
 
-            while (burnLerp < burnTime)
+            while (burnLerp < launchInfo.BurnDuration)
             {
-                _burnForce = EasingFunction.EaseInCubic(initialBurnForce, 0, burnLerp / burnTime);
+                _burnForce = EasingFunction.EaseInCubic(initialBurnForce, 0, burnLerp / launchInfo.BurnDuration);
                 burnLerp += Time.deltaTime;
                 yield return null;
             }
 
             FinishBurn();
+        }
+
+        #endregion
+
+        #region Value provider
+
+        public void SubscribeToValue(string valueKey, Action<object> callback)
+        {
+            switch(valueKey)
+            {
+                case Globals.VELOCITY_CHANGED_KEY:
+                    OnVelocityChanged += callback;
+                    break;
+                case Globals.CHARGE_LEVEL_CHANGED_KEY:
+                    OnChargeLevelChanged += callback;
+                    break;
+            }
+        }
+
+        public void UnsubscribeFromValue(string valueKey, Action<object> callback)
+        {
+            switch(valueKey)
+            {
+                case Globals.VELOCITY_CHANGED_KEY:
+                    OnVelocityChanged -= callback;
+                    break;
+                case Globals.CHARGE_LEVEL_CHANGED_KEY:
+                    OnChargeLevelChanged += callback;
+                    break;
+            }
         }
 
         #endregion
@@ -313,7 +381,8 @@ namespace AmalgamGames.Core
         {
             if (_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnSlowMoChargeInputChange -= OnSlowMoCharge;
+                _inputProcessor.OnSlowMoChargeInputChange -= OnSlowmoCharge;
+                _inputProcessor.OnRealtimeChargeInputChange -= OnRealtimeCharge;
                 _isSubscribedToInput = false;
             }
         }
@@ -322,7 +391,8 @@ namespace AmalgamGames.Core
         {
             if (!_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnSlowMoChargeInputChange += OnSlowMoCharge;
+                _inputProcessor.OnSlowMoChargeInputChange += OnSlowmoCharge;
+                _inputProcessor.OnRealtimeChargeInputChange += OnRealtimeCharge;
                 _isSubscribedToInput = true;
             }
         }
@@ -330,13 +400,28 @@ namespace AmalgamGames.Core
         #endregion
     }
 
+    public class LaunchInfo
+    {
+        public float ChargeLevel;
+        public float BurnDuration;
+
+        public LaunchInfo(float chargeLevel, float burnDuration)
+        {
+            ChargeLevel = chargeLevel;
+            BurnDuration = burnDuration;
+        }
+    }
+
+    public enum ChargingType
+    {
+        Slowmo,
+        Realtime
+    }
+
     public interface IRocketController
     {
-        public event Action OnChargingStart;
-        public event Action OnLaunch;
+        public event Action<ChargingType> OnChargingStart;
+        public event Action<LaunchInfo> OnLaunch;
         public event Action OnBurnComplete;
-
-        public void ToggleEnabled(bool toEnable);
-
     }
 }

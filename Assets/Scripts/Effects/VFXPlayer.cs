@@ -5,7 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AmalgamGames.Visuals
+namespace AmalgamGames.Effects
 {
     public class VFXPlayer : MonoBehaviour, IVFXPlayer
     {

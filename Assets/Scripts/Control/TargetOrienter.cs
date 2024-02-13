@@ -2,7 +2,7 @@ using AmalgamGames.UpdateLoop;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace AmalgamGames.Visuals
+namespace AmalgamGames.Control
 {
     public class TargetOrienter : ManagedBehaviour, IPausable, ITargetOrienter
     {

@@ -7,7 +7,7 @@ using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using AmalgamGames.Core;
 
-namespace AmalgamGames.Visuals
+namespace AmalgamGames.Effects
 {
     public class SlowmoVisuals : MonoBehaviour, IRespawnable, IRestartable
     {
