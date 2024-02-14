@@ -6,7 +6,6 @@ using System.Collections;
 using UnityEngine;
 using AmalgamGames.Utils;
 using AmalgamGames.UI;
-using UnityEngine.Rendering;
 
 namespace AmalgamGames.Core
 {
@@ -21,6 +20,7 @@ namespace AmalgamGames.Core
         [Title("Engine Burn")]
         [SerializeField] private float _engineBurnTime = 2f;
         [SerializeField] private float _engineBurnForce = 10f;
+
 
         // EVENTS
         public event Action<ChargingType> OnChargingStart;
@@ -50,7 +50,6 @@ namespace AmalgamGames.Core
         private bool _isBurning = false;
         private float _burnForce = 0;
         
-
         // COROUTINES
         private Coroutine _engineBurnRoutine = null;
 
@@ -309,7 +308,7 @@ namespace AmalgamGames.Core
             // Start charge immediately if trigger was held down during burn
             if (_delayedChargeForce > 0)
             {
-                OnSlowmoCharge(_delayedChargeForce);
+                OnCharge(_delayedChargingType,_delayedChargeForce);
                 _delayedChargeForce = 0;
             }
 

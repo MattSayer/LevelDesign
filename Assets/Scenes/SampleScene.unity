@@ -7686,8 +7686,9 @@ MonoBehaviour:
   _chargeDeltaThreshold: 0.1
   _playerChargeForce: 70
   _minChargeForce: 30
-  _engineBurnTime: 1
+  _engineBurnTime: 2
   _engineBurnForce: 100
+  _nudgeForce: 10
 --- !u!114 &1180817169
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -7738,6 +7739,28 @@ MonoBehaviour:
   _slowmo: {fileID: 1180817170}
   _postProcessingVolume: {fileID: 832575518}
   _slowmoVignetteIntensity: 0.5
+--- !u!114 &1180817172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 445655676}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a63cfffd218783b47b8b2878b4a2b6d3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _maxLowFrequency: 0.1
+  _maxHighFrequency: 0.1
+  _chargeLevelPower: 2
+  _launchLowFrequency: 0.5
+  _launchHighFrequency: 0.5
+  _launchRumbleEasing: 16
+  _collisionLowFrequency: 1
+  _collisionHighFrequency: 1
+  _collisionRumbleDuration: 1
+  _collisionRumbleEasing: 16
 --- !u!1 &1216930385
 GameObject:
   m_ObjectHideFlags: 0
@@ -11575,7 +11598,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1413143036}
-  m_LocalRotation: {x: 0.34042525, y: -0.000000022880096, z: 0.000000008283737, w: 0.9402717}
+  m_LocalRotation: {x: 0.34042525, y: 0.00000002288009, z: -0.0000000082837355, w: 0.9402717}
   m_LocalPosition: {x: 0, y: 2.5, z: 7}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -17153,7 +17176,7 @@ PrefabInstance:
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
         type: 3}
       propertyPath: m_ActionEvents.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
         type: 3}
@@ -17162,8 +17185,18 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
         type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_ActionId
+      value: 80b6b452-3aa3-48aa-b3b5-4a97864c644f
+      objectReference: {fileID: 0}
+    - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
+        type: 3}
       propertyPath: m_ActionEvents.Array.data[3].m_ActionName
       value: Gameplay/Respawn[/XInputControllerWindows/buttonNorth]
+      objectReference: {fileID: 0}
+    - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_ActionName
+      value: Gameplay/Nudge[/XInputControllerWindows/leftStick]
       objectReference: {fileID: 0}
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
         type: 3}
@@ -17173,6 +17206,11 @@ PrefabInstance:
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[3].m_PersistentCalls.m_Calls.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.size
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
@@ -17187,6 +17225,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
         type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_Mode
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
+        type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 1180817160}
@@ -17197,12 +17240,22 @@ PrefabInstance:
       objectReference: {fileID: 1180817160}
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
         type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_Target
+      value: 
+      objectReference: {fileID: 1180817160}
+    - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
+        type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[3].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_CallState
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
@@ -17222,6 +17275,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
         type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: OnNudgeInput
+      objectReference: {fileID: 0}
+    - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
+        type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
       value: AmalgamGames.Control.InputProcessor, Assembly-CSharp
       objectReference: {fileID: 0}
@@ -17232,12 +17290,22 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
         type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_TargetAssemblyTypeName
+      value: AmalgamGames.Core.InputProcessor, Assembly-CSharp
+      objectReference: {fileID: 0}
+    - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
+        type: 3}
       propertyPath: m_ActionEvents.Array.data[2].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
         type: 3}
       propertyPath: m_ActionEvents.Array.data[3].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
+      value: UnityEngine.Object, UnityEngine
+      objectReference: {fileID: 0}
+    - target: {fileID: 6571802832219443225, guid: 6957bbffe986daf4585e43d9345279ec,
+        type: 3}
+      propertyPath: m_ActionEvents.Array.data[4].m_PersistentCalls.m_Calls.Array.data[0].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
     - target: {fileID: 6571802832219443228, guid: 6957bbffe986daf4585e43d9345279ec,

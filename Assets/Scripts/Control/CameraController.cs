@@ -29,7 +29,6 @@ namespace AmalgamGames.Control
         [SerializeField] private float _offsetLerpTime = 1;
         [Space]
         [Title("Damping")]
-        [SerializeField] private float _dampingTransitionTime = 1;
         [SerializeField] private float _launchDamping = 3;
         [Space]
         [Title("Screen shake")]
@@ -242,7 +241,7 @@ namespace AmalgamGames.Control
                 StopCoroutine(_offsetRoutine);
             }
             // Lerp offset to zero over duration
-            StartCoroutine(Tools.lerpVector3OverTime(_offset, Vector3.zero, _offsetLerpTime, (value) =>
+            _offsetRoutine = StartCoroutine(Tools.lerpVector3OverTime(_offset, Vector3.zero, _offsetLerpTime, (value) =>
             {
                 _offset = value;
             }, () => _offsetRoutine = null));

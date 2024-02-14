@@ -13,9 +13,11 @@ namespace AmalgamGames.Core
         #region Public interface
 
         public event Action<Vector2> OnCameraInputChange;
+        public event Action<Vector2> OnNudgeInputChange;
         public event Action<float> OnSlowMoChargeInputChange;
         public event Action<float> OnRealtimeChargeInputChange;
         public event Action OnRespawn;
+        
 
         #endregion
 
@@ -47,6 +49,12 @@ namespace AmalgamGames.Core
             }
         }
 
+        public void OnNudgeInput(InputAction.CallbackContext context)
+        {
+            Vector2 rawInput = context.ReadValue<Vector2>();
+            OnNudgeInputChange?.Invoke(rawInput);
+        }
+
         #endregion
        
     }
@@ -54,6 +62,7 @@ namespace AmalgamGames.Core
     public interface IInputProcessor
     {
         public event Action<Vector2> OnCameraInputChange;
+        public event Action<Vector2> OnNudgeInputChange;
         public event Action<float> OnSlowMoChargeInputChange;
         public event Action<float> OnRealtimeChargeInputChange;
         public event Action OnRespawn;
