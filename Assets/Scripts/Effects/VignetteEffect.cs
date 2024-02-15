@@ -1,4 +1,5 @@
 using AmalgamGames.Abilities;
+using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
@@ -6,52 +7,35 @@ using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEngine.Rendering.Universal;
 using AmalgamGames.Core;
+using System;
 
 namespace AmalgamGames.Effects
 {
-    public class SlowmoVisuals : MonoBehaviour, IRespawnable, IRestartable
+    public class VignetteEffect : ToggleEffect, IRespawnable, IRestartable
     {
-        [Title("Components")]
-        [SerializeField] private Slowmo _slowmo;
-        [Space]
         [Title("Postprocessing")]
         [SerializeField] private Volume _postProcessingVolume;
         [Space]
         [Title("Settings")]
-        [SerializeField] private float _slowmoVignetteIntensity = 0.5f;
+        [SerializeField] private float _vignetteIntensity = 0.5f;
 
         // STATE
-        private bool _isSubscribedToSlowmo = false;
         private float _defaultVignetteIntensity;
 
         // COMPONENTS
         private Vignette _vignette;
 
         #region Lifecycle
-        
-        private void Start()
+
+        protected override void Start()
         {
-            SubscribeToSlowmo();
+            base.Start();
+
             _postProcessingVolume.profile.TryGet<Vignette>(out _vignette);
-            if(_vignette != null)
+            if (_vignette != null)
             {
                 _defaultVignetteIntensity = _vignette.intensity.value;
             }
-        }
-
-        private void OnEnable()
-        {
-            SubscribeToSlowmo();
-        }
-
-        private void OnDisable()
-        {
-            UnsubscribeFromSlowmo();   
-        }
-
-        private void OnDestroy()
-        {
-            UnsubscribeFromSlowmo();
         }
 
         #endregion
@@ -84,38 +68,14 @@ namespace AmalgamGames.Effects
 
         #region Visuals
 
-        private void OnSlowmoStart()
+        protected override void ActivateEffect()
         {
-            _vignette.intensity.value = _slowmoVignetteIntensity;
+            _vignette.intensity.value = _vignetteIntensity;
         }
 
-        private void OnSlowmoEnd()
+        protected override void DeactivateEffect()
         {
             RemoveVignette();
-        }
-
-        #endregion
-
-        #region Subscriptions
-
-        private void SubscribeToSlowmo()
-        {
-            if(!_isSubscribedToSlowmo && _slowmo != null)
-            {
-                _slowmo.OnSlowmoStart += OnSlowmoStart;
-                _slowmo.OnSlowmoEnd += OnSlowmoEnd;
-                _isSubscribedToSlowmo = true;
-            }
-        }
-
-        private void UnsubscribeFromSlowmo()
-        {
-            if (_isSubscribedToSlowmo && _slowmo != null)
-            {
-                _slowmo.OnSlowmoStart -= OnSlowmoStart;
-                _slowmo.OnSlowmoEnd -= OnSlowmoEnd;
-                _isSubscribedToSlowmo = false;
-            }
         }
 
         #endregion

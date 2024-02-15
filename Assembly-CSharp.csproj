@@ -63,11 +63,13 @@
     <Compile Include="Assets\Scripts\Core\RocketController.cs" />
     <Compile Include="Assets\Scripts\UI\DynamicText.cs" />
     <Compile Include="Assets\Scripts\Utils\Globals.cs" />
+    <Compile Include="Assets\Scripts\Abilities\Nudge.cs" />
     <Compile Include="Assets\Scripts\Core\IRestartable.cs" />
+    <Compile Include="Assets\Scripts\Abilities\SharedFloatValue.cs" />
     <Compile Include="Assets\Scripts\Control\TargetOrienter.cs" />
     <Compile Include="Assets\Scripts\Abilities\Slowmo.cs" />
     <Compile Include="Assets\Scripts\Control\CameraController.cs" />
-    <Compile Include="Assets\Scripts\Effects\SlowmoVisuals.cs" />
+    <Compile Include="Assets\Scripts\Effects\VignetteEffect.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedFixedBehaviour.cs" />
     <Compile Include="Assets\Scripts\CustomEditor\RequireInterfaceAttribute.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedUpdater.cs" />
@@ -82,8 +84,7 @@
     <Compile Include="Assets\Scripts\Utils\ObjectToggler.cs" />
     <Compile Include="Assets\Scripts\Utils\Tools.cs" />
     <Compile Include="Assets\Scripts\Effects\ControllerRumble.cs" />
-    <Compile Include="Assets\Scripts\Abilities\Nudge.cs" />
-    <Compile Include="Assets\Scripts\Abilities\SharedValue.cs" />
+    <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

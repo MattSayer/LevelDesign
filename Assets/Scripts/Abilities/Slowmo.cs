@@ -11,26 +11,24 @@ namespace AmalgamGames.Abilities
     public class Slowmo : MonoBehaviour, IRestartable, IRespawnable
     {
         [Title("Settings")]
-        [SerializeField] private float _defaultMaxJuice = 100;
         [SerializeField] private float _juiceDrainRatePerSecond = 10;
         [SerializeField] private float _slowMoTimeScale = 0.5f;
         [SerializeField] private float _timeScaleTransitionTime = 0.5f;
+        [Space]
+        [Title("Components")]
+        [SerializeField] private Transform _rocketControllerTransform;
+        [SerializeField] private SharedFloatValue _juice;
 
         // CONSTANTS
         private float PHYSICS_TIMESTEP;
 
         // EVENTS
-        public event Action<float> OnJuiceLevelChanged;
         public event Action OnSlowmoStart;
         public event Action OnSlowmoEnd;
 
-
         // STATE
         private bool _isSubscribedToCharging = false;
-        private float _maxJuice;
-        private float _currentJuice;
 
-        private bool _isInitialised = false;
         private bool _isActive = false;
 
         // COMPONENTS
@@ -44,7 +42,7 @@ namespace AmalgamGames.Abilities
 
         private void Start()
         {
-            _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(transform.parent);
+            _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(_rocketControllerTransform);
             SubscribeToCharging();
 
             PHYSICS_TIMESTEP = Time.fixedDeltaTime;
@@ -67,17 +65,6 @@ namespace AmalgamGames.Abilities
 
         #endregion
 
-        #region Initialisation
-
-        public void Initialise(float maxJuice)
-        {
-            _maxJuice = maxJuice;
-            _currentJuice = _maxJuice;
-            _isInitialised = true;
-        }
-
-        #endregion
-
         #region Respawning/restarting
 
         public void OnRespawnEvent(RespawnEvent evt)
@@ -95,7 +82,7 @@ namespace AmalgamGames.Abilities
 
         public void DoRestart()
         {
-            _currentJuice = _maxJuice;
+            CancelSlowmo();
         }
 
         #endregion
@@ -121,15 +108,7 @@ namespace AmalgamGames.Abilities
 
         private void ActivateSlowmo()
         {
-            // If for some reason the level manager hasn't initialised the slow-mo component, set to defaults
-            if(!_isInitialised)
-            {
-                _maxJuice = _defaultMaxJuice;
-                _currentJuice = _maxJuice;
-                _isInitialised = true;
-            }
-
-            if(_currentJuice > 0)
+            if(HasJuice())
             {
                 _isActive = true;
 
@@ -198,19 +177,24 @@ namespace AmalgamGames.Abilities
 
         #endregion
 
+        #region Juice
+
+        private bool HasJuice()
+        {
+            return _juice.CanSubtract(Time.unscaledDeltaTime * _juiceDrainRatePerSecond);
+        }
+
+        #endregion
+
         #region Coroutines
 
         private IEnumerator drainSlowMo()
         {
-            while(_currentJuice > 0)
+            while(HasJuice())
             {
-                _currentJuice -= Time.unscaledDeltaTime * _juiceDrainRatePerSecond;
-                // Pass normalized juice level to subscribers
-                OnJuiceLevelChanged?.Invoke(_currentJuice / _maxJuice);
+                _juice.SubtractValue(Time.unscaledDeltaTime * _juiceDrainRatePerSecond);
                 yield return null;
             }
-            _currentJuice = 0;
-            OnJuiceLevelChanged?.Invoke(0);
             _drainRoutine = null;
             EndSlowmo();
         }

@@ -11,7 +11,12 @@ namespace AmalgamGames.Abilities
 
         [Title("Settings")]
         [SerializeField] private float _nudgeForce = 1;
-
+        [SerializeField] private float _juiceDrainPerSecond = 10f;
+        [Space]
+        [Title("Components")]
+        [SerializeField] private Transform _rocketTransform;
+        [SerializeField] private SharedFloatValue _juice;
+        [SerializeField] private Rigidbody _rb;
 
         // STATE
 
@@ -22,19 +27,21 @@ namespace AmalgamGames.Abilities
         // Nudging
         private bool _canNudge = false;
         private Vector2 _nudgeDirection = Vector2.zero;
+        private float _nudgeForceMultiplier = 0;
 
         // COMPONENTS
         private IInputProcessor _inputProcessor;
         private IRocketController _rocketController;
-        private Rigidbody _rb;
 
+        // Coroutines
+        private Coroutine _nudgeMultiplierRoutine = null;
 
         #region Lifecycle
 
         private void Start()
         {
-            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(transform.parent);
-            _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(transform.parent);
+            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketTransform);
+            _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(_rocketTransform);
 
             SubscribeToInput();
             SubscribeToRocket();
@@ -63,12 +70,25 @@ namespace AmalgamGames.Abilities
 
         public override void ManagedFixedUpdate(float deltaTime)
         {
-            if(_canNudge && _nudgeDirection != Vector2.zero)
+            if(_canNudge && HasJuice() && _nudgeDirection != Vector2.zero)
             {
-                Vector3 nudgeForce = (_nudgeDirection.x * transform.right) + (_nudgeDirection.y * Vector3.up);
+                Vector3 nudgeForce = (_nudgeDirection.x * _rocketTransform.right) + (_nudgeDirection.y * Vector3.up);
+                
+                // Max nudge magnitude is 1, since nudgeDirection is already normalised
+                float nudgeMagnitude = nudgeForce.magnitude;
+                _juice.SubtractValue(Time.unscaledDeltaTime * _juiceDrainPerSecond * nudgeMagnitude);
 
-                _rb.AddForce(nudgeForce * _nudgeForce * deltaTime, ForceMode.Force);
+                _rb.AddForce(_nudgeForceMultiplier * nudgeForce * _nudgeForce * deltaTime, ForceMode.Force);
             }
+        }
+
+        #endregion
+
+        #region Juice
+
+        private bool HasJuice()
+        {
+            return _juice.CanSubtract(Time.unscaledDeltaTime * _juiceDrainPerSecond * _nudgeDirection.magnitude);
         }
 
         #endregion
@@ -91,6 +111,24 @@ namespace AmalgamGames.Abilities
 
         private void OnBurnComplete()
         {
+            //_canNudge = true;
+        }
+
+        private void OnLaunch(LaunchInfo launchInfo)
+        {
+            if(_nudgeMultiplierRoutine != null)
+            {
+                StopCoroutine(_nudgeMultiplierRoutine);
+            }
+            _nudgeMultiplierRoutine = StartCoroutine(Tools.lerpFloatOverTime(0, 1, launchInfo.BurnDuration, (value) =>
+            {
+                _nudgeForceMultiplier = value;
+            },
+            () =>
+            {
+                _nudgeMultiplierRoutine = null;
+            }
+                ));
             _canNudge = true;
         }
 
@@ -140,6 +178,7 @@ namespace AmalgamGames.Abilities
             {
                 _rocketController.OnChargingStart += OnChargingStart;
                 _rocketController.OnBurnComplete += OnBurnComplete;
+                _rocketController.OnLaunch += OnLaunch;
             }
         }
 
@@ -149,6 +188,7 @@ namespace AmalgamGames.Abilities
             {
                 _rocketController.OnChargingStart -= OnChargingStart;
                 _rocketController.OnBurnComplete -= OnBurnComplete;
+                _rocketController.OnLaunch -= OnLaunch;
             }
         }
 

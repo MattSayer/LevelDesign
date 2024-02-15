@@ -23,15 +23,13 @@ namespace AmalgamGames.Core
         [Space]
         [Title("Components")]
         [SerializeField] private GameObject _meshObject;
-        [Title("Dependencies")]
-        [SerializeField] private DependencyRequest _getVFXPlayer;
+        [SerializeField] private Transform _rocketTransform;
         [Space]
         [Title("DEBUG")]
         [SerializeField] private Transform _respawnPoint;
 
         // COMPONENTS
         private IInputProcessor _inputProcessor;
-        private IVFXPlayer _vfxPlayer;
 
         private List<IRespawnable> _respawnables;
 
@@ -47,11 +45,9 @@ namespace AmalgamGames.Core
 
         private void Start()
         {
-            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(transform.parent);
+            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketTransform);
             SubscribeToInput();
             _lastCheckpoint = _respawnPoint;
-            _getVFXPlayer.RequestDependency(ReceiveVFXPlayer);
-
 
             // Get all respawnables in the level
             _respawnables = new List<IRespawnable>();
@@ -70,15 +66,6 @@ namespace AmalgamGames.Core
         private void OnDestroy()
         {
             UnsubscribeFromInput();
-        }
-
-        #endregion
-
-        #region Dependencies
-
-        private void ReceiveVFXPlayer(object rawObj)
-        {
-            _vfxPlayer = rawObj as IVFXPlayer;
         }
 
         #endregion

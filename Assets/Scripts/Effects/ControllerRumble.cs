@@ -27,6 +27,9 @@ namespace AmalgamGames.Effects
         [SerializeField] private float _collisionHighFrequency;
         [SerializeField] private float _collisionRumbleDuration = 1;
         [SerializeField] private EasingFunction.Ease _collisionRumbleEasing = EasingFunction.Ease.Linear;
+        [Space]
+        [Title("Components")]
+        [SerializeField] private Transform _rocketTransform;
 
         // State
         private bool _isSubscribedToCharging = false;
@@ -43,7 +46,7 @@ namespace AmalgamGames.Effects
 
         private void Start()
         {
-            _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(transform.parent);
+            _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(_rocketTransform);
 
             SubscribeToCharging();
         }
