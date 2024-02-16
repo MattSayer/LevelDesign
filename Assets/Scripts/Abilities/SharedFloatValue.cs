@@ -1,10 +1,11 @@
+using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
 
 namespace AmalgamGames.Core
 {
-    public class SharedFloatValue : MonoBehaviour, IRestartable
+    public class SharedFloatValue : MonoBehaviour, IRestartable, IValueProvider
     {
 
         [Title("Settings")]
@@ -41,6 +42,7 @@ namespace AmalgamGames.Core
         private bool _isInitialised = false;
 
         private event Action<float> OnValueChanged;
+        private event Action<object> OnValueChangedObj;
 
         public string Key { get { return _valueKey; } }
         /// <summary>
@@ -187,7 +189,10 @@ namespace AmalgamGames.Core
         private void BroadcastValueChanged()
         {
             OnValueChanged?.Invoke(_currentValue);
+            OnValueChangedObj?.Invoke(_currentValue);
         }
+
+        // For SharedFloatValue subscribers
 
         public float SubscribeToValueChanged(Action<float> callback)
         {
@@ -198,6 +203,27 @@ namespace AmalgamGames.Core
         public void UnsubscribeFromValueChanged(Action<float> callback)
         {
             OnValueChanged -= callback;
+        }
+
+        // For IValueProvider subscribers
+        public void SubscribeToValue(string valueKey, Action<object> callback)
+        {
+            switch(valueKey)
+            {
+                case Globals.JUICE_LEVEL_CHANGED_KEY:
+                    OnValueChangedObj += callback;
+                    break;
+            }
+        }
+
+        public void UnsubscribeFromValue(string valueKey, Action<object> callback)
+        {
+            switch (valueKey)
+            {
+                case Globals.JUICE_LEVEL_CHANGED_KEY:
+                    OnValueChangedObj -= callback;
+                    break;
+            }
         }
 
         #endregion

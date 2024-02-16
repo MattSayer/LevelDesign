@@ -30,6 +30,7 @@ namespace AmalgamGames.Abilities
         private bool _isSubscribedToCharging = false;
 
         private bool _isActive = false;
+        private bool _canActivate = false;
 
         // COMPONENTS
         private IRocketController _rocketController;
@@ -72,10 +73,12 @@ namespace AmalgamGames.Abilities
             switch(evt)
             {
                 case RespawnEvent.OnCollision:
+                case RespawnEvent.OnRespawnStart:
+                    _canActivate = false;
                     CancelSlowmo();
                     break;
-                case RespawnEvent.OnRespawnStart:
-                    CancelSlowmo();
+                case RespawnEvent.OnRespawnEnd:
+                    _canActivate = true;
                     break;
             }
         }
@@ -108,7 +111,7 @@ namespace AmalgamGames.Abilities
 
         private void ActivateSlowmo()
         {
-            if(HasJuice())
+            if(_canActivate && HasJuice())
             {
                 _isActive = true;
 

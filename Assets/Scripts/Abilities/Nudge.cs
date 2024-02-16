@@ -2,11 +2,12 @@ using AmalgamGames.Core;
 using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
+using System;
 using UnityEngine;
 
 namespace AmalgamGames.Abilities
 {
-    public class Nudge : ManagedFixedBehaviour, IRespawnable
+    public class Nudge : ManagedFixedBehaviour, IRespawnable, INudger
     {
 
         [Title("Settings")]
@@ -18,6 +19,10 @@ namespace AmalgamGames.Abilities
         [SerializeField] private SharedFloatValue _juice;
         [SerializeField] private Rigidbody _rb;
 
+        // Events
+        public event Action<Vector2> OnNudgeDirectionChanged;
+        public event Action OnNudgeEnd;
+
         // STATE
 
         // Subscriptions
@@ -28,6 +33,7 @@ namespace AmalgamGames.Abilities
         private bool _canNudge = false;
         private Vector2 _nudgeDirection = Vector2.zero;
         private float _nudgeForceMultiplier = 0;
+        private bool _isNudging = false;
 
         // COMPONENTS
         private IInputProcessor _inputProcessor;
@@ -72,6 +78,9 @@ namespace AmalgamGames.Abilities
         {
             if(_canNudge && HasJuice() && _nudgeDirection != Vector2.zero)
             {
+                OnNudgeDirectionChanged?.Invoke(_nudgeDirection);
+
+                _isNudging = true;
                 Vector3 nudgeForce = (_nudgeDirection.x * _rocketTransform.right) + (_nudgeDirection.y * Vector3.up);
                 
                 // Max nudge magnitude is 1, since nudgeDirection is already normalised
@@ -79,6 +88,12 @@ namespace AmalgamGames.Abilities
                 _juice.SubtractValue(Time.unscaledDeltaTime * _juiceDrainPerSecond * nudgeMagnitude);
 
                 _rb.AddForce(_nudgeForceMultiplier * nudgeForce * _nudgeForce * deltaTime, ForceMode.Force);
+            }
+            // If was nudging last frame but not now, end nudge
+            else if(_isNudging)
+            {
+                _isNudging = false;
+                OnNudgeEnd?.Invoke();
             }
         }
 
@@ -193,5 +208,11 @@ namespace AmalgamGames.Abilities
         }
 
         #endregion
+    }
+
+    public interface INudger
+    {
+        public event Action<Vector2> OnNudgeDirectionChanged;
+        public event Action OnNudgeEnd;
     }
 }

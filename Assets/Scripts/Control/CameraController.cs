@@ -1,4 +1,5 @@
 using AmalgamGames.Core;
+using AmalgamGames.Effects;
 using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Cinemachine;
@@ -40,6 +41,9 @@ namespace AmalgamGames.Control
         [Title("Components")]
         [SerializeField] private Transform _followTarget;
         [SerializeField] private CinemachineVirtualCamera _playerCam;
+        [Space]
+        [Title("Dependencies")]
+        [SerializeField] private DependencyRequest _getScreenShaker;
         
         // STATE
         
@@ -59,7 +63,6 @@ namespace AmalgamGames.Control
         private Coroutine _zoomRoutine = null;
         private Coroutine _speedLimitRoutine = null;
         private Coroutine _offsetRoutine = null;
-        private Coroutine _screenShakeRoutine = null;
         private Coroutine _dampingRoutine = null;
 
         // Active
@@ -77,7 +80,7 @@ namespace AmalgamGames.Control
         private IInputProcessor _inputProcessor;
         private IRocketController _rocketController;
         private CinemachineTransposer _bodyTransposer;
-        private CinemachineBasicMultiChannelPerlin _screenShake;
+        private IScreenShaker _screenShaker;
 
         #region Lifecycle
 
@@ -86,7 +89,8 @@ namespace AmalgamGames.Control
             _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(transform.parent);
             _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(transform.parent);
             _bodyTransposer = _playerCam?.GetCinemachineComponent<CinemachineTransposer>();
-            _screenShake = _playerCam?.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+            _getScreenShaker.RequestDependency(ReceiveScreenShaker);
 
             SubscribeToInput();
             SubscribeToCharging();
@@ -159,10 +163,6 @@ namespace AmalgamGames.Control
             _speedLimitRoutine = null;
             _offsetRoutine = null;
 
-            // Reset screen shake
-            _screenShake.m_AmplitudeGain = 0;
-            _screenShake.m_FrequencyGain = 0;
-
             // Reset variables
             _rotationSpeedLimit = 1;
             _isBurning = false;
@@ -215,8 +215,8 @@ namespace AmalgamGames.Control
         private void OnLaunch(LaunchInfo launchInfo)
         {
             // screen shake
-            ScreenShake(_launchShakeAmplitude, _launchShakeFrequency, launchInfo.BurnDuration, _launchShakeEasing);
-
+            _screenShaker.ScreenShakeBurst(new ScreenShakeIntensity(_launchShakeAmplitude, _launchShakeFrequency), launchInfo.BurnDuration, _launchShakeEasing);
+            
             // Increase damping temporarily
             if (_dampingRoutine == null)
             {
@@ -286,6 +286,10 @@ namespace AmalgamGames.Control
             
         }
 
+        #endregion
+
+        #region Subscriptions
+
         private void UnsubscribeFromInput()
         {
             if (_isSubscribedToInput && _inputProcessor != null)
@@ -326,6 +330,11 @@ namespace AmalgamGames.Control
             }
         }
 
+        private void ReceiveScreenShaker(object rawObj)
+        {
+            _screenShaker = rawObj as IScreenShaker;
+        }
+
         #endregion
 
         #region Position/Rotation
@@ -353,50 +362,7 @@ namespace AmalgamGames.Control
 
         #endregion
 
-        #region Screen shake
-
-        private void ScreenShake(float amplitude, float frequency, float duration, EasingFunction.Ease easingFunction = EasingFunction.Ease.Linear)
-        {
-            if(_screenShakeRoutine != null)
-            {
-                StopCoroutine(_screenShakeRoutine);
-            }
-            _screenShakeRoutine = StartCoroutine(screenShake(amplitude, frequency, duration, easingFunction));
-        }
-
-        #endregion
-
         #region Coroutines
-
-        private IEnumerator screenShake(float amplitude, float frequency, float duration, EasingFunction.Ease easingFunction = EasingFunction.Ease.Linear) 
-        {
-            _screenShake.m_AmplitudeGain = amplitude;
-            _screenShake.m_FrequencyGain = frequency;
-
-            float time = 0;
-
-            float newAmplitude;
-            float newFrequency;
-
-            EasingFunction.Function func = EasingFunction.GetEasingFunction(easingFunction);
-
-            while(time < duration)
-            {
-                float lerpVal = time / duration;
-                newAmplitude = func(amplitude, 0, lerpVal);
-                newFrequency = func(frequency, 0, lerpVal);
-                _screenShake.m_AmplitudeGain = newAmplitude;
-                _screenShake.m_FrequencyGain = newFrequency;
-
-                time += Time.deltaTime;
-                yield return null;
-            }
-
-            _screenShake.m_AmplitudeGain = 0;
-            _screenShake.m_FrequencyGain = 0;
-
-            _screenShakeRoutine = null;
-        }
 
         private IEnumerator updateCameraDistance(float newDistance)
         {

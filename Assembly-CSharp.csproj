@@ -59,11 +59,13 @@
   <ItemGroup>
     <Compile Include="Assets\Scripts\Update\ManagedBehaviour.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedLateBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Effects\ScreenShake.cs" />
     <Compile Include="Assets\Scripts\Core\Respawner.cs" />
     <Compile Include="Assets\Scripts\Core\RocketController.cs" />
     <Compile Include="Assets\Scripts\UI\DynamicText.cs" />
     <Compile Include="Assets\Scripts\Utils\Globals.cs" />
     <Compile Include="Assets\Scripts\Abilities\Nudge.cs" />
+    <Compile Include="Assets\Scripts\Effects\RumbleController.cs" />
     <Compile Include="Assets\Scripts\Core\IRestartable.cs" />
     <Compile Include="Assets\Scripts\Abilities\SharedFloatValue.cs" />
     <Compile Include="Assets\Scripts\Control\TargetOrienter.cs" />
@@ -75,6 +77,7 @@
     <Compile Include="Assets\Scripts\Update\ManagedUpdater.cs" />
     <Compile Include="Assets\Scripts\Core\IRespawnable.cs" />
     <Compile Include="Assets\Scripts\Update\IPausable.cs" />
+    <Compile Include="Assets\Scripts\Effects\NudgeRumble.cs" />
     <Compile Include="Assets\Scripts\Core\InputProcessor.cs" />
     <Compile Include="Assets\Scripts\Utils\DependencyRequest.cs" />
     <Compile Include="Assets\Scripts\Update\IUpdateable.cs" />
@@ -83,8 +86,10 @@
     <Compile Include="Assets\Scripts\Effects\VFXPlayer.cs" />
     <Compile Include="Assets\Scripts\Utils\ObjectToggler.cs" />
     <Compile Include="Assets\Scripts\Utils\Tools.cs" />
-    <Compile Include="Assets\Scripts\Effects\ControllerRumble.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
+    <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
+    <Compile Include="Assets\Scripts\UI\DynamicFilledImage.cs" />
+    <Compile Include="Assets\Scripts\Core\IValueProvider.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -868,6 +873,9 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.State">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

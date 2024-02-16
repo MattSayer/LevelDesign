@@ -21,7 +21,6 @@ namespace AmalgamGames.Core
         [SerializeField] private float _engineBurnTime = 2f;
         [SerializeField] private float _engineBurnForce = 10f;
 
-
         // EVENTS
         public event Action<ChargingType> OnChargingStart;
         public event Action<LaunchInfo> OnLaunch;

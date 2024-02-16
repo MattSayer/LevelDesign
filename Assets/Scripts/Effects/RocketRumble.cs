@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 
 namespace AmalgamGames.Effects
 {
-    public class ControllerRumble : ManagedBehaviour, IRespawnable, IPausable
+    public class RocketRumble : MonoBehaviour, IRespawnable, IPausable
     {
         [Title("Charging")]
         [SerializeField] private float _maxLowFrequency;
@@ -30,16 +30,16 @@ namespace AmalgamGames.Effects
         [Space]
         [Title("Components")]
         [SerializeField] private Transform _rocketTransform;
+        [Space]
+        [Title("Dependency Requests")]
+        [SerializeField] private DependencyRequest _getRumbleController;
 
         // State
         private bool _isSubscribedToCharging = false;
-        private float _chargeLevel;
-
-        // Coroutines
-        private Coroutine _rumbleRoutine = null;
 
         // Components
         private IRocketController _rocketController;
+        private IRumbleController _rumbleController;
 
 
         #region Lifecyle
@@ -48,37 +48,26 @@ namespace AmalgamGames.Effects
         {
             _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(_rocketTransform);
 
+            _getRumbleController.RequestDependency(ReceiveRumbleController);
+
             SubscribeToCharging();
         }
 
-        protected override void OnEnable()
+        private void OnEnable()
         {
-            base.OnEnable();
             SubscribeToCharging();
-            Gamepad.current?.ResumeHaptics();
         }
 
-        protected override void OnDisable()
+        private void OnDisable()
         {
-            base.OnDisable();
             UnsubscribeFromCharging();
-            Gamepad.current?.PauseHaptics();
         }
 
-        protected override void OnDestroy()
+        private void OnDestroy()
         {
-            base.OnDestroy();
             UnsubscribeFromCharging();
-            Gamepad.current?.PauseHaptics();
         }
 
-        public override void ManagedUpdate(float deltaTime)
-        {
-            if (_rumbleRoutine == null)
-            {
-                Gamepad.current?.SetMotorSpeeds(_chargeLevel * _maxLowFrequency, _chargeLevel * _maxHighFrequency);
-            }
-        }
 
         #endregion
 
@@ -102,15 +91,7 @@ namespace AmalgamGames.Effects
         {
             if(evt == RespawnEvent.OnCollision)
             {
-                // Collision rumble
-                if(_rumbleRoutine != null)
-                {
-                    StopCoroutine(_rumbleRoutine);
-                }
-
-                _chargeLevel = 0;
-
-                _rumbleRoutine = StartCoroutine(collisionRumble());
+                _rumbleController.RumbleBurst(new RumbleIntensity(_collisionLowFrequency, _collisionHighFrequency),_collisionRumbleDuration,_collisionRumbleEasing);
             }
         }
 
@@ -122,73 +103,23 @@ namespace AmalgamGames.Effects
         {
             if (rawValue.GetType() == typeof(float))
             {
-                _chargeLevel = Mathf.Pow((float)rawValue, _chargeLevelPower);
+                float chargeLevel = Mathf.Pow((float)rawValue, _chargeLevelPower);
+                _rumbleController.ContinuousRumble(gameObject, new RumbleIntensity(chargeLevel * _maxLowFrequency,chargeLevel * _maxHighFrequency));
             }
         }
 
         private void OnLaunch(LaunchInfo launchInfo)
         {
-            if(_rumbleRoutine != null)
-            {
-                StopCoroutine(_rumbleRoutine);
-            }
-
-            _rumbleRoutine = StartCoroutine(launchRumble(launchInfo.BurnDuration));
+            _rumbleController.RumbleBurst(new RumbleIntensity(_launchLowFrequency,_launchHighFrequency),launchInfo.BurnDuration,_launchRumbleEasing);
         }
 
         #endregion
 
-        #region Coroutines
+        #region Dependency Requests
 
-        private IEnumerator launchRumble(float duration)
+        private void ReceiveRumbleController(object rawObj)
         {
-            float time = 0;
-
-            float highFrequency;
-            float lowFrequency;
-            EasingFunction.Function func = EasingFunction.GetEasingFunction(_launchRumbleEasing);
-
-            while(time < duration)
-            {
-                float lerpVal = time / duration;
-                highFrequency = func(_launchHighFrequency, 0, lerpVal);
-                lowFrequency = func(_launchLowFrequency, 0, lerpVal);
-
-                Gamepad.current?.SetMotorSpeeds(lowFrequency, highFrequency);
-
-                time += Time.deltaTime;
-                yield return null;
-            }
-
-            Gamepad.current?.SetMotorSpeeds(0, 0);
-
-            _rumbleRoutine = null;
-
-        }
-
-        private IEnumerator collisionRumble()
-        {
-            float time = 0;
-
-            float highFrequency;
-            float lowFrequency;
-            EasingFunction.Function func = EasingFunction.GetEasingFunction(_collisionRumbleEasing);
-
-            while (time < _collisionRumbleDuration)
-            {
-                float lerpVal = time / _collisionRumbleDuration;
-                highFrequency = func(_collisionHighFrequency, 0, lerpVal);
-                lowFrequency = func(_collisionLowFrequency, 0, lerpVal);
-
-                Gamepad.current?.SetMotorSpeeds(lowFrequency, highFrequency);
-
-                time += Time.deltaTime;
-                yield return null;
-            }
-
-            Gamepad.current?.SetMotorSpeeds(0, 0);
-
-            _rumbleRoutine = null;
+            _rumbleController = rawObj as RumbleController;
         }
 
         #endregion
