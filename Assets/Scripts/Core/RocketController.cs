@@ -24,6 +24,7 @@ namespace AmalgamGames.Core
         // EVENTS
         public event Action<ChargingType> OnChargingStart;
         public event Action<LaunchInfo> OnLaunch;
+        public event Action OnLaunchNoParams;
         public event Action OnBurnComplete;
         public event Action<object> OnVelocityChanged;
         public event Action<object> OnChargeLevelChanged;
@@ -66,6 +67,9 @@ namespace AmalgamGames.Core
             _targetOrienter = Tools.GetFirstComponentInHierarchy<ITargetOrienter>(transform.parent);
             SubscribeToInput();
             _rb = GetComponent<Rigidbody>();
+
+            // No gravity on level start, will reactivate on launch
+            _rb.useGravity = false;
         }
 
         protected override void OnDisable()
@@ -169,12 +173,9 @@ namespace AmalgamGames.Core
 
         private void RestartRocket()
         {
-            StopBurnRoutine();
-            _rb.useGravity = true;
-            SetVelocityToZero();
+            //_rb.useGravity = true;
 
             _canLaunch = true;
-            _canCharge = true;
 
             _targetOrienter.ToggleMode(OrientMode.Velocity);
         }
@@ -266,11 +267,14 @@ namespace AmalgamGames.Core
         {
             Debug.Log("Launch");
 
+            // Reactivate gravity if it was disabled
+            _rb.useGravity = true;
+
             float engineBurnTime = _engineBurnTime * _chargeLevel;
 
             LaunchInfo launchInfo = new LaunchInfo(_chargeLevel, engineBurnTime);
 
-            OnLaunch?.Invoke(launchInfo);
+            TriggerLaunchEvent(launchInfo);
 
             _targetOrienter.ToggleMode(OrientMode.Velocity);
 
@@ -312,6 +316,12 @@ namespace AmalgamGames.Core
             }
 
             Debug.Log("Burn complete");
+        }
+
+        private void TriggerLaunchEvent(LaunchInfo launchInfo)
+        {
+            OnLaunch?.Invoke(launchInfo);
+            OnLaunchNoParams?.Invoke();
         }
 
         #endregion

@@ -47,7 +47,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Fill: 0.87370354
+    - _Fill: 1
     m_Colors:
     - _OverlayColour: {r: 0.922, g: 0.87499607, b: 0.87499607, a: 1}
     - _OverlayTiling: {r: 3, g: 3, b: 0, a: 0}

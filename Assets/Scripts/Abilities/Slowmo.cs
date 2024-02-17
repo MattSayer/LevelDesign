@@ -77,9 +77,6 @@ namespace AmalgamGames.Abilities
                     _canActivate = false;
                     CancelSlowmo();
                     break;
-                case RespawnEvent.OnRespawnEnd:
-                    _canActivate = true;
-                    break;
             }
         }
 
@@ -103,6 +100,12 @@ namespace AmalgamGames.Abilities
         private void OnLaunch(LaunchInfo launchInfo)
         {
             EndSlowmo();
+
+            // Enable slowmo on first launch after respawn/restart
+            if (!_canActivate)
+            {
+                _canActivate = true;
+            }
         }
 
         #endregion
@@ -140,28 +143,31 @@ namespace AmalgamGames.Abilities
 
         private void EndSlowmo()
         {
-            StopAllCoroutines();
+            if (_isActive)
+            {
+                StopAllCoroutines();
 
-            float timeScaleDiff = (1 - Time.timeScale) / (1 - _slowMoTimeScale);
+                float timeScaleDiff = (1 - Time.timeScale) / (1 - _slowMoTimeScale);
 
-            _lerpTimescaleRoutine = StartCoroutine(Tools.lerpFloatOverTimeUnscaled(Time.timeScale, 1, _timeScaleTransitionTime * timeScaleDiff,
-                    (value) =>
-                    {
-                        Time.timeScale = value;
-                        Time.fixedDeltaTime = value * PHYSICS_TIMESTEP;
-                    },
-                    () =>
-                    {
-                        Time.timeScale = 1;
-                        Time.fixedDeltaTime = PHYSICS_TIMESTEP;
-                        _lerpTimescaleRoutine = null;
-                    }
-                ));
+                _lerpTimescaleRoutine = StartCoroutine(Tools.lerpFloatOverTimeUnscaled(Time.timeScale, 1, _timeScaleTransitionTime * timeScaleDiff,
+                        (value) =>
+                        {
+                            Time.timeScale = value;
+                            Time.fixedDeltaTime = value * PHYSICS_TIMESTEP;
+                        },
+                        () =>
+                        {
+                            Time.timeScale = 1;
+                            Time.fixedDeltaTime = PHYSICS_TIMESTEP;
+                            _lerpTimescaleRoutine = null;
+                        }
+                    ));
 
 
-            _isActive = false;
-            OnSlowmoEnd?.Invoke();
-            
+                _isActive = false;
+
+                OnSlowmoEnd?.Invoke();
+            }
         }
 
         private void CancelSlowmo()

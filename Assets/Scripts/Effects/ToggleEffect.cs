@@ -11,6 +11,12 @@ namespace AmalgamGames.Effects
         [SerializeField] private Component _eventSource;
         [SerializeField] private string _activateEventName;
         [SerializeField] private string _deactivateEventName;
+        [Space]
+        [Title("Settings")]
+        [Tooltip("Delay activation of this effect after the target event fires")]
+        [SerializeField] private float _activationDelay = 0;
+        [Tooltip("Delay deactivation of this effect after the target event fires")]
+        [SerializeField] private float _deactivationDelay = 0;
 
         // STATE
         private bool _isSubscribedToEvents = false;
@@ -48,6 +54,17 @@ namespace AmalgamGames.Effects
 
         protected abstract void DeactivateEffect();
 
+        protected void DelayedActivateEffect()
+        {
+            Invoke(nameof(ActivateEffect),_activationDelay);
+        }
+
+        protected void DelayedDeactivateEffect()
+        {
+            Invoke(nameof(DeactivateEffect),_deactivationDelay);
+        }
+
+
         #endregion
 
         #region Subscriptions
@@ -58,9 +75,9 @@ namespace AmalgamGames.Effects
             {
                 object rawObj = (object)_eventSource;
 
-                _activateHandler = Tools.WireUpEvent(rawObj, _activateEventName, this, nameof(ActivateEffect));
+                _activateHandler = Tools.WireUpEvent(rawObj, _activateEventName, this, nameof(DelayedActivateEffect));
 
-                _deactivateHandler = Tools.WireUpEvent(rawObj, _deactivateEventName, this, nameof(DeactivateEffect));
+                _deactivateHandler = Tools.WireUpEvent(rawObj, _deactivateEventName, this, nameof(DelayedDeactivateEffect));
 
                 _isSubscribedToEvents = true;
             }

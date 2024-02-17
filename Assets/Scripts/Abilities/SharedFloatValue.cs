@@ -144,7 +144,7 @@ namespace AmalgamGames.Core
 
         public bool CanAdd(float valueToAdd)
         {
-            if (valueToAdd < 0)
+            if (valueToAdd < 0 || _currentValue >= _maxValue)
             {
                 return false;
             }
@@ -159,7 +159,7 @@ namespace AmalgamGames.Core
 
         public bool CanSubtract(float valueToSubtract)
         {
-            if (valueToSubtract < 0)
+            if (valueToSubtract < 0 || _currentValue <= _minValue)
             {
                 return false;
             }

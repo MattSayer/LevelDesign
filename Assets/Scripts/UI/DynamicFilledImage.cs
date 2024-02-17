@@ -36,7 +36,9 @@ namespace AmalgamGames.UI
         private void Awake()
         {
             _inputRange = _inputMax - _inputMin;
-            _imageMaterial = _image.material;
+            // Create new instance of material so property changes aren't shared
+            _imageMaterial = Instantiate(_image.material);
+            _image.material = _imageMaterial;
         }
 
         private void OnEnable()

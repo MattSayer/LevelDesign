@@ -1,4 +1,5 @@
 using AmalgamGames.Abilities;
+using AmalgamGames.Core;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using System.Collections;
@@ -64,11 +65,15 @@ namespace AmalgamGames.Effects
 
         #region Nudge
 
-        private void OnNudgeDirectionChanged(Vector2 nudgeDirection)
+        private void OnNudgeDirectionChanged(object rawNudgeDirection)
         {
-            float nudgeMagnitude = Mathf.Pow(nudgeDirection.magnitude, _directionPower);
-            RumbleIntensity rumbleIntensity = new RumbleIntensity(_maxLowIntensity * nudgeMagnitude, _maxHighIntensity * nudgeMagnitude);
-            _rumbleController.ContinuousRumble(gameObject, rumbleIntensity);
+            if (rawNudgeDirection.GetType() == typeof(Vector2))
+            {
+                Vector2 nudgeDirection = (Vector2)rawNudgeDirection;
+                float nudgeMagnitude = Mathf.Pow(nudgeDirection.magnitude, _directionPower);
+                RumbleIntensity rumbleIntensity = new RumbleIntensity(_maxLowIntensity * nudgeMagnitude, _maxHighIntensity * nudgeMagnitude);
+                _rumbleController.ContinuousRumble(gameObject, rumbleIntensity);
+            }
         }
 
         private void OnNudgeEnd()
@@ -84,7 +89,7 @@ namespace AmalgamGames.Effects
         {
             if(!_isSubscribedToNudger && _nudger != null)
             {
-                _nudger.OnNudgeDirectionChanged += OnNudgeDirectionChanged;
+                ((IValueProvider)_nudger).SubscribeToValue(Globals.NUDGE_DIRECTION_CHANGED_KEY, OnNudgeDirectionChanged);
                 _nudger.OnNudgeEnd += OnNudgeEnd;
                 _isSubscribedToNudger = true;
             }
@@ -94,7 +99,7 @@ namespace AmalgamGames.Effects
         {
             if (!_isSubscribedToNudger && _nudger != null)
             {
-                _nudger.OnNudgeDirectionChanged -= OnNudgeDirectionChanged;
+                ((IValueProvider)_nudger).UnsubscribeFromValue(Globals.NUDGE_DIRECTION_CHANGED_KEY, OnNudgeDirectionChanged);
                 _nudger.OnNudgeEnd -= OnNudgeEnd;
                 _isSubscribedToNudger = true;
             }

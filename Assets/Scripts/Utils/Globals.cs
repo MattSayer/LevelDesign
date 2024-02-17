@@ -12,5 +12,6 @@ namespace AmalgamGames.Utils
         public const string VELOCITY_CHANGED_KEY = "velocity";
         public const string CHARGE_LEVEL_CHANGED_KEY = "charge_level";
         public const string JUICE_LEVEL_CHANGED_KEY = "juice_level";
+        public const string NUDGE_DIRECTION_CHANGED_KEY = "nudge_direction";
     }
 }

@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\UI\DynamicText.cs" />
     <Compile Include="Assets\Scripts\Utils\Globals.cs" />
     <Compile Include="Assets\Scripts\Abilities\Nudge.cs" />
+    <Compile Include="Assets\Scripts\UI\DynamicFilledImage.cs" />
     <Compile Include="Assets\Scripts\Effects\RumbleController.cs" />
     <Compile Include="Assets\Scripts\Core\IRestartable.cs" />
     <Compile Include="Assets\Scripts\Abilities\SharedFloatValue.cs" />
@@ -79,17 +80,23 @@
     <Compile Include="Assets\Scripts\Update\IPausable.cs" />
     <Compile Include="Assets\Scripts\Effects\NudgeRumble.cs" />
     <Compile Include="Assets\Scripts\Core\InputProcessor.cs" />
+    <Compile Include="Assets\Scripts\Core\IValueProvider.cs" />
     <Compile Include="Assets\Scripts\Utils\DependencyRequest.cs" />
     <Compile Include="Assets\Scripts\Update\IUpdateable.cs" />
     <Compile Include="Assets\Scripts\Utils\Easing.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Effects\VFXPlayer.cs" />
-    <Compile Include="Assets\Scripts\Utils\ObjectToggler.cs" />
+    <Compile Include="Assets\Scripts\Effects\ObjectToggler.cs" />
     <Compile Include="Assets\Scripts\Utils\Tools.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\UI\DynamicFilledImage.cs" />
-    <Compile Include="Assets\Scripts\Core\IValueProvider.cs" />
+    <Compile Include="Assets\Scripts\Effects\ParticleEffect.cs" />
+    <Compile Include="Assets\Scripts\Control\ObjectPositioner.cs" />
+    <Compile Include="Assets\Scripts\Transformations\Transformation.cs" />
+    <Compile Include="Assets\Scripts\Transformations\MultiplyTransformation.cs" />
+    <Compile Include="Assets\Scripts\Control\ObjectRotator.cs" />
+    <Compile Include="Assets\Scripts\Transformations\AddVectorTransformation.cs" />
+    <Compile Include="Assets\Scripts\Transformations\NormalizeTransformation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -793,8 +800,8 @@
     <Reference Include="Unity.Searcher.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
+    <Reference Include="Unity.2D.Sprite.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
@@ -817,14 +824,17 @@
     <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.Flow">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.PlasticSCM.Editor">
       <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.Flow">
+      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.RenderPipelines.Core.Runtime">
+      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Core">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Core.dll</HintPath>
@@ -873,9 +883,6 @@
     </Reference>
     <Reference Include="Unity.VisualScripting.State">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Sprite.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
     </Reference>
   </ItemGroup>
   <ItemGroup>

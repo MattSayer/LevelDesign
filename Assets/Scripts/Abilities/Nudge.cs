@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Abilities
 {
-    public class Nudge : ManagedFixedBehaviour, IRespawnable, INudger
+    public class Nudge : ManagedFixedBehaviour, IRespawnable, INudger, IValueProvider
     {
 
         [Title("Settings")]
@@ -20,7 +20,8 @@ namespace AmalgamGames.Abilities
         [SerializeField] private Rigidbody _rb;
 
         // Events
-        public event Action<Vector2> OnNudgeDirectionChanged;
+        public event Action<object> OnNudgeDirectionChanged;
+        public event Action OnNudgeStart;
         public event Action OnNudgeEnd;
 
         // STATE
@@ -78,6 +79,12 @@ namespace AmalgamGames.Abilities
         {
             if(_canNudge && HasJuice() && _nudgeDirection != Vector2.zero)
             {
+                // If this is the start of a new nudge, notify subscribers
+                if(!_isNudging)
+                {
+                    OnNudgeStart?.Invoke();
+                }
+
                 OnNudgeDirectionChanged?.Invoke(_nudgeDirection);
 
                 _isNudging = true;
@@ -92,6 +99,7 @@ namespace AmalgamGames.Abilities
             // If was nudging last frame but not now, end nudge
             else if(_isNudging)
             {
+                OnNudgeDirectionChanged?.Invoke(Vector2.zero);
                 _isNudging = false;
                 OnNudgeEnd?.Invoke();
             }
@@ -159,8 +167,29 @@ namespace AmalgamGames.Abilities
                 case RespawnEvent.OnRespawnStart:
                     _canNudge = false;
                     break;
-                case RespawnEvent.OnRespawnEnd:
-                    _canNudge = true;
+            }
+        }
+
+        #endregion
+
+        #region Value provider
+
+        public void SubscribeToValue(string valueKey, Action<object> callback)
+        {
+            switch (valueKey)
+            {
+                case Globals.NUDGE_DIRECTION_CHANGED_KEY:
+                    OnNudgeDirectionChanged += callback;
+                    break;
+            }
+        }
+
+        public void UnsubscribeFromValue(string valueKey, Action<object> callback)
+        {
+            switch (valueKey)
+            {
+                case Globals.NUDGE_DIRECTION_CHANGED_KEY:
+                    OnNudgeDirectionChanged -= callback;
                     break;
             }
         }
@@ -212,7 +241,7 @@ namespace AmalgamGames.Abilities
 
     public interface INudger
     {
-        public event Action<Vector2> OnNudgeDirectionChanged;
+        public event Action OnNudgeStart;
         public event Action OnNudgeEnd;
     }
 }
