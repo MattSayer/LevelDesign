@@ -104,7 +104,7 @@ namespace AmalgamGames.Effects
             if (rawValue.GetType() == typeof(float))
             {
                 float chargeLevel = Mathf.Pow((float)rawValue, _chargeLevelPower);
-                _rumbleController.ContinuousRumble(gameObject, new RumbleIntensity(chargeLevel * _maxLowFrequency,chargeLevel * _maxHighFrequency));
+                _rumbleController.ContinuousRumble(this, new RumbleIntensity(chargeLevel * _maxLowFrequency,chargeLevel * _maxHighFrequency));
             }
         }
 

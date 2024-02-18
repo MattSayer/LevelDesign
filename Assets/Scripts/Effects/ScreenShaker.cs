@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Effects
 {
-    public class ScreenShake : ManagedBehaviour, IPausable, IScreenShaker, IRespawnable
+    public class ScreenShaker : ManagedBehaviour, IPausable, IScreenShaker, IRespawnable
     {
         [Title("Components")]
         [SerializeField] private CinemachineVirtualCamera _playerCam;
@@ -30,7 +30,7 @@ namespace AmalgamGames.Effects
         private float _amplitudeBuffer;
         private float _frequencyBuffer;
 
-        private Dictionary<GameObject, ScreenShakeIntensity> _screenShakeRequests = new Dictionary<GameObject, ScreenShakeIntensity>();
+        private Dictionary<MonoBehaviour, ScreenShakeIntensity> _screenShakeRequests = new Dictionary<MonoBehaviour, ScreenShakeIntensity>();
 
         #region Lifecycle
 
@@ -105,12 +105,12 @@ namespace AmalgamGames.Effects
 
         #region Screen shake requests
 
-        public void ContinuousScreenShake(GameObject instigator, ScreenShakeIntensity intensity)
+        public void ContinuousScreenShake(MonoBehaviour instigator, ScreenShakeIntensity intensity)
         {
             _screenShakeRequests[instigator] = intensity;
         }
 
-        public void StopContinuousScreenShake(GameObject instigator)
+        public void StopContinuousScreenShake(MonoBehaviour instigator)
         {
             if(_screenShakeRequests.ContainsKey(instigator))
             {
@@ -200,8 +200,8 @@ namespace AmalgamGames.Effects
     public interface IScreenShaker
     {
         public void ScreenShakeBurst(ScreenShakeIntensity intensity, float duration, EasingFunction.Ease falloffIntensity = EasingFunction.Ease.Linear);
-        public void ContinuousScreenShake(GameObject instigator, ScreenShakeIntensity intensity);
-        public void StopContinuousScreenShake(GameObject instigator);
+        public void ContinuousScreenShake(MonoBehaviour instigator, ScreenShakeIntensity intensity);
+        public void StopContinuousScreenShake(MonoBehaviour instigator);
     }
 
     public struct ScreenShakeIntensity

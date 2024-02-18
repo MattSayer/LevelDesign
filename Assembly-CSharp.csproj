@@ -57,10 +57,12 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Transformations\AddVectorTransformation.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedBehaviour.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedLateBehaviour.cs" />
-    <Compile Include="Assets\Scripts\Effects\ScreenShake.cs" />
+    <Compile Include="Assets\Scripts\Effects\ScreenShaker.cs" />
     <Compile Include="Assets\Scripts\Core\Respawner.cs" />
+    <Compile Include="Assets\Scripts\Transformations\NormalizeTransformation.cs" />
     <Compile Include="Assets\Scripts\Core\RocketController.cs" />
     <Compile Include="Assets\Scripts\UI\DynamicText.cs" />
     <Compile Include="Assets\Scripts\Utils\Globals.cs" />
@@ -68,6 +70,7 @@
     <Compile Include="Assets\Scripts\UI\DynamicFilledImage.cs" />
     <Compile Include="Assets\Scripts\Effects\RumbleController.cs" />
     <Compile Include="Assets\Scripts\Core\IRestartable.cs" />
+    <Compile Include="Assets\Scripts\Transformations\Transformation.cs" />
     <Compile Include="Assets\Scripts\Abilities\SharedFloatValue.cs" />
     <Compile Include="Assets\Scripts\Control\TargetOrienter.cs" />
     <Compile Include="Assets\Scripts\Abilities\Slowmo.cs" />
@@ -77,26 +80,28 @@
     <Compile Include="Assets\Scripts\CustomEditor\RequireInterfaceAttribute.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedUpdater.cs" />
     <Compile Include="Assets\Scripts\Core\IRespawnable.cs" />
+    <Compile Include="Assets\Scripts\Control\ObjectPositioner.cs" />
     <Compile Include="Assets\Scripts\Update\IPausable.cs" />
     <Compile Include="Assets\Scripts\Effects\NudgeRumble.cs" />
     <Compile Include="Assets\Scripts\Core\InputProcessor.cs" />
     <Compile Include="Assets\Scripts\Core\IValueProvider.cs" />
     <Compile Include="Assets\Scripts\Utils\DependencyRequest.cs" />
     <Compile Include="Assets\Scripts\Update\IUpdateable.cs" />
+    <Compile Include="Assets\Scripts\Transformations\MultiplyTransformation.cs" />
+    <Compile Include="Assets\Scripts\Effects\ParticleEffect.cs" />
     <Compile Include="Assets\Scripts\Utils\Easing.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
-    <Compile Include="Assets\Scripts\Effects\VFXPlayer.cs" />
     <Compile Include="Assets\Scripts\Effects\ObjectToggler.cs" />
     <Compile Include="Assets\Scripts\Utils\Tools.cs" />
+    <Compile Include="Assets\Scripts\Control\ObjectRotator.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Effects\ParticleEffect.cs" />
-    <Compile Include="Assets\Scripts\Control\ObjectPositioner.cs" />
-    <Compile Include="Assets\Scripts\Transformations\Transformation.cs" />
-    <Compile Include="Assets\Scripts\Transformations\MultiplyTransformation.cs" />
-    <Compile Include="Assets\Scripts\Control\ObjectRotator.cs" />
-    <Compile Include="Assets\Scripts\Transformations\AddVectorTransformation.cs" />
-    <Compile Include="Assets\Scripts\Transformations\NormalizeTransformation.cs" />
+    <Compile Include="Assets\Scripts\Effects\ScreenShakeEffect.cs" />
+    <Compile Include="Assets\Scripts\Transformations\RaiseToPowerTransformation.cs" />
+    <Compile Include="Assets\Scripts\SceneManagement\PhysicsSimulation.cs" />
+    <Compile Include="Assets\Scripts\Effects\RocketTrajectory.cs" />
+    <Compile Include="Assets\Scripts\Simulation\SimulatedRocketController.cs" />
+    <Compile Include="Assets\Scripts\Configuration\RocketConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

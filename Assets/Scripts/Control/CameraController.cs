@@ -188,7 +188,7 @@ namespace AmalgamGames.Control
             {
                 StopCoroutine(_offsetRoutine);
             }
-            _offsetRoutine = StartCoroutine(Tools.lerpVector3OverTime(_offset, _chargeOffset, _offsetLerpTime, (value) =>
+            _offsetRoutine = StartCoroutine(Tools.lerpVector3OverTimeUnscaled(_offset, _chargeOffset, _offsetLerpTime, (value) =>
             {
                 _offset = value;
             },() => _offsetRoutine = null));

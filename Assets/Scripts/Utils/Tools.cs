@@ -224,6 +224,33 @@ namespace AmalgamGames.Utils
             onComplete?.Invoke();
         }
 
+        /// <summary>
+        /// Coroutine that lerps a Vector3 from the specified 'from' value to the 'to' value over 'duration', using unscaled delta time. 
+        /// The returnSetter function is called on every frame passing in the current value. This function
+        /// should be used to update the source value. 
+        /// You can also provide a callback function for when the lerp has completed.
+        /// </summary>
+        /// <param name="from">The value to lerp form</param>
+        /// <param name="to">The value to lerp to</param>
+        /// <param name="duration">The duration of the lerp</param>
+        /// <param name="returnSetter">Function that gets passed the updated float value every frame</param>
+        /// <param name="onComplete">Optional function that gets called once the lerp has completed</param>
+        /// <returns></returns>
+        public static IEnumerator lerpVector3OverTimeUnscaled(Vector3 from, Vector3 to, float duration, Action<Vector3> returnSetter, Action onComplete = null)
+        {
+            float time = 0;
+            Vector3 val;
+            while (time < duration)
+            {
+                val = Vector3.Lerp(from, to, time / duration);
+                returnSetter(val);
+                time += Time.unscaledDeltaTime;
+                yield return null;
+            }
+            returnSetter(to);
+            onComplete?.Invoke();
+        }
+
 
 
         /// <summary>

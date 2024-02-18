@@ -6,31 +6,32 @@ using System.Collections;
 using UnityEngine;
 using AmalgamGames.Utils;
 using AmalgamGames.UI;
+using AmalgamGames.Config;
 
 namespace AmalgamGames.Core
 {
     [RequireComponent(typeof(Rigidbody))]
     public class RocketController : ManagedFixedBehaviour, IRocketController, IPausable, IValueProvider, IRespawnable
     {
-        [Title("Charging")]
-        [SerializeField] private float _chargeDeltaThreshold = 0.1f;
-        [SerializeField] private float _playerChargeForce;
-        [SerializeField] private float _minChargeForce;
-        [Space]
-        [Title("Engine Burn")]
-        [SerializeField] private float _engineBurnTime = 2f;
-        [SerializeField] private float _engineBurnForce = 10f;
-
+        [Title("Config")]
+        [SerializeField] private RocketConfig _config;
+        
         // EVENTS
         public event Action<ChargingType> OnChargingStart;
         public event Action<LaunchInfo> OnLaunch;
-        public event Action OnLaunchNoParams;
         public event Action OnBurnComplete;
         public event Action<object> OnVelocityChanged;
         public event Action<object> OnChargeLevelChanged;
 
+        // Config
+        private float _chargeDeltaThreshold = 0.1f;
+        private float _playerChargeForce;
+        private float _minChargeForce;
+        private float _engineBurnTime = 2f;
+        private float _engineBurnForce = 10f;
+
         // STATE
-        
+
         // Subscriptions
         private bool _isSubscribedToInput = false;
         
@@ -63,6 +64,8 @@ namespace AmalgamGames.Core
         
         private void Start()
         {
+            LoadConfig();
+
             _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(transform.parent);
             _targetOrienter = Tools.GetFirstComponentInHierarchy<ITargetOrienter>(transform.parent);
             SubscribeToInput();
@@ -104,6 +107,19 @@ namespace AmalgamGames.Core
         public void ToggleLaunchAbility(bool toEnable)
         {
             _canLaunch = toEnable;
+        }
+
+        #endregion
+
+        #region Config
+
+        private void LoadConfig()
+        {
+            _chargeDeltaThreshold = _config.ChargeDeltaThreshold;
+            _playerChargeForce = _config.PlayerChargeForce;
+            _minChargeForce = _config.MinChargeForce;
+            _engineBurnTime = _config.EngineBurnTime;
+            _engineBurnForce = _config.EngineBurnForce;
         }
 
         #endregion
@@ -177,7 +193,7 @@ namespace AmalgamGames.Core
 
             _canLaunch = true;
 
-            _targetOrienter.ToggleMode(OrientMode.Velocity);
+            _targetOrienter?.ToggleMode(OrientMode.Velocity);
         }
 
         #endregion
@@ -240,7 +256,7 @@ namespace AmalgamGames.Core
                     _chargingType = chargingType;
                     OnChargingStart?.Invoke(chargingType);
 
-                    _targetOrienter.ToggleMode(OrientMode.Source);
+                    _targetOrienter?.ToggleMode(OrientMode.Source);
 
                     Debug.Log("Charging");
                 }
@@ -263,40 +279,43 @@ namespace AmalgamGames.Core
             }
         }
 
-        private void Launch()
+        public void Launch()
         {
-            Debug.Log("Launch");
-
-            // Reactivate gravity if it was disabled
-            _rb.useGravity = true;
-
-            float engineBurnTime = _engineBurnTime * _chargeLevel;
-
-            LaunchInfo launchInfo = new LaunchInfo(_chargeLevel, engineBurnTime);
-
-            TriggerLaunchEvent(launchInfo);
-
-            _targetOrienter.ToggleMode(OrientMode.Velocity);
-
-            float launchStrength = _minChargeForce + (_chargeLevel * _playerChargeForce);
-
-            SetVelocityToZero();
-
-            // Launch
-            _rb.AddForce(transform.forward * launchStrength, ForceMode.Impulse);
-
-            // Disable charging for engine burn period
-            _canCharge = false;
-            if(_engineBurnRoutine != null)
+            if (_isCharging)
             {
-                Debug.LogError("Multiple burn routines active. This shouldn't happen");
-                StopCoroutine(_engineBurnRoutine);
-            }
-            _engineBurnRoutine = StartCoroutine(engineBurn(launchInfo));
+                Debug.Log("Launch");
 
-            _isCharging = false;
-            _chargeLevel = 0;
-            OnChargeLevelChanged?.Invoke(_chargeLevel);
+                // Reactivate gravity if it was disabled
+                _rb.useGravity = true;
+
+                float engineBurnTime = _engineBurnTime * _chargeLevel;
+
+                LaunchInfo launchInfo = new LaunchInfo(_chargeLevel, engineBurnTime);
+
+                TriggerLaunchEvent(launchInfo);
+
+                _targetOrienter?.ToggleMode(OrientMode.Velocity);
+
+                float launchStrength = _minChargeForce + (_chargeLevel * _playerChargeForce);
+
+                SetVelocityToZero();
+
+                // Launch
+                _rb.AddForce(transform.forward * launchStrength, ForceMode.Impulse);
+
+                // Disable charging for engine burn period
+                _canCharge = false;
+                if (_engineBurnRoutine != null)
+                {
+                    Debug.LogError("Multiple burn routines active. This shouldn't happen");
+                    StopCoroutine(_engineBurnRoutine);
+                }
+                _engineBurnRoutine = StartCoroutine(engineBurn(launchInfo));
+
+                _isCharging = false;
+                _chargeLevel = 0;
+                OnChargeLevelChanged?.Invoke(_chargeLevel);
+            }
         }
 
         private void FinishBurn()
@@ -321,7 +340,6 @@ namespace AmalgamGames.Core
         private void TriggerLaunchEvent(LaunchInfo launchInfo)
         {
             OnLaunch?.Invoke(launchInfo);
-            OnLaunchNoParams?.Invoke();
         }
 
         #endregion

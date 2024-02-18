@@ -72,13 +72,13 @@ namespace AmalgamGames.Effects
                 Vector2 nudgeDirection = (Vector2)rawNudgeDirection;
                 float nudgeMagnitude = Mathf.Pow(nudgeDirection.magnitude, _directionPower);
                 RumbleIntensity rumbleIntensity = new RumbleIntensity(_maxLowIntensity * nudgeMagnitude, _maxHighIntensity * nudgeMagnitude);
-                _rumbleController.ContinuousRumble(gameObject, rumbleIntensity);
+                _rumbleController.ContinuousRumble(this, rumbleIntensity);
             }
         }
 
         private void OnNudgeEnd()
         {
-            _rumbleController.StopContinuousRumble(gameObject);
+            _rumbleController.StopContinuousRumble(this);
         }
 
         #endregion

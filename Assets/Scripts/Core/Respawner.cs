@@ -51,7 +51,7 @@ namespace AmalgamGames.Core
 
             // Get all respawnables in the level
             _respawnables = new List<IRespawnable>();
-            var respawnables = FindObjectsOfType<MonoBehaviour>().OfType<IRespawnable>();
+            var respawnables = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<IRespawnable>();
             foreach(IRespawnable respawnable in respawnables)
             {
                 _respawnables.Add(respawnable);

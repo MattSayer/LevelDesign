@@ -7,14 +7,16 @@ namespace AmalgamGames.Effects
 {
     public abstract class ToggleEffect : MonoBehaviour
     {
-        [Title("Event")]
-        [SerializeField] private Component _eventSource;
-        [SerializeField] private string _activateEventName;
-        [SerializeField] private string _deactivateEventName;
+        [FoldoutGroup("Events")] [SerializeField] private Component _eventSource;
+        [FoldoutGroup("Events")] [SerializeField] private string _activateEventName;
+        [FoldoutGroup("Events")] [SerializeField] private bool _activateEventHasParam = false;
+        [FoldoutGroup("Events")] [SerializeField] private string _deactivateEventName;
+        [FoldoutGroup("Events")] [SerializeField] private bool _deactivateEventHasParam = false;
         [Space]
-        [Title("Settings")]
+        [FoldoutGroup("Settings")]
         [Tooltip("Delay activation of this effect after the target event fires")]
         [SerializeField] private float _activationDelay = 0;
+        [FoldoutGroup("Settings")]
         [Tooltip("Delay deactivation of this effect after the target event fires")]
         [SerializeField] private float _deactivationDelay = 0;
 
@@ -59,11 +61,20 @@ namespace AmalgamGames.Effects
             Invoke(nameof(ActivateEffect),_activationDelay);
         }
 
+        protected void DelayedActivateEffectWithParam(object param)
+        {
+            DelayedActivateEffect();
+        }
+
         protected void DelayedDeactivateEffect()
         {
             Invoke(nameof(DeactivateEffect),_deactivationDelay);
         }
 
+        protected void DelayedDeactivateEffectWithParam(object param)
+        {
+            DelayedDeactivateEffect();
+        }
 
         #endregion
 
@@ -75,9 +86,29 @@ namespace AmalgamGames.Effects
             {
                 object rawObj = (object)_eventSource;
 
-                _activateHandler = Tools.WireUpEvent(rawObj, _activateEventName, this, nameof(DelayedActivateEffect));
+                if (_activateEventName.Length > 0)
+                {
+                    if (_activateEventHasParam)
+                    {
+                        _activateHandler = Tools.WireUpEvent(rawObj, _activateEventName, this, nameof(DelayedActivateEffectWithParam));
+                    }
+                    else
+                    {
+                        _activateHandler = Tools.WireUpEvent(rawObj, _activateEventName, this, nameof(DelayedActivateEffect));
+                    }
+                }
 
-                _deactivateHandler = Tools.WireUpEvent(rawObj, _deactivateEventName, this, nameof(DelayedDeactivateEffect));
+                if (_deactivateEventName.Length > 0)
+                {
+                    if (_deactivateEventHasParam)
+                    {
+                        _deactivateHandler = Tools.WireUpEvent(rawObj, _deactivateEventName, this, nameof(DelayedDeactivateEffectWithParam));
+                    }
+                    else
+                    {
+                        _deactivateHandler = Tools.WireUpEvent(rawObj, _deactivateEventName, this, nameof(DelayedDeactivateEffect));
+                    }
+                }
 
                 _isSubscribedToEvents = true;
             }
@@ -87,8 +118,14 @@ namespace AmalgamGames.Effects
         {
             if (_isSubscribedToEvents)
             {
-                Tools.DisconnectEvent((object)_eventSource, _activateEventName, _activateHandler);
-                Tools.DisconnectEvent((object)_eventSource, _deactivateEventName, _deactivateHandler);
+                if (_activateEventName.Length > 0)
+                {
+                    Tools.DisconnectEvent((object)_eventSource, _activateEventName, _activateHandler);
+                }
+                if (_deactivateEventName.Length > 0)
+                {
+                    Tools.DisconnectEvent((object)_eventSource, _deactivateEventName, _deactivateHandler);
+                }
 
                 _isSubscribedToEvents = false;
             }

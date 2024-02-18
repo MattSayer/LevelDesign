@@ -20,7 +20,7 @@ namespace AmalgamGames.Effects
         private float _highIntensityBuffer;
 
         // Continuous rumble tracking
-        private Dictionary<GameObject, RumbleIntensity> _rumbleRequests = new Dictionary<GameObject, RumbleIntensity>();
+        private Dictionary<MonoBehaviour, RumbleIntensity> _rumbleRequests = new Dictionary<MonoBehaviour, RumbleIntensity>();
 
         private bool _isSubscribedToDependencyRequests = false;
 
@@ -68,12 +68,12 @@ namespace AmalgamGames.Effects
             StartCoroutine(doRumbleBurst(intensity, duration, falloffEasing));
         }
 
-        public void ContinuousRumble(GameObject instigator, RumbleIntensity intensity)
+        public void ContinuousRumble(MonoBehaviour instigator, RumbleIntensity intensity)
         {
             _rumbleRequests[instigator] = intensity;
         }
 
-        public void StopContinuousRumble(GameObject instigator)
+        public void StopContinuousRumble(MonoBehaviour instigator)
         {
             if (_rumbleRequests.ContainsKey(instigator))
             { 
@@ -203,9 +203,9 @@ namespace AmalgamGames.Effects
     {
         public void RumbleBurst(RumbleIntensity intensity, float duration, EasingFunction.Ease falloffEasing = EasingFunction.Ease.Linear);
 
-        public void ContinuousRumble(GameObject instigator, RumbleIntensity intensity);
+        public void ContinuousRumble(MonoBehaviour instigator, RumbleIntensity intensity);
         
-        public void StopContinuousRumble(GameObject instigator);
+        public void StopContinuousRumble(MonoBehaviour instigator);
 
     }
 }
