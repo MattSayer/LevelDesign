@@ -1,10 +1,11 @@
+using AmalgamGames.Core;
 using AmalgamGames.UpdateLoop;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace AmalgamGames.Control
 {
-    public class TargetOrienter : ManagedBehaviour, IPausable, ITargetOrienter
+    public class TargetOrienter : ManagedBehaviour, IPausable, ITargetOrienter, IRespawnable
     {
         [Title("Transforms")]
         [SerializeField] private Transform _targetToOrient;
@@ -70,7 +71,28 @@ namespace AmalgamGames.Control
 
         #endregion
 
+        #region Respawning
+
+        public void OnRespawnEvent(RespawnEvent evt)
+        {
+            switch(evt)
+            {
+                case RespawnEvent.OnRespawnEnd:
+                    ResetSourceToTargetRotation();
+                    break;
+            }
+        }
+
+        #endregion
+
         #region Rotation
+
+        private void ResetSourceToTargetRotation()
+        {
+            Vector3 targetForward = _targetToOrient.forward;
+
+            _rotationSource.forward = targetForward;
+        }
 
         private void RotateTowardsVelocity(float deltaTime)
         {

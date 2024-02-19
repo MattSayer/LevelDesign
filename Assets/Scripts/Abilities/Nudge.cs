@@ -132,11 +132,6 @@ namespace AmalgamGames.Abilities
             _canNudge = false;
         }
 
-        private void OnBurnComplete()
-        {
-            //_canNudge = true;
-        }
-
         private void OnLaunch(LaunchInfo launchInfo)
         {
             if(_nudgeMultiplierRoutine != null)
@@ -221,7 +216,6 @@ namespace AmalgamGames.Abilities
             if(!_isSubscribedToRocket && _rocketController != null)
             {
                 _rocketController.OnChargingStart += OnChargingStart;
-                _rocketController.OnBurnComplete += OnBurnComplete;
                 _rocketController.OnLaunch += OnLaunch;
             }
         }
@@ -231,7 +225,6 @@ namespace AmalgamGames.Abilities
             if (!_isSubscribedToRocket && _rocketController != null)
             {
                 _rocketController.OnChargingStart -= OnChargingStart;
-                _rocketController.OnBurnComplete -= OnBurnComplete;
                 _rocketController.OnLaunch -= OnLaunch;
             }
         }

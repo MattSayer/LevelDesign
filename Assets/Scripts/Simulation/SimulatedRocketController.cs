@@ -33,6 +33,8 @@ namespace AmalgamGames.Simulation
         // Burning
         private bool _isBurning = false;
         private float _burnForce = 0;
+        private float _burnLerp = 0;
+        private float _burnDuration;
 
         // COROUTINES
         private Coroutine _engineBurnRoutine = null;
@@ -52,11 +54,46 @@ namespace AmalgamGames.Simulation
             _rb.useGravity = false;
         }
 
+        /*
         public void FixedUpdate()
         {
             if (_isBurning)
             {
-                _rb.AddForce(transform.forward * _burnForce * Time.fixedDeltaTime, ForceMode.Force);
+                if (_burnLerp < _burnDuration)
+                {
+                    float burnForce = EasingFunction.EaseInCubic(_burnForce, 0, _burnLerp / _burnDuration);
+
+                    _burnLerp += Time.fixedDeltaTime;
+
+                    Debug.Log("engine burning: " +  burnForce);
+                    _rb.AddForce(transform.forward * burnForce * Time.fixedDeltaTime, ForceMode.Force);
+                }
+                else
+                {
+
+                    FinishBurn();
+                }
+            }
+        }
+        */
+
+        public void ManualFixedUpdate(float deltaTime)
+        {
+            if (_isBurning)
+            {
+                if (_burnLerp < _burnDuration)
+                {
+                    float burnForce = EasingFunction.EaseInCubic(_burnForce, 0, _burnLerp / _burnDuration);
+
+                    _burnLerp += deltaTime;
+
+                    transform.forward = _rb.velocity.normalized;
+                    _rb.AddForce(transform.forward * burnForce * deltaTime, ForceMode.Force);
+                }
+                else
+                {
+                    FinishBurn();
+                }
             }
         }
 
@@ -109,6 +146,7 @@ namespace AmalgamGames.Simulation
                 StopCoroutine(_engineBurnRoutine);
             }
             //_engineBurnRoutine = StartCoroutine(engineBurn(launchInfo));
+            EngineBurn(launchInfo);
 
             _isCharging = false;
             _chargeLevel = 0;
@@ -119,6 +157,15 @@ namespace AmalgamGames.Simulation
             _isBurning = false;
 
             _engineBurnRoutine = null;
+        }
+
+        private void EngineBurn(LaunchInfo launchInfo)
+        {
+            _burnLerp = 0;
+            _burnForce = _engineBurnForce * launchInfo.ChargeLevel;
+            _burnDuration = launchInfo.BurnDuration;
+
+            _isBurning = true;
         }
 
         #endregion

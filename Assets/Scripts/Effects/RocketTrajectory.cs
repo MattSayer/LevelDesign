@@ -116,10 +116,13 @@ namespace AmalgamGames.Effects
             _simulatedRocketController.ChargeLevel = _chargeLevel;
 
             _simulatedRocketController.Launch();
+            //Debug.Log("Beginning simulation");
             for(int i = 0; i < _stepsToSimulate; i++)
             {
                 _physicsScene.Simulate(PHYSICS_TIMESTEP);
+                _simulatedRocketController.ManualFixedUpdate(PHYSICS_TIMESTEP);
                 _points[i] = _simulatedRocketObject.transform.position;
+                //Debug.Log("Simulated position [" + i + "]: " + _points[i]);
                 _lineRenderer.SetPosition(i, _points[i]);
             }
         }

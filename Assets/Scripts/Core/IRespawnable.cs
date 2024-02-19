@@ -9,6 +9,7 @@ namespace AmalgamGames.Core
     {
         OnCollision,
         OnRespawnStart,
-        OnRespawnEnd
+        OnRespawnEnd,
+        BeforeRespawn
     }
 }

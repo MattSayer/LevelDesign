@@ -74,8 +74,10 @@
     <Compile Include="Assets\Scripts\Abilities\SharedFloatValue.cs" />
     <Compile Include="Assets\Scripts\Control\TargetOrienter.cs" />
     <Compile Include="Assets\Scripts\Abilities\Slowmo.cs" />
+    <Compile Include="Assets\Scripts\Transformations\RaiseToPowerTransformation.cs" />
     <Compile Include="Assets\Scripts\Control\CameraController.cs" />
     <Compile Include="Assets\Scripts\Effects\VignetteEffect.cs" />
+    <Compile Include="Assets\Scripts\Effects\ScreenShakeEffect.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedFixedBehaviour.cs" />
     <Compile Include="Assets\Scripts\CustomEditor\RequireInterfaceAttribute.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedUpdater.cs" />
@@ -83,25 +85,23 @@
     <Compile Include="Assets\Scripts\Control\ObjectPositioner.cs" />
     <Compile Include="Assets\Scripts\Update\IPausable.cs" />
     <Compile Include="Assets\Scripts\Effects\NudgeRumble.cs" />
+    <Compile Include="Assets\Scripts\Configuration\RocketConfig.cs" />
     <Compile Include="Assets\Scripts\Core\InputProcessor.cs" />
     <Compile Include="Assets\Scripts\Core\IValueProvider.cs" />
+    <Compile Include="Assets\Scripts\SceneManagement\PhysicsSimulation.cs" />
     <Compile Include="Assets\Scripts\Utils\DependencyRequest.cs" />
+    <Compile Include="Assets\Scripts\Simulation\SimulatedRocketController.cs" />
     <Compile Include="Assets\Scripts\Update\IUpdateable.cs" />
     <Compile Include="Assets\Scripts\Transformations\MultiplyTransformation.cs" />
     <Compile Include="Assets\Scripts\Effects\ParticleEffect.cs" />
     <Compile Include="Assets\Scripts\Utils\Easing.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
+    <Compile Include="Assets\Scripts\Effects\RocketTrajectory.cs" />
     <Compile Include="Assets\Scripts\Effects\ObjectToggler.cs" />
     <Compile Include="Assets\Scripts\Utils\Tools.cs" />
     <Compile Include="Assets\Scripts\Control\ObjectRotator.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Effects\ScreenShakeEffect.cs" />
-    <Compile Include="Assets\Scripts\Transformations\RaiseToPowerTransformation.cs" />
-    <Compile Include="Assets\Scripts\SceneManagement\PhysicsSimulation.cs" />
-    <Compile Include="Assets\Scripts\Effects\RocketTrajectory.cs" />
-    <Compile Include="Assets\Scripts\Simulation\SimulatedRocketController.cs" />
-    <Compile Include="Assets\Scripts\Configuration\RocketConfig.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

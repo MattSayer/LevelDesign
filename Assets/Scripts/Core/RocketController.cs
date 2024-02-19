@@ -45,8 +45,9 @@ namespace AmalgamGames.Core
         private bool _canCharge = true;
         private bool _cachedCanCharge = true;
         private ChargingType _delayedChargingType;
-        private float _delayedChargeForce = 0;
-        
+        private float _delayedChargeLevel = 0;
+        private bool _runDelayedChargeCheck = false;
+
         // Burning
         private bool _isBurning = false;
         private float _burnForce = 0;
@@ -98,10 +99,17 @@ namespace AmalgamGames.Core
             if(_isBurning)
             {
                 _rb.AddForce(transform.forward * _burnForce * deltaTime, ForceMode.Force);
+                //Debug.Log("actual position: " + transform.position);
             }
 
             // TODO Normalize value based on max velocity
             OnVelocityChanged?.Invoke(_rb.velocity.magnitude*10);
+
+            if(_runDelayedChargeCheck)
+            {
+                _runDelayedChargeCheck = false;
+                CheckDelayedChargeForce();
+            }
         }
 
         public void ToggleLaunchAbility(bool toEnable)
@@ -154,8 +162,9 @@ namespace AmalgamGames.Core
             {
                 StopCoroutine(_engineBurnRoutine);
                 _engineBurnRoutine = null;
-                FinishBurn();
             }
+
+            _isBurning = false;
         }
 
         private void ResetChargeState()
@@ -166,6 +175,10 @@ namespace AmalgamGames.Core
 
         private void DisableRocket()
         {
+            if(_delayedChargeLevel == 0)
+            {
+                _delayedChargeLevel = _chargeLevel;
+            }
             ResetChargeState();
             
             StopBurnRoutine();
@@ -185,15 +198,13 @@ namespace AmalgamGames.Core
 
             _canCharge = true;
             _canLaunch = false;
+
+            _runDelayedChargeCheck = true;
         }
 
         private void RestartRocket()
         {
-            //_rb.useGravity = true;
-
             _canLaunch = true;
-
-            _targetOrienter?.ToggleMode(OrientMode.Velocity);
         }
 
         #endregion
@@ -210,18 +221,35 @@ namespace AmalgamGames.Core
         public void Resume()
         {
             _canCharge = _cachedCanCharge;
+            CheckDelayedChargeForce();
+        }
+        
+        private void CheckDelayedChargeForce()
+        {
             // Start charge immediately if trigger was held down while game was paused
-            if (_chargeLevel == 0 && _delayedChargeForce > 0)
+            if (!_isCharging && _delayedChargeLevel > 0)
             {
-                OnCharge(_delayedChargingType, _delayedChargeForce);
-                _delayedChargeForce = 0;
+                OnCharge(_delayedChargingType, _delayedChargeLevel);
+                _delayedChargeLevel = 0;
             }
             // If player was holding trigger when they paused, and they're still holding it now
             // Set the actual charge force to the current charge force, ignoring launch criteria
             // so it doesn't launch if they soften their pressure on the trigger while paused
-            else if(_chargeLevel > 0 && _delayedChargeForce > 0)
+            else if (_isCharging && _delayedChargeLevel > 0)
             {
-                _chargeLevel = _delayedChargeForce;
+                _chargeLevel = _delayedChargeLevel;
+                OnChargeLevelChanged?.Invoke(_chargeLevel);
+            }
+            else if(_isCharging && _delayedChargeLevel == 0)
+            {
+                if(_canLaunch)
+                {
+                    Launch();
+                }
+                else
+                {
+                    _chargeLevel = 0;
+                }
             }
         }
 
@@ -275,7 +303,7 @@ namespace AmalgamGames.Core
             else
             {
                 _delayedChargingType = chargingType;
-                _delayedChargeForce = chargeLevel;
+                _delayedChargeLevel = chargeLevel;
             }
         }
 
@@ -283,7 +311,7 @@ namespace AmalgamGames.Core
         {
             if (_isCharging)
             {
-                Debug.Log("Launch");
+                Debug.Log("Launch: " + _chargeLevel);
 
                 // Reactivate gravity if it was disabled
                 _rb.useGravity = true;
@@ -328,10 +356,10 @@ namespace AmalgamGames.Core
             _engineBurnRoutine = null;
 
             // Start charge immediately if trigger was held down during burn
-            if (_delayedChargeForce > 0)
+            if (_delayedChargeLevel > 0)
             {
-                OnCharge(_delayedChargingType,_delayedChargeForce);
-                _delayedChargeForce = 0;
+                OnCharge(_delayedChargingType,_delayedChargeLevel);
+                _delayedChargeLevel = 0;
             }
 
             Debug.Log("Burn complete");

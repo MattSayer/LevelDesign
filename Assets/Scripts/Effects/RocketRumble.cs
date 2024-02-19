@@ -89,9 +89,15 @@ namespace AmalgamGames.Effects
 
         public void OnRespawnEvent(RespawnEvent evt)
         {
-            if(evt == RespawnEvent.OnCollision)
+            switch(evt)
             {
-                _rumbleController.RumbleBurst(new RumbleIntensity(_collisionLowFrequency, _collisionHighFrequency),_collisionRumbleDuration,_collisionRumbleEasing);
+                case RespawnEvent.OnCollision:
+                    _rumbleController.RumbleBurst(new RumbleIntensity(_collisionLowFrequency, _collisionHighFrequency), _collisionRumbleDuration, _collisionRumbleEasing);
+                    _rumbleController.StopContinuousRumble(this);
+                    break;
+                case RespawnEvent.OnRespawnStart:
+                    _rumbleController.StopContinuousRumble(this);
+                    break;
             }
         }
 

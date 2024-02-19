@@ -95,8 +95,10 @@ namespace AmalgamGames.Effects
             {
                 case RespawnEvent.OnRespawnStart:
                     StopAllCoroutines();
+                    /*
                     _screenShakeRequests.Clear();
                     ClearBuffers();
+                    */
                     break;
             }
         }

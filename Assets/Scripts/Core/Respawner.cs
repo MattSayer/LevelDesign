@@ -79,17 +79,21 @@ namespace AmalgamGames.Core
 
         private void Respawn()
         {
+            foreach (IRespawnable respawnable in _respawnables)
+            {
+                respawnable.OnRespawnEvent(RespawnEvent.BeforeRespawn);
+            }
+
             // Fade screen down
+
+            transform.position = _lastCheckpoint.position;
+            transform.rotation = _lastCheckpoint.rotation;
+            _canCollide = true;
 
             foreach (IRespawnable respawnable in _respawnables)
             {
                 respawnable.OnRespawnEvent(RespawnEvent.OnRespawnStart);
             }
-
-
-            transform.position = _lastCheckpoint.position;
-            transform.rotation = _lastCheckpoint.rotation;
-            _canCollide = true;
 
             // Fade screen back up
 

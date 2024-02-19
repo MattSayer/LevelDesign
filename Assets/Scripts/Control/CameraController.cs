@@ -5,6 +5,7 @@ using AmalgamGames.Utils;
 using Cinemachine;
 using Sirenix.OdinInspector;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace AmalgamGames.Control
@@ -54,6 +55,7 @@ namespace AmalgamGames.Control
 
         // Position
         private Vector3 _offset = Vector3.zero;
+        private Vector3 _preRespawnPosition;
 
         // Subscriptions
         private bool _isSubscribedToInput = false;
@@ -65,8 +67,9 @@ namespace AmalgamGames.Control
         private Coroutine _offsetRoutine = null;
         private Coroutine _dampingRoutine = null;
 
-        // Active
+        // Respawning
         private bool _isActive = true;
+        private float _postRespawnActivationDelay = 0.1f;
 
         // Charging
         private bool _isCharging = false;
@@ -148,6 +151,12 @@ namespace AmalgamGames.Control
         {
             switch(evt)
             {
+                case RespawnEvent.BeforeRespawn:
+                    _preRespawnPosition = transform.position;
+                    break;
+                case RespawnEvent.OnCollision:
+                    OnCollision();
+                    break;
                 case RespawnEvent.OnRespawnStart:
                     OnRespawnStart();
                     break;
@@ -155,20 +164,55 @@ namespace AmalgamGames.Control
             
         }
 
+        private void OnCollision()
+        {
+            _isActive = false;
+            ResetCoroutines();
+            ResetVariables();
+        }
+
         private void OnRespawnStart()
+        {
+            Invoke(nameof(DelayedActivation), _postRespawnActivationDelay);
+            ResetCoroutines();
+            ResetVariables();
+
+            ResetRotation();
+        }
+
+        private void ResetCoroutines()
         {
             // Reset coroutines
             StopAllCoroutines();
             _zoomRoutine = null;
             _speedLimitRoutine = null;
             _offsetRoutine = null;
+        }
 
+        private void ResetVariables()
+        {
             // Reset variables
             _rotationSpeedLimit = 1;
             _isBurning = false;
             _isCharging = false;
-            _isActive = true;
             _offset = Vector3.zero;
+        }
+
+        private void ResetRotation()
+        {
+            // Reset rotation
+            _currentHorizontalRotation = 0;
+            _currentVerticalRotation = 0;
+
+            Vector3 delta = transform.position - _followTarget.position;
+            _playerCam.OnTargetObjectWarped(transform, delta);
+
+            _zoomRoutine = StartCoroutine(updateCameraDistance(_normalCamDistance));
+        }
+
+        private void DelayedActivation()
+        {
+            _isActive = true;
         }
 
         #endregion
