@@ -16,6 +16,9 @@ namespace AmalgamGames.Effects
     {
         [Title("Settings")]
         [SerializeField] private int _stepsToSimulate;
+        [SerializeField] private int _physicsTimestepMultiplier = 1;
+        [SerializeField, ColorUsage(true,true)] private Color _safeColour;
+        [SerializeField, ColorUsage(true, true)] private Color _unsafeColour;
         [Title("Components")]
         [SerializeField] private GameObject _rocketObject;
         [SerializeField] private GameObject _simulatedRocketObjectPrefab;
@@ -27,11 +30,16 @@ namespace AmalgamGames.Effects
         private GameObject _simulatedRocketObject;
         private SimulatedRocketController _simulatedRocketController;
         private IRocketController _rocketController;
+        private Material _trajectoryMaterial;
 
         // State
         private bool _isSimulating = false;
         private bool _isSubscribedToCharging = false;
         private float _chargeLevel;
+        private bool _simulatedRocketHasCollided = false;
+
+        // Constants
+        private int MAIN_COLOUR_PROP;
 
         private Vector3[] _points;
 
@@ -41,7 +49,8 @@ namespace AmalgamGames.Effects
 
         private void Start()
         {
-            PHYSICS_TIMESTEP = Time.fixedDeltaTime;
+            PHYSICS_TIMESTEP = Time.fixedDeltaTime * _physicsTimestepMultiplier;
+            MAIN_COLOUR_PROP = Shader.PropertyToID(Globals.MAIN_COLOUR_KEY);
 
             GameObject[] colliders = GameObject.FindGameObjectsWithTag("Collider");
 
@@ -58,6 +67,7 @@ namespace AmalgamGames.Effects
             _lineRenderer.positionCount = _stepsToSimulate;
             _points = new Vector3[_stepsToSimulate];
             _lineRenderer.enabled = false;
+            _trajectoryMaterial = _lineRenderer.material;
 
             // Subscribe to charging event
             SubscribeToCharging();
@@ -116,6 +126,10 @@ namespace AmalgamGames.Effects
             _simulatedRocketController.ChargeLevel = _chargeLevel;
 
             _simulatedRocketController.Launch();
+
+            ResetSimulatedRocketCollision();
+
+            _simulatedRocketController.OnCollision += OnSimulatedRocketCollision;
             //Debug.Log("Beginning simulation");
             for(int i = 0; i < _stepsToSimulate; i++)
             {
@@ -124,7 +138,14 @@ namespace AmalgamGames.Effects
                 _points[i] = _simulatedRocketObject.transform.position;
                 //Debug.Log("Simulated position [" + i + "]: " + _points[i]);
                 _lineRenderer.SetPosition(i, _points[i]);
+                if(_simulatedRocketHasCollided)
+                {
+                    _trajectoryMaterial.SetColor(MAIN_COLOUR_PROP, _unsafeColour);
+                    _lineRenderer.positionCount = i;
+                    break;
+                }
             }
+            _simulatedRocketController.OnCollision -= OnSimulatedRocketCollision;
         }
 
         protected void StartSimulating()
@@ -138,6 +159,22 @@ namespace AmalgamGames.Effects
             _chargeLevel = 0;
             _isSimulating = false;
             _lineRenderer.enabled = false;
+        }
+
+        #endregion
+
+        #region Collision
+
+        private void OnSimulatedRocketCollision()
+        {
+            _simulatedRocketHasCollided = true;
+        }
+
+        private void ResetSimulatedRocketCollision()
+        {
+            _lineRenderer.positionCount = _stepsToSimulate;
+            _trajectoryMaterial.SetColor(MAIN_COLOUR_PROP, _safeColour);
+            _simulatedRocketHasCollided = false;
         }
 
         #endregion

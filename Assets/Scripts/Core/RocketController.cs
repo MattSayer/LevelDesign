@@ -3,10 +3,12 @@ using AmalgamGames.Control;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using AmalgamGames.Utils;
 using AmalgamGames.UI;
 using AmalgamGames.Config;
+using System.Linq;
 
 namespace AmalgamGames.Core
 {
@@ -44,8 +46,9 @@ namespace AmalgamGames.Core
         private bool _isCharging = false;
         private bool _canCharge = true;
         private bool _cachedCanCharge = true;
-        private ChargingType _delayedChargingType;
-        private float _delayedChargeLevel = 0;
+        
+        // Cached charging
+        private Dictionary<ChargingType, float> _cachedChargeLevels = new Dictionary<ChargingType, float>();
         private bool _runDelayedChargeCheck = false;
 
         // Burning
@@ -175,9 +178,9 @@ namespace AmalgamGames.Core
 
         private void DisableRocket()
         {
-            if(_delayedChargeLevel == 0)
+            if (!_cachedChargeLevels.ContainsKey(_chargingType) || _cachedChargeLevels[_chargingType] == 0)
             {
-                _delayedChargeLevel = _chargeLevel;
+                _cachedChargeLevels[_chargingType] = _chargeLevel;
             }
             ResetChargeState();
             
@@ -226,21 +229,35 @@ namespace AmalgamGames.Core
         
         private void CheckDelayedChargeForce()
         {
-            // Start charge immediately if trigger was held down while game was paused
-            if (!_isCharging && _delayedChargeLevel > 0)
+            // Use whichever trigger is held down further as the active charge type
+            float cachedCharge = 0;
+            ChargingType cachedChargingType = ChargingType.Realtime;
+            foreach(ChargingType chargingType in _cachedChargeLevels.Keys.ToList())
             {
-                OnCharge(_delayedChargingType, _delayedChargeLevel);
-                _delayedChargeLevel = 0;
+                if (_cachedChargeLevels[chargingType] > cachedCharge)
+                {
+                    cachedCharge = _cachedChargeLevels[chargingType];
+                    cachedChargingType = chargingType;
+                }
+                // Clear cached value
+                _cachedChargeLevels[chargingType] = 0;
+            }
+
+
+            // Start charge immediately if trigger was held down while game was paused
+            if (!_isCharging && cachedCharge > 0)
+            {
+                OnCharge(cachedChargingType, cachedCharge);
             }
             // If player was holding trigger when they paused, and they're still holding it now
             // Set the actual charge force to the current charge force, ignoring launch criteria
             // so it doesn't launch if they soften their pressure on the trigger while paused
-            else if (_isCharging && _delayedChargeLevel > 0)
+            else if (_isCharging && cachedCharge > 0)
             {
-                _chargeLevel = _delayedChargeLevel;
+                _chargeLevel = cachedCharge;
                 OnChargeLevelChanged?.Invoke(_chargeLevel);
             }
-            else if(_isCharging && _delayedChargeLevel == 0)
+            else if(_isCharging && cachedCharge == 0)
             {
                 if(_canLaunch)
                 {
@@ -248,6 +265,7 @@ namespace AmalgamGames.Core
                 }
                 else
                 {
+                    Debug.LogError("Delayed release should have launched.");
                     _chargeLevel = 0;
                 }
             }
@@ -302,8 +320,9 @@ namespace AmalgamGames.Core
             }
             else
             {
-                _delayedChargingType = chargingType;
-                _delayedChargeLevel = chargeLevel;
+                _cachedChargeLevels[chargingType] = chargeLevel;
+
+                Debug.Log($"Delayed charging: {chargeLevel} | {chargingType}");
             }
         }
 
@@ -356,11 +375,7 @@ namespace AmalgamGames.Core
             _engineBurnRoutine = null;
 
             // Start charge immediately if trigger was held down during burn
-            if (_delayedChargeLevel > 0)
-            {
-                OnCharge(_delayedChargingType,_delayedChargeLevel);
-                _delayedChargeLevel = 0;
-            }
+            CheckDelayedChargeForce();
 
             Debug.Log("Burn complete");
         }

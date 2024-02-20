@@ -55,7 +55,6 @@ namespace AmalgamGames.Control
 
         // Position
         private Vector3 _offset = Vector3.zero;
-        private Vector3 _preRespawnPosition;
 
         // Subscriptions
         private bool _isSubscribedToInput = false;
@@ -152,7 +151,7 @@ namespace AmalgamGames.Control
             switch(evt)
             {
                 case RespawnEvent.BeforeRespawn:
-                    _preRespawnPosition = transform.position;
+                    _playerCam.enabled = false;
                     break;
                 case RespawnEvent.OnCollision:
                     OnCollision();
@@ -187,6 +186,7 @@ namespace AmalgamGames.Control
             _zoomRoutine = null;
             _speedLimitRoutine = null;
             _offsetRoutine = null;
+            _dampingRoutine = null;
         }
 
         private void ResetVariables()
@@ -196,6 +196,9 @@ namespace AmalgamGames.Control
             _isBurning = false;
             _isCharging = false;
             _offset = Vector3.zero;
+            
+            
+
         }
 
         private void ResetRotation()
@@ -205,9 +208,22 @@ namespace AmalgamGames.Control
             _currentVerticalRotation = 0;
 
             Vector3 delta = transform.position - _followTarget.position;
+
+            // Reset vcam variables
+            _bodyTransposer.m_XDamping = 0;
+            _bodyTransposer.m_YDamping = 0;
+            _bodyTransposer.m_ZDamping = 0;
+            _bodyTransposer.m_FollowOffset = new Vector3(0, 0, -_normalCamDistance);
+
+            // Reset transform position and rotation to prevent the camera wigging out
+            transform.position = _followTarget.position;
+            transform.rotation = _followTarget.rotation;
+
             _playerCam.OnTargetObjectWarped(transform, delta);
 
-            _zoomRoutine = StartCoroutine(updateCameraDistance(_normalCamDistance));
+            _playerCam.enabled = true;
+
+            //_zoomRoutine = StartCoroutine(updateCameraDistance(_normalCamDistance));
         }
 
         private void DelayedActivation()

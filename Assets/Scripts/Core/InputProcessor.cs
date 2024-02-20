@@ -56,7 +56,7 @@ namespace AmalgamGames.Core
         }
 
         #endregion
-       
+
     }
 
     public interface IInputProcessor

@@ -24,6 +24,9 @@ namespace AmalgamGames.Simulation
         
         public float ChargeLevel { get { return _chargeLevel; } set { _chargeLevel = value; } }
 
+        // EVENTS
+        public event Action OnCollision;
+
         // STATE
 
         // Charging
@@ -53,29 +56,6 @@ namespace AmalgamGames.Simulation
             // No gravity on level start, will reactivate on launch
             _rb.useGravity = false;
         }
-
-        /*
-        public void FixedUpdate()
-        {
-            if (_isBurning)
-            {
-                if (_burnLerp < _burnDuration)
-                {
-                    float burnForce = EasingFunction.EaseInCubic(_burnForce, 0, _burnLerp / _burnDuration);
-
-                    _burnLerp += Time.fixedDeltaTime;
-
-                    Debug.Log("engine burning: " +  burnForce);
-                    _rb.AddForce(transform.forward * burnForce * Time.fixedDeltaTime, ForceMode.Force);
-                }
-                else
-                {
-
-                    FinishBurn();
-                }
-            }
-        }
-        */
 
         public void ManualFixedUpdate(float deltaTime)
         {
@@ -145,7 +125,6 @@ namespace AmalgamGames.Simulation
                 Debug.LogError("Multiple burn routines active. This shouldn't happen");
                 StopCoroutine(_engineBurnRoutine);
             }
-            //_engineBurnRoutine = StartCoroutine(engineBurn(launchInfo));
             EngineBurn(launchInfo);
 
             _isCharging = false;
@@ -170,29 +149,12 @@ namespace AmalgamGames.Simulation
 
         #endregion
 
-        #region Coroutines
 
-        /// <summary>
-        /// Applies constant force in rocket forward direction for a predetermined burn period
-        /// Player cannot start another charge while engine is burning
-        /// </summary>
-        /// <returns></returns>
-        private IEnumerator engineBurn(LaunchInfo launchInfo)
+        #region Collision
+
+        private void OnCollisionEnter(Collision collision)
         {
-            _isBurning = true;
-
-            float initialBurnForce = _engineBurnForce * launchInfo.ChargeLevel;
-
-            float burnLerp = 0;
-
-            while (burnLerp < launchInfo.BurnDuration)
-            {
-                _burnForce = EasingFunction.EaseInCubic(initialBurnForce, 0, burnLerp / launchInfo.BurnDuration);
-                burnLerp += Time.deltaTime;
-                yield return null;
-            }
-
-            FinishBurn();
+            OnCollision?.Invoke();
         }
 
         #endregion
