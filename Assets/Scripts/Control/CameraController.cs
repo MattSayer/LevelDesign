@@ -300,11 +300,16 @@ namespace AmalgamGames.Control
             {
                 StopCoroutine(_offsetRoutine);
             }
+
+            /*
             // Lerp offset to zero over duration
             _offsetRoutine = StartCoroutine(Tools.lerpVector3OverTime(_offset, Vector3.zero, _offsetLerpTime, (value) =>
             {
                 _offset = value;
             }, () => _offsetRoutine = null));
+            */
+
+            _offset = Vector3.zero;
 
             _isCharging = false;
             _isBurning = true;

@@ -347,6 +347,26 @@ namespace AmalgamGames.Core
 
                 SetVelocityToZero();
 
+                //_rb.MovePosition(_rb.position + new Vector3(1, 1, 0));
+
+                /*
+                Vector3 camPosition = Camera.main.transform.position;
+                Vector3 camForward = Camera.main.transform.forward;
+                Ray camRay = new Ray(camPosition, camForward);
+                Vector3 aimTarget;
+                if(Physics.Raycast(camRay, out RaycastHit hit, 100))
+                {
+                    aimTarget = hit.point;
+                }
+                else
+                {
+                    aimTarget = camPosition + camForward * 100;
+                }
+
+                Vector3 newForward = (aimTarget - transform.position).normalized;
+                */
+
+
                 // Launch
                 _rb.AddForce(transform.forward * launchStrength, ForceMode.Impulse);
 

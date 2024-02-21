@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -8,7 +9,7 @@ namespace AmalgamGames.SceneManagement
         public static SimulatedScene CreateSimulatedScene(GameObject simulatedObject, GameObject[] collisionObjects)
         {
             CreateSceneParameters sceneParameters = new CreateSceneParameters(LocalPhysicsMode.Physics3D);
-            Scene simScene = SceneManager.CreateScene("SimScene", sceneParameters);
+            Scene simScene = SceneManager.CreateScene("SimScene" + Guid.NewGuid(), sceneParameters);
             PhysicsScene physicsScene = simScene.GetPhysicsScene();
 
             GameObject newSimulatedObject = GameObject.Instantiate(simulatedObject);

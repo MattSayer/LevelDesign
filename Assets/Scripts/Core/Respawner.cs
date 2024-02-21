@@ -37,6 +37,7 @@ namespace AmalgamGames.Core
         private bool _isSubscribedToInput = false;
         private bool _canCollide = true;
         private Transform _lastCheckpoint;
+        private bool _isRespawning = false;
 
         // COROUTINES
         private Coroutine _explodeRoutine = null;
@@ -74,7 +75,10 @@ namespace AmalgamGames.Core
 
         private void OnRespawnInput()
         {
-            Respawn();
+            if (!_isRespawning)
+            {
+                Respawn();
+            }
         }
 
         private void Respawn()
@@ -138,47 +142,11 @@ namespace AmalgamGames.Core
         {
             if (_canCollide)
             {
-                float currentVelocity = collision.relativeVelocity.magnitude;
-
-                // If rocket is moving slower than min collision velocity, don't explode
-                if(currentVelocity < _minCollisionVelocity)
-                {
-                    Debug.Log("Collision too slow: " + currentVelocity);
-                    return;
-                }
-                // If rocket is moving faster than a maximum ceiling, any collision is fatal
-                else if (currentVelocity >= _alwaysCollideVelocity)
+                if (collision.collider.CompareTag(Globals.FATAL_COLLIDER_TAG))
                 {
                     if (_explodeRoutine == null)
                     {
                         _explodeRoutine = StartCoroutine(explodeThenRespawn());
-                    }
-                }
-                else
-                {
-                    float normalizedVelocity = currentVelocity / _alwaysCollideVelocity;
-
-                    float angleThreshold = Mathf.Lerp(_minMaxCollisionAngle.x, _minMaxCollisionAngle.y, normalizedVelocity);
-                    // Normalize
-                    angleThreshold /= 90f;
-
-                    // Check angle between collision normal and rocket forward
-                    float collisionAngle = Mathf.Abs(Vector3.Dot(transform.forward, collision.contacts[0].normal));
-
-                    // Reciprocal to align with angle threshold (higher dot product means perpendicular so should be lower value to compare against threshold
-                    collisionAngle = 1 - collisionAngle;
-
-                    // if collision angle reciprocal falls below angle threshold, fatal collision
-                    if (collisionAngle < angleThreshold)
-                    {
-                        if(_explodeRoutine == null)
-                        {
-                            _explodeRoutine = StartCoroutine(explodeThenRespawn());
-                        }
-                    }
-                    else
-                    {
-                        Debug.Log("Shallow collision");
                     }
                 }
             }
@@ -204,6 +172,7 @@ namespace AmalgamGames.Core
 
         private IEnumerator explodeThenRespawn()
         {
+            _isRespawning = true;
             Explode();
 
             foreach (IRespawnable respawnable in _respawnables)
@@ -219,6 +188,7 @@ namespace AmalgamGames.Core
             Respawn();
 
             _explodeRoutine = null;
+            _isRespawning = false;
         }
 
         #endregion

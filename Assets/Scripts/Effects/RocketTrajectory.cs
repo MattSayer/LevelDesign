@@ -40,10 +40,10 @@ namespace AmalgamGames.Effects
 
         // Constants
         private int MAIN_COLOUR_PROP;
-
-        private Vector3[] _points;
-
         private float PHYSICS_TIMESTEP;
+
+        // Trajectory
+        private Vector3[] _points;
 
         #region Lifecycle
 
@@ -93,7 +93,7 @@ namespace AmalgamGames.Effects
 
         public override void ManagedUpdate(float deltaTime)
         {
-            if(_isSimulating)
+            if (_isSimulating)
             {
                 SimulateLaunch();
             }
@@ -122,7 +122,7 @@ namespace AmalgamGames.Effects
         {
             _simulatedRocketObject.transform.position = _rocketObject.transform.position;
             _simulatedRocketObject.transform.rotation = _rocketObject.transform.rotation;
-
+            
             _simulatedRocketController.ChargeLevel = _chargeLevel;
 
             _simulatedRocketController.Launch();
@@ -130,13 +130,11 @@ namespace AmalgamGames.Effects
             ResetSimulatedRocketCollision();
 
             _simulatedRocketController.OnCollision += OnSimulatedRocketCollision;
-            //Debug.Log("Beginning simulation");
             for(int i = 0; i < _stepsToSimulate; i++)
             {
                 _physicsScene.Simulate(PHYSICS_TIMESTEP);
                 _simulatedRocketController.ManualFixedUpdate(PHYSICS_TIMESTEP);
                 _points[i] = _simulatedRocketObject.transform.position;
-                //Debug.Log("Simulated position [" + i + "]: " + _points[i]);
                 _lineRenderer.SetPosition(i, _points[i]);
                 if(_simulatedRocketHasCollided)
                 {
