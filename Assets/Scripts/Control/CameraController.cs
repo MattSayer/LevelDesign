@@ -36,7 +36,6 @@ namespace AmalgamGames.Control
         [Title("Screen shake")]
         [SerializeField] private float _launchShakeAmplitude = 10f;
         [SerializeField] private float _launchShakeFrequency = 1;
-        [SerializeField] private float _launchShakeDuration = 0.5f;
         [SerializeField] private EasingFunction.Ease _launchShakeEasing = EasingFunction.Ease.Linear;
         [Space]
         [Title("Components")]
@@ -301,16 +300,13 @@ namespace AmalgamGames.Control
                 StopCoroutine(_offsetRoutine);
             }
 
-            /*
+            
             // Lerp offset to zero over duration
             _offsetRoutine = StartCoroutine(Tools.lerpVector3OverTime(_offset, Vector3.zero, _offsetLerpTime, (value) =>
             {
                 _offset = value;
             }, () => _offsetRoutine = null));
-            */
-
-            _offset = Vector3.zero;
-
+            
             _isCharging = false;
             _isBurning = true;
             

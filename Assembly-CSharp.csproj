@@ -85,14 +85,17 @@
     <Compile Include="Assets\Scripts\Control\ObjectPositioner.cs" />
     <Compile Include="Assets\Scripts\Update\IPausable.cs" />
     <Compile Include="Assets\Scripts\Effects\NudgeRumble.cs" />
+    <Compile Include="Assets\Scripts\Utils\FrameCounter.cs" />
     <Compile Include="Assets\Scripts\Configuration\RocketConfig.cs" />
     <Compile Include="Assets\Scripts\Core\InputProcessor.cs" />
+    <Compile Include="Assets\Scripts\Utils\ExternalTimeProvider.cs" />
     <Compile Include="Assets\Scripts\Core\IValueProvider.cs" />
     <Compile Include="Assets\Scripts\SceneManagement\PhysicsSimulation.cs" />
     <Compile Include="Assets\Scripts\Utils\DependencyRequest.cs" />
     <Compile Include="Assets\Scripts\Simulation\SimulatedRocketController.cs" />
     <Compile Include="Assets\Scripts\Update\IUpdateable.cs" />
     <Compile Include="Assets\Scripts\Transformations\MultiplyTransformation.cs" />
+    <Compile Include="Assets\Scripts\Effects\LaunchOffset.cs" />
     <Compile Include="Assets\Scripts\Effects\ParticleEffect.cs" />
     <Compile Include="Assets\Scripts\Utils\Easing.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
@@ -102,9 +105,6 @@
     <Compile Include="Assets\Scripts\Control\ObjectRotator.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Utils\FrameCounter.cs" />
-    <Compile Include="Assets\Scripts\Utils\ExternalTimeProvider.cs" />
-    <Compile Include="Assets\Scripts\Effects\LaunchOffset.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

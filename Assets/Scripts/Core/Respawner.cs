@@ -5,6 +5,7 @@ using AmalgamGames.Utils;
 using AmalgamGames.Effects;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using System;
 
 namespace AmalgamGames.Core
 {
@@ -12,12 +13,6 @@ namespace AmalgamGames.Core
     public class Respawner : MonoBehaviour
     {
 
-        [Title("Collision")]
-        [SerializeField] private float _alwaysCollideVelocity = 500f;
-        [SerializeField] private float _minCollisionVelocity = 10f;
-        [MinMaxSlider(0, 90)]
-        [SerializeField] private Vector2 _minMaxCollisionAngle;
-        [Space]
         [Title("Respawning")]
         [SerializeField] private float _respawnDelay = 2;
         [Space]
@@ -28,9 +23,12 @@ namespace AmalgamGames.Core
         [Title("DEBUG")]
         [SerializeField] private Transform _respawnPoint;
 
+        // EVENTS
+        public event Action<RespawnEvent> OnRespawnEvent;
+        
         // COMPONENTS
         private IInputProcessor _inputProcessor;
-
+        
         private List<IRespawnable> _respawnables;
 
         // STATE
@@ -88,6 +86,8 @@ namespace AmalgamGames.Core
                 respawnable.OnRespawnEvent(RespawnEvent.BeforeRespawn);
             }
 
+            OnRespawnEvent?.Invoke(RespawnEvent.BeforeRespawn);
+
             // Fade screen down
 
             transform.position = _lastCheckpoint.position;
@@ -99,6 +99,8 @@ namespace AmalgamGames.Core
                 respawnable.OnRespawnEvent(RespawnEvent.OnRespawnStart);
             }
 
+            OnRespawnEvent?.Invoke(RespawnEvent.OnRespawnStart);
+
             // Fade screen back up
 
             // Countdown
@@ -107,6 +109,8 @@ namespace AmalgamGames.Core
             {
                 respawnable.OnRespawnEvent(RespawnEvent.OnRespawnEnd);
             }
+
+            OnRespawnEvent?.Invoke(RespawnEvent.OnRespawnEnd);
 
         }
 
@@ -179,6 +183,8 @@ namespace AmalgamGames.Core
             {
                 respawnable.OnRespawnEvent(RespawnEvent.OnCollision);
             }
+
+            OnRespawnEvent?.Invoke(RespawnEvent.OnCollision);
 
             yield return new WaitForSeconds(_respawnDelay);
 
