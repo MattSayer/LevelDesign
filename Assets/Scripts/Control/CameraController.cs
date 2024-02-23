@@ -4,6 +4,7 @@ using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Cinemachine;
 using Sirenix.OdinInspector;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -41,12 +42,16 @@ namespace AmalgamGames.Control
         [Title("Components")]
         [SerializeField] private Transform _followTarget;
         [SerializeField] private CinemachineVirtualCamera _playerCam;
+        [SerializeField] private GameObject _rocketObject;
         [Space]
         [Title("Dependencies")]
         [SerializeField] private DependencyRequest _getScreenShaker;
-        
+        [Space]
+        [FoldoutGroup("Dynamic Events")][SerializeField] private EventHookup[] _hookupEvents;
+
+
         // STATE
-        
+
         // Rotation
         private float _currentHorizontalRotation = 0;
         private float _currentVerticalRotation = 0;
@@ -58,6 +63,7 @@ namespace AmalgamGames.Control
         // Subscriptions
         private bool _isSubscribedToInput = false;
         private bool _isSubscribedToCharging = false;
+        private bool _isSubscribedToEvents = false;
 
         // Coroutines
         private Coroutine _zoomRoutine = null;
@@ -73,13 +79,11 @@ namespace AmalgamGames.Control
         private bool _isCharging = false;
 
         // Burning
-        private bool _isBurning = false;
         private float _rotationSpeedLimit = 1;
 
         // COMPONENTS
         
         private IInputProcessor _inputProcessor;
-        private IRocketController _rocketController;
         private CinemachineTransposer _bodyTransposer;
         private IScreenShaker _screenShaker;
 
@@ -87,35 +91,34 @@ namespace AmalgamGames.Control
 
         private void Start()
         {
-            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(transform.parent);
-            _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(transform.parent);
+            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketObject.transform);
             _bodyTransposer = _playerCam?.GetCinemachineComponent<CinemachineTransposer>();
 
             _getScreenShaker.RequestDependency(ReceiveScreenShaker);
 
             SubscribeToInput();
-            SubscribeToCharging();
+            HookUpEvents();
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
             SubscribeToInput();
-            SubscribeToCharging();
+            HookUpEvents();
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
             UnsubscribeFromInput();
-            UnsubscribeFromCharging();
+            UnhookEvents();
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             UnsubscribeFromInput();
-            UnsubscribeFromCharging();
+            UnhookEvents();
         }
 
         public override void ManagedUpdate(float deltaTime)
@@ -192,12 +195,8 @@ namespace AmalgamGames.Control
         {
             // Reset variables
             _rotationSpeedLimit = 1;
-            _isBurning = false;
             _isCharging = false;
             _offset = Vector3.zero;
-            
-            
-
         }
 
         private void ResetRotation()
@@ -239,112 +238,50 @@ namespace AmalgamGames.Control
             _currentRotationSpeed = rotation;
         }
 
-        private void OnChargingStart(ChargingType chargingType)
+        #endregion
+
+        #region Events
+
+        private void OffsetAndZoomParam(object ignoreParam)
+        {
+            OffsetAndZoom();
+        }
+
+        private void OffsetAndZoom()
         {
             // Lerp offset to charge offset over duration
-            
-            if(_offsetRoutine != null)
-            {
-                StopCoroutine(_offsetRoutine);
-            }
-            _offsetRoutine = StartCoroutine(Tools.lerpVector3OverTimeUnscaled(_offset, _chargeOffset, _offsetLerpTime, (value) =>
-            {
-                _offset = value;
-            },() => _offsetRoutine = null));
 
-            if (_zoomRoutine != null)
-            {
-                StopCoroutine(_zoomRoutine);
-            }
+            OffsetPosition(_chargeOffset, _offsetLerpTime);
 
             // Reset damping
 
-            if (_dampingRoutine != null)
-            {
-                StopCoroutine(_dampingRoutine);
-                _dampingRoutine = null;
-            }
-            _bodyTransposer.m_XDamping = 0;
-            _bodyTransposer.m_YDamping = 0;
-            _bodyTransposer.m_ZDamping = 0;
+            ChangeDamping(0, 0);
 
-            _zoomRoutine = StartCoroutine(updateCameraDistance(_chargingCamDistance));
+
+            ZoomPosition(_chargingCamDistance);
         }
 
         private void OnLaunch(LaunchInfo launchInfo)
         {
             // screen shake
-            _screenShaker.ScreenShakeBurst(new ScreenShakeIntensity(_launchShakeAmplitude, _launchShakeFrequency), launchInfo.BurnDuration, _launchShakeEasing);
-            
-            // Increase damping temporarily
-            if (_dampingRoutine == null)
-            {
-                _dampingRoutine = StartCoroutine(Tools.lerpFloatOverTime(_launchDamping, 0, launchInfo.BurnDuration, (value) =>
-                {
-                    _bodyTransposer.m_XDamping = value;
-                    _bodyTransposer.m_YDamping = value;
-                    _bodyTransposer.m_ZDamping = value;
-                },
-                () =>
-                {
-                    _dampingRoutine = null;
-                }));
-            }
-            else
-            {
-                Debug.LogError("Damping routine not null. This shouldn't happen");
-            }
+            _screenShaker?.ScreenShakeBurst(new ScreenShakeIntensity(_launchShakeAmplitude, _launchShakeFrequency), launchInfo.BurnDuration, _launchShakeEasing);
 
-            if (_offsetRoutine != null)
-            {
-                StopCoroutine(_offsetRoutine);
-            }
+            ChangeDamping(_launchDamping, 0, launchInfo.BurnDuration);
 
-            
-            // Lerp offset to zero over duration
-            _offsetRoutine = StartCoroutine(Tools.lerpVector3OverTime(_offset, Vector3.zero, _offsetLerpTime, (value) =>
-            {
-                _offset = value;
-            }, () => _offsetRoutine = null));
-            
+            OffsetPosition(Vector3.zero, _offsetLerpTime);
+
             _isCharging = false;
-            _isBurning = true;
-            
+
             // If the camera speed coroutine is still running, kill it since we'll create a new one after the next burn
-            if(_speedLimitRoutine != null)
-            {
-                StopCoroutine(_speedLimitRoutine);
-                _speedLimitRoutine = null;
-            }
-            _rotationSpeedLimit = _burnRotationSpeedLimit;
 
-            if (_zoomRoutine != null)
-            {
-                StopCoroutine(_zoomRoutine);
-            }
+            ChangeSpeedLimit(_burnRotationSpeedLimit, 0);
 
-            _zoomRoutine = StartCoroutine(updateCameraDistance(_normalCamDistance));
+            ZoomPosition(_normalCamDistance);
         }
        
-        private void OnBurnComplete()
+        private void RemoveBurnSpeedLimit()
         {
-            _isBurning = false;
-            
-            if (_speedLimitRoutine == null)
-            {
-                _speedLimitRoutine = StartCoroutine(Tools.lerpFloatOverTime(_rotationSpeedLimit, 1, _speedLimitTransitionTime, (value) =>
-                {
-                    _rotationSpeedLimit = value;
-                }, () =>
-                {
-                    _speedLimitRoutine = null;
-                }));
-            }
-            else
-            {
-                Debug.LogError("Speed limit routine not null. This shouldn't happen");
-            }
-            
+            ChangeSpeedLimit(1, _speedLimitTransitionTime);
         }
 
         #endregion
@@ -369,32 +306,40 @@ namespace AmalgamGames.Control
             }
         }
 
-        private void SubscribeToCharging()
-        {
-            if (!_isSubscribedToCharging && _rocketController != null)
-            {
-                _rocketController.OnChargingStart += OnChargingStart;
-                _rocketController.OnLaunch += OnLaunch;
-                _rocketController.OnBurnComplete += OnBurnComplete;
-                _isSubscribedToCharging = true;
-            }
-        }
-
-        private void UnsubscribeFromCharging()
-        {
-            if (_isSubscribedToCharging && _rocketController != null)
-            {
-                _rocketController.OnChargingStart -= OnChargingStart;
-                _rocketController.OnLaunch -= OnLaunch;
-                _rocketController.OnBurnComplete -= OnBurnComplete;
-                _isSubscribedToCharging = false;
-            }
-        }
-
         private void ReceiveScreenShaker(object rawObj)
         {
             _screenShaker = rawObj as IScreenShaker;
         }
+
+        private void HookUpEvents()
+        {
+            if (!_isSubscribedToEvents)
+            {
+                foreach (EventHookup hookup in _hookupEvents)
+                {
+                    DynamicEvent sourceEvent = hookup.SourceEvent;
+                    object rawObj = (object)sourceEvent.EventSource;
+
+                    Delegate activateHandler = Tools.WireUpEvent(rawObj, sourceEvent.EventName, this, hookup.TargetInternalMethod);
+                    sourceEvent.EventHandler = activateHandler;
+                }
+                _isSubscribedToEvents = true;
+            }
+        }
+
+        private void UnhookEvents()
+        {
+            if(_isSubscribedToEvents)
+            {
+                foreach (EventHookup hookup in _hookupEvents)
+                {
+                    DynamicEvent sourceEvent = hookup.SourceEvent;
+                    Tools.DisconnectEvent((object)sourceEvent.EventSource, sourceEvent.EventName, sourceEvent.EventHandler);
+                }
+                _isSubscribedToEvents = false;
+            }
+        }
+
 
         #endregion
 
@@ -419,6 +364,79 @@ namespace AmalgamGames.Control
             Vector3 verticalAxis = Vector3.Cross(forward, Vector3.up);
             forward = Quaternion.AngleAxis(_currentVerticalRotation, verticalAxis) * forward;
             transform.forward = forward;
+        }
+
+        private void OffsetPosition(Vector3 targetOffset, float duration)
+        {
+            if (_offsetRoutine != null)
+            {
+                StopCoroutine(_offsetRoutine);
+            }
+            _offsetRoutine = StartCoroutine(Tools.lerpVector3OverTimeUnscaled(_offset, targetOffset, duration, (value) =>
+            {
+                _offset = value;
+            }, () => _offsetRoutine = null));
+        }
+
+        private void ZoomPosition(float newDistance)
+        {
+            if (_zoomRoutine != null)
+            {
+                StopCoroutine(_zoomRoutine);
+            }
+
+            _zoomRoutine = StartCoroutine(updateCameraDistance(newDistance));
+        }
+
+        #endregion
+
+        #region Speed
+
+        private void ChangeSpeedLimit(float targetValue, float duration)
+        {
+            if(_speedLimitRoutine != null)
+            {
+                StopCoroutine(_speedLimitRoutine);
+            }
+
+            _speedLimitRoutine = StartCoroutine(Tools.lerpFloatOverTime(_rotationSpeedLimit, targetValue, duration, (value) =>
+            {
+                _rotationSpeedLimit = value;
+            }, () =>
+            {
+                _speedLimitRoutine = null;
+            }));
+        }
+
+        #endregion
+
+        #region Camera specific
+
+        private void ChangeDamping(float targetValue, float duration)
+        {
+            // Get current value
+            float startValue = _bodyTransposer.m_XDamping;
+
+            ChangeDamping(startValue, targetValue, duration);
+        }
+
+        private void ChangeDamping(float startValue, float targetValue, float duration)
+        {
+            if(_dampingRoutine != null)
+            {
+                StopCoroutine(_dampingRoutine);
+            }
+
+            _dampingRoutine = StartCoroutine(Tools.lerpFloatOverTime(startValue, targetValue, duration, (value) =>
+            {
+                _bodyTransposer.m_XDamping = value;
+                _bodyTransposer.m_YDamping = value;
+                _bodyTransposer.m_ZDamping = value;
+            },
+            () =>
+            {
+                _dampingRoutine = null;
+            }));
         }
 
         #endregion

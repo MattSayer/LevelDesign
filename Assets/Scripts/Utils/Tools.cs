@@ -292,4 +292,21 @@ namespace AmalgamGames.Utils
 
 
     }
+
+
+    [Serializable]
+    public class DynamicEvent
+    {
+        public Component EventSource;
+        public string EventName;
+        public bool EventHasParam = false;
+        public Delegate EventHandler;
+    }
+
+    [Serializable]
+    public class EventHookup
+    {
+        public DynamicEvent SourceEvent;
+        public string TargetInternalMethod;
+    }
 }

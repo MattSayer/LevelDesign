@@ -79,8 +79,10 @@ namespace AmalgamGames.Abilities
         {
             if(_canNudge && HasJuice() && _nudgeDirection != Vector2.zero)
             {
+                float unscaledDeltaTime = Time.fixedUnscaledDeltaTime;
+
                 // If this is the start of a new nudge, notify subscribers
-                if(!_isNudging)
+                if (!_isNudging)
                 {
                     OnNudgeStart?.Invoke();
                 }
@@ -92,9 +94,9 @@ namespace AmalgamGames.Abilities
                 
                 // Max nudge magnitude is 1, since nudgeDirection is already normalised
                 float nudgeMagnitude = nudgeForce.magnitude;
-                _juice.SubtractValue(Time.unscaledDeltaTime * _juiceDrainPerSecond * nudgeMagnitude);
+                _juice.SubtractValue(unscaledDeltaTime * _juiceDrainPerSecond * nudgeMagnitude);
 
-                _rb.AddForce(_nudgeForceMultiplier * nudgeForce * _nudgeForce * deltaTime, ForceMode.Force);
+                _rb.AddForce(_nudgeForceMultiplier * nudgeForce * _nudgeForce * unscaledDeltaTime, ForceMode.Force);
             }
             // If was nudging last frame but not now, end nudge
             else if(_isNudging)
@@ -127,7 +129,7 @@ namespace AmalgamGames.Abilities
 
         #region Charging
 
-        private void OnChargingStart(ChargingType chargingType)
+        private void OnChargingStart(ChargingInfo chargingInfo)
         {
             _canNudge = false;
         }

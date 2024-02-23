@@ -19,7 +19,7 @@ namespace AmalgamGames.Core
         [SerializeField] private RocketConfig _config;
         
         // EVENTS
-        public event Action<ChargingType> OnChargingStart;
+        public event Action<ChargingInfo> OnChargingStart;
         public event Action<LaunchInfo> OnLaunch;
         public event Action OnBurnComplete;
         public event Action<object> OnVelocityChanged;
@@ -300,7 +300,7 @@ namespace AmalgamGames.Core
                 {
                     _isCharging = true;
                     _chargingType = chargingType;
-                    OnChargingStart?.Invoke(chargingType);
+                    OnChargingStart?.Invoke(new ChargingInfo(chargingType));
 
                     _targetOrienter?.ToggleMode(OrientMode.Source);
 
@@ -481,6 +481,16 @@ namespace AmalgamGames.Core
         }
     }
 
+    public class ChargingInfo
+    {
+        public ChargingType chargingType;
+
+        public ChargingInfo(ChargingType chargingType)
+        {
+            this.chargingType = chargingType;
+        }
+    }
+
     public enum ChargingType
     {
         Slowmo,
@@ -489,7 +499,7 @@ namespace AmalgamGames.Core
 
     public interface IRocketController
     {
-        public event Action<ChargingType> OnChargingStart;
+        public event Action<ChargingInfo> OnChargingStart;
         public event Action<LaunchInfo> OnLaunch;
         public event Action OnBurnComplete;
     }

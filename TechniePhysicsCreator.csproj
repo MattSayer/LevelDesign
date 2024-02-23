@@ -10,10 +10,10 @@
     <ProductVersion>10.0.20506</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{6F4463E7-3050-4780-D9CE-1B33995EB729}</ProjectGuid>
+    <ProjectGuid>{1CF66045-339D-037A-5953-155AB51200E9}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <AssemblyName>Assembly-CSharp</AssemblyName>
+    <AssemblyName>TechniePhysicsCreator</AssemblyName>
     <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <BaseDirectory>.</BaseDirectory>
@@ -57,81 +57,55 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Scripts\Transformations\AddVectorTransformation.cs" />
-    <Compile Include="Assets\Scripts\Update\ManagedBehaviour.cs" />
-    <Compile Include="Assets\Scripts\Update\ManagedLateBehaviour.cs" />
-    <Compile Include="Assets\Scripts\Effects\ScreenShaker.cs" />
-    <Compile Include="Assets\Scripts\Core\Respawner.cs" />
-    <Compile Include="Assets\Scripts\Transformations\NormalizeTransformation.cs" />
-    <Compile Include="Assets\Scripts\Core\RocketController.cs" />
-    <Compile Include="Assets\Scripts\UI\DynamicText.cs" />
-    <Compile Include="Assets\Scripts\Utils\Globals.cs" />
-    <Compile Include="Assets\Scripts\Abilities\Nudge.cs" />
-    <Compile Include="Assets\Scripts\UI\DynamicFilledImage.cs" />
-    <Compile Include="Assets\Scripts\Effects\RumbleController.cs" />
-    <Compile Include="Assets\Scripts\Core\IRestartable.cs" />
-    <Compile Include="Assets\Scripts\Transformations\Transformation.cs" />
-    <Compile Include="Assets\Scripts\Abilities\SharedFloatValue.cs" />
-    <Compile Include="Assets\Scripts\Control\TargetOrienter.cs" />
-    <Compile Include="Assets\Scripts\Abilities\Slowmo.cs" />
-    <Compile Include="Assets\Scripts\Transformations\RaiseToPowerTransformation.cs" />
-    <Compile Include="Assets\Scripts\Control\CameraController.cs" />
-    <Compile Include="Assets\Scripts\Effects\VignetteEffect.cs" />
-    <Compile Include="Assets\Scripts\Effects\ScreenShakeEffect.cs" />
-    <Compile Include="Assets\Scripts\Update\ManagedFixedBehaviour.cs" />
-    <Compile Include="Assets\Scripts\CustomEditor\RequireInterfaceAttribute.cs" />
-    <Compile Include="Assets\Scripts\Update\ManagedUpdater.cs" />
-    <Compile Include="Assets\Scripts\Core\IRespawnable.cs" />
-    <Compile Include="Assets\Scripts\Control\ObjectPositioner.cs" />
-    <Compile Include="Assets\Scripts\Update\IPausable.cs" />
-    <Compile Include="Assets\Scripts\Effects\NudgeRumble.cs" />
-    <Compile Include="Assets\Scripts\Utils\FrameCounter.cs" />
-    <Compile Include="Assets\Scripts\Configuration\RocketConfig.cs" />
-    <Compile Include="Assets\Scripts\Core\InputProcessor.cs" />
-    <Compile Include="Assets\Scripts\Utils\ExternalTimeProvider.cs" />
-    <Compile Include="Assets\Scripts\Core\IValueProvider.cs" />
-    <Compile Include="Assets\Scripts\SceneManagement\PhysicsSimulation.cs" />
-    <Compile Include="Assets\Scripts\Utils\DependencyRequest.cs" />
-    <Compile Include="Assets\Scripts\Simulation\SimulatedRocketController.cs" />
-    <Compile Include="Assets\Scripts\Update\IUpdateable.cs" />
-    <Compile Include="Assets\Scripts\Transformations\MultiplyTransformation.cs" />
-    <Compile Include="Assets\Scripts\Effects\LaunchOffset.cs" />
-    <Compile Include="Assets\Scripts\Effects\ParticleEffect.cs" />
-    <Compile Include="Assets\Scripts\Utils\Easing.cs" />
-    <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
-    <Compile Include="Assets\Scripts\Effects\RocketTrajectory.cs" />
-    <Compile Include="Assets\Scripts\Effects\ObjectToggler.cs" />
-    <Compile Include="Assets\Scripts\Utils\Tools.cs" />
-    <Compile Include="Assets\Scripts\Control\ObjectRotator.cs" />
-    <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
-    <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Sphere.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\HashUtil.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Simplifier\HullSimplifier.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\Face.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\PaintingData.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\QHullUtil.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\HullPainterChild.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\Vector3d.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\GizmoUtils.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\RotatedBoxFitter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\ToolGUILayout.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\IHull.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Vhacd\VhacdParameters.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\RigidColliderCreator.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\HalfEdge.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\AxisAlignedBoxFitter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\RotatedCapsuleFitter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\RigidColliderCreatorChild.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Skinned\SkinnedColliderEditorData.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\PhysicsCreatorInstallRoot.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\VertexList.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\QuickHull3D.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\HullPainter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\SphereFitter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\FaceList.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\MeshCutter\CuttableMesh.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\MeshCutter\MeshCutter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Skinned\BoneHullData.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\ICreatorComponent.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\FaceAlignmentBoxFitter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\Hull.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Console.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Skinned\SkinnedColliderRuntimeData.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\PhysicsCreatorHullFolder.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\SphereUtils.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\Vertex.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\MeshCutter\CuttableSubMesh.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\InternalErrorException.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\HullData.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Utils.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\UnpackedMesh.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Skinned\SkinnedColliderCreator.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\IEditorData.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\Point3d.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\AlignedCapsuleFitter.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMPro_Mobile.cginc" />
-    <None Include="Assets\Technie\PhysicsCreator\Plugins\VHACD\libvhacd.dll" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF SSD.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface-Mobile.shader" />
-    <None Include="Assets\Technie\PhysicsCreator\Plugins\VHACD\VhacdLicense.txt" />
-    <None Include="Assets\Technie\PhysicsCreator\Plugins\VHACD\Third Party Notices.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Surface.shader" />
-    <None Include="Assets\TextMesh Pro\Sprites\EmojiOne Attribution.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Custom-Atlas.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile SSD.shader" />
-    <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
-    <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
-    <None Include="Assets\Technie\PhysicsCreator\Shaders\HullPainterOverlay.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF Overlay.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap-Mobile.shader" />
-    <None Include="Assets\TextMesh Pro\Fonts\LiberationSans - OFL.txt" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile.shader" />
-    <None Include="Assets\TextMesh Pro\Shaders\TMP_Sprite.shader" />
+    <None Include="Assets\Technie\PhysicsCreator\Scripts\TechniePhysicsCreator.asmdef" />
+    <None Include="Assets\Technie\PhysicsCreator\Scripts\QHull\QHull Licence.txt" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="UnityEngine">
@@ -380,14 +354,41 @@
     <Reference Include="UnityEditor.UnityConnectModule">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.31f1\Editor\Data\Managed\UnityEngine\UnityEditor.UnityConnectModule.dll</HintPath>
     </Reference>
+    <Reference Include="UnityEditor.Graphs">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.31f1\Editor\Data\Managed\UnityEditor.Graphs.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.WindowsStandalone.Extensions">
+      <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.31f1\Editor\Data\PlaybackEngines\WindowsStandaloneSupport\UnityEditor.WindowsStandalone.Extensions.dll</HintPath>
+    </Reference>
     <Reference Include="Sirenix.Reflection.Editor">
       <HintPath>Assets\Plugins\Sirenix\Assemblies\Sirenix.Reflection.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Plastic.Newtonsoft.Json">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@2.1.0\Lib\Editor\PlasticSCM\Unity.Plastic.Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="unityplastic">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@2.1.0\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Plastic.Antlr3.Runtime">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@2.1.0\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.YamlDotNet">
+      <HintPath>Library\PackageCache\com.unity.visualscripting@1.9.1\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
     </Reference>
     <Reference Include="Sirenix.OdinInspector.Editor">
       <HintPath>Assets\Plugins\Sirenix\Assemblies\Sirenix.OdinInspector.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Sirenix.OdinInspector.Attributes">
       <HintPath>Assets\Plugins\Sirenix\Assemblies\Sirenix.OdinInspector.Attributes.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.TextureAssets">
+      <HintPath>Library\PackageCache\com.unity.visualscripting@1.9.1\Editor\VisualScripting.Core\EditorAssetResources\Unity.VisualScripting.TextureAssets.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.VisualScripting.IonicZip">
+      <HintPath>Library\PackageCache\com.unity.visualscripting@1.9.1\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
+    </Reference>
+    <Reference Include="log4netPlastic">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@2.1.0\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
     </Reference>
     <Reference Include="Sirenix.Serialization.Config">
       <HintPath>Assets\Plugins\Sirenix\Assemblies\Sirenix.Serialization.Config.dll</HintPath>
@@ -770,146 +771,14 @@
     <Reference Include="System.Xml.Serialization">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2021.3.31f1\Editor\Data\NetStandard\compat\2.1.0\shims\netfx\System.Xml.Serialization.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.VisualScripting.Flow.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Flow.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VSCode.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.VSCode.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Universal.Shaders">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Shaders.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Universal.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="PPv2URPConverters">
-      <HintPath>Library\ScriptAssemblies\PPv2URPConverters.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualStudio.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualStudio.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ProBuilder.AddOns.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.AddOns.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Timeline">
-      <HintPath>Library\ScriptAssemblies\Unity.Timeline.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Core.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Core.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.TextMeshPro">
-      <HintPath>Library\ScriptAssemblies\Unity.TextMeshPro.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.State.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Burst.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Burst.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Searcher.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Searcher.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.2D.Sprite.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.2D.Sprite.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.SettingsProvider.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.SettingsProvider.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ProBuilder">
-      <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ProBuilder.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEditor.UI">
       <HintPath>Library\ScriptAssemblies\UnityEditor.UI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InputSystem">
-      <HintPath>Library\ScriptAssemblies\Unity.InputSystem.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Rider.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Rider.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.ShaderLibrary">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.ShaderLibrary.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.PlasticSCM.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Flow">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Runtime">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Core">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Mathematics">
-      <HintPath>Library\ScriptAssemblies\Unity.Mathematics.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ShaderGraph.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.ShaderGraph.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Cinemachine">
-      <HintPath>Library\ScriptAssemblies\Cinemachine.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Burst">
-      <HintPath>Library\ScriptAssemblies\Unity.Burst.dll</HintPath>
-    </Reference>
-    <Reference Include="com.unity.cinemachine.editor">
-      <HintPath>Library\ScriptAssemblies\com.unity.cinemachine.editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Universal.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Universal.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.ProBuilder.AssetIdRemapUtility">
-      <HintPath>Library\ScriptAssemblies\Unity.ProBuilder.AssetIdRemapUtility.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.Shared.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Shared.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.InputSystem.ForUI">
-      <HintPath>Library\ScriptAssemblies\Unity.InputSystem.ForUI.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipeline.Universal.ShaderLibrary">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipeline.Universal.ShaderLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Timeline.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Timeline.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.ShaderGraph.ShaderGraphLibrary.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.Mathematics.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.Mathematics.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.RenderPipelines.Core.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Editor.dll</HintPath>
-    </Reference>
-    <Reference Include="Unity.VisualScripting.State">
-      <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.State.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Sirenix.OdinInspector.Modules.UnityMathematics.csproj">
-      <Project>{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}</Project>
-      <Name>Sirenix.OdinInspector.Modules.UnityMathematics</Name>
-    </ProjectReference>
-    <ProjectReference Include="TechniePhysicsCreatorEditor.csproj">
-      <Project>{BC6A9E54-5CF6-6245-CD10-7858251363B0}</Project>
-      <Name>TechniePhysicsCreatorEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="TechniePhysicsCreator.csproj">
-      <Project>{1CF66045-339D-037A-5953-155AB51200E9}</Project>
-      <Name>TechniePhysicsCreator</Name>
-    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

@@ -140,13 +140,4 @@ namespace AmalgamGames.Effects
 
         #endregion
     }
-
-    [Serializable]
-    public class DynamicEvent
-    {
-        public Component EventSource;
-        public string EventName;
-        public bool EventHasParam = false;
-        public Delegate EventHandler;
-    }
 }
