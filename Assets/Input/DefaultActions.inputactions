@@ -15,7 +15,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "SlowMoCharge",
+                    "name": "Charge",
                     "type": "Value",
                     "id": "5dbd5e0e-03f2-491b-b009-09d868935e9e",
                     "expectedControlType": "Axis",
@@ -24,7 +24,7 @@
                     "initialStateCheck": true
                 },
                 {
-                    "name": "RealtimeCharge",
+                    "name": "Slowmo",
                     "type": "Value",
                     "id": "55f0cab1-ea53-476b-bd43-93df10cbf962",
                     "expectedControlType": "Axis",
@@ -70,7 +70,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "SlowMoCharge",
+                    "action": "Charge",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -81,7 +81,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "Gamepad",
-                    "action": "RealtimeCharge",
+                    "action": "Slowmo",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },

@@ -1,8 +1,10 @@
+using AmalgamGames.Conditionals;
 using AmalgamGames.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Reflection.Emit;
 using UnityEngine;
 
 namespace AmalgamGames.Utils
@@ -276,6 +278,20 @@ namespace AmalgamGames.Utils
             return handler;
         }
 
+        public static Delegate WireUpEvent(object source, string sourceEventName, object caller, MethodInfo methodInfo)
+        {
+#nullable enable
+            EventInfo? eventInfo = source.GetType().GetEvent(sourceEventName);
+
+            Delegate handler = Delegate.CreateDelegate(eventInfo?.EventHandlerType, caller, methodInfo);
+#nullable disable
+            eventInfo.AddEventHandler(source, handler);
+
+            return handler;
+        }
+
+
+
         /// <summary>
         /// Disconnects the provided delegate from the 'sourceEventName' event on the 'source' object
         /// </summary>
@@ -301,6 +317,7 @@ namespace AmalgamGames.Utils
         public string EventName;
         public bool EventHasParam = false;
         public Delegate EventHandler;
+        public ConditionalCheck[] Conditionals;
     }
 
     [Serializable]

@@ -94,6 +94,8 @@
     <Compile Include="Assets\Scripts\Utils\DependencyRequest.cs" />
     <Compile Include="Assets\Scripts\Simulation\SimulatedRocketController.cs" />
     <Compile Include="Assets\Scripts\Update\IUpdateable.cs" />
+    <Compile Include="Assets\Scripts\Conditionals\RespawnEventConditional.cs" />
+    <Compile Include="Assets\Scripts\Conditionals\ConditionalCheck.cs" />
     <Compile Include="Assets\Scripts\Transformations\MultiplyTransformation.cs" />
     <Compile Include="Assets\Scripts\Effects\LaunchOffset.cs" />
     <Compile Include="Assets\Scripts\Effects\ParticleEffect.cs" />
@@ -839,11 +841,11 @@
     <Reference Include="UnityEngine.UI">
       <HintPath>Library\ScriptAssemblies\UnityEngine.UI.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.PlasticSCM.Editor">
-      <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.VisualScripting.Flow">
       <HintPath>Library\ScriptAssemblies\Unity.VisualScripting.Flow.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.PlasticSCM.Editor">
+      <HintPath>Library\ScriptAssemblies\Unity.PlasticSCM.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.RenderPipelines.Core.Runtime">
       <HintPath>Library\ScriptAssemblies\Unity.RenderPipelines.Core.Runtime.dll</HintPath>
@@ -898,10 +900,6 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Sirenix.OdinInspector.Modules.UnityMathematics.csproj">
-      <Project>{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}</Project>
-      <Name>Sirenix.OdinInspector.Modules.UnityMathematics</Name>
-    </ProjectReference>
     <ProjectReference Include="TechniePhysicsCreatorEditor.csproj">
       <Project>{BC6A9E54-5CF6-6245-CD10-7858251363B0}</Project>
       <Name>TechniePhysicsCreatorEditor</Name>
@@ -909,6 +907,10 @@
     <ProjectReference Include="TechniePhysicsCreator.csproj">
       <Project>{1CF66045-339D-037A-5953-155AB51200E9}</Project>
       <Name>TechniePhysicsCreator</Name>
+    </ProjectReference>
+    <ProjectReference Include="Sirenix.OdinInspector.Modules.UnityMathematics.csproj">
+      <Project>{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}</Project>
+      <Name>Sirenix.OdinInspector.Modules.UnityMathematics</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

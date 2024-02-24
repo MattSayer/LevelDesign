@@ -5,13 +5,13 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp", "Assembly
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechniePhysicsCreator", "TechniePhysicsCreator.csproj", "{1CF66045-339D-037A-5953-155AB51200E9}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{753820C5-36AB-67F7-E080-325DF8EA7F2C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sirenix.OdinInspector.Modules.UnityMathematics", "Sirenix.OdinInspector.Modules.UnityMathematics.csproj", "{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TechniePhysicsCreatorEditor", "TechniePhysicsCreatorEditor.csproj", "{BC6A9E54-5CF6-6245-CD10-7858251363B0}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Assembly-CSharp-Editor", "Assembly-CSharp-Editor.csproj", "{753820C5-36AB-67F7-E080-325DF8EA7F2C}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Technie.PhysicsCreator.Updater", "Technie.PhysicsCreator.Updater.csproj", "{FEE1E596-9AE8-ABC4-559B-6A96D6ADE74B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sirenix.OdinInspector.Modules.UnityMathematics", "Sirenix.OdinInspector.Modules.UnityMathematics.csproj", "{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -27,22 +27,22 @@ Global
 		{1CF66045-339D-037A-5953-155AB51200E9}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1CF66045-339D-037A-5953-155AB51200E9}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1CF66045-339D-037A-5953-155AB51200E9}.Release|Any CPU.Build.0 = Release|Any CPU
-		{753820C5-36AB-67F7-E080-325DF8EA7F2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{753820C5-36AB-67F7-E080-325DF8EA7F2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{753820C5-36AB-67F7-E080-325DF8EA7F2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{753820C5-36AB-67F7-E080-325DF8EA7F2C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}.Release|Any CPU.Build.0 = Release|Any CPU
 		{BC6A9E54-5CF6-6245-CD10-7858251363B0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{BC6A9E54-5CF6-6245-CD10-7858251363B0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BC6A9E54-5CF6-6245-CD10-7858251363B0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BC6A9E54-5CF6-6245-CD10-7858251363B0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{753820C5-36AB-67F7-E080-325DF8EA7F2C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{753820C5-36AB-67F7-E080-325DF8EA7F2C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{753820C5-36AB-67F7-E080-325DF8EA7F2C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{753820C5-36AB-67F7-E080-325DF8EA7F2C}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FEE1E596-9AE8-ABC4-559B-6A96D6ADE74B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FEE1E596-9AE8-ABC4-559B-6A96D6ADE74B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEE1E596-9AE8-ABC4-559B-6A96D6ADE74B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEE1E596-9AE8-ABC4-559B-6A96D6ADE74B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

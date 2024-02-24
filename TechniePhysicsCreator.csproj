@@ -57,51 +57,51 @@
     <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Sphere.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\HashUtil.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Simplifier\HullSimplifier.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\Face.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\PaintingData.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\QHullUtil.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\HullPainterChild.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\Vector3d.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\GizmoUtils.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\RotatedBoxFitter.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\ToolGUILayout.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\IHull.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Vhacd\VhacdParameters.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\RigidColliderCreator.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\HalfEdge.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\AxisAlignedBoxFitter.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\RotatedCapsuleFitter.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\RigidColliderCreatorChild.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Skinned\SkinnedColliderEditorData.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\PhysicsCreatorInstallRoot.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\VertexList.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\QuickHull3D.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\HullPainter.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\SphereFitter.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\FaceList.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\MeshCutter\CuttableMesh.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\MeshCutter\MeshCutter.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Skinned\BoneHullData.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\ICreatorComponent.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\FaceAlignmentBoxFitter.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\Hull.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Console.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Skinned\SkinnedColliderRuntimeData.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\PhysicsCreatorHullFolder.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\SphereUtils.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\Vertex.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\MeshCutter\CuttableSubMesh.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\InternalErrorException.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\HullData.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Utils.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\UnpackedMesh.cs" />
     <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Skinned\SkinnedColliderCreator.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\PhysicsCreatorInstallRoot.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\Hull.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\QuickHull3D.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\RigidColliderCreatorChild.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\AlignedCapsuleFitter.cs" />
     <Compile Include="Assets\Technie\PhysicsCreator\Scripts\IEditorData.cs" />
     <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\Point3d.cs" />
-    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\AlignedCapsuleFitter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\InternalErrorException.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\PhysicsCreatorHullFolder.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Vhacd\VhacdParameters.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\ToolGUILayout.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\SphereUtils.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Skinned\SkinnedColliderEditorData.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\RotatedBoxFitter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\Face.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\SphereFitter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\AxisAlignedBoxFitter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\GizmoUtils.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\FaceList.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Skinned\SkinnedColliderRuntimeData.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\MeshCutter\CuttableSubMesh.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\MeshCutter\CuttableMesh.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Sphere.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\FaceAlignmentBoxFitter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Skinned\BoneHullData.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Fitters\RotatedCapsuleFitter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Console.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Simplifier\HullSimplifier.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\MeshCutter\MeshCutter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\IHull.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\HashUtil.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\HullPainter.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\HalfEdge.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\ICreatorComponent.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\VertexList.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Utils.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\HullPainterChild.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\UnpackedMesh.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\PaintingData.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\HullData.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\Rigid\RigidColliderCreator.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\QHullUtil.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\Vector3d.cs" />
+    <Compile Include="Assets\Technie\PhysicsCreator\Scripts\QHull\Vertex.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Technie\PhysicsCreator\Scripts\TechniePhysicsCreator.asmdef" />
@@ -369,14 +369,14 @@
     <Reference Include="unityplastic">
       <HintPath>Library\PackageCache\com.unity.collab-proxy@2.1.0\Lib\Editor\PlasticSCM\unityplastic.dll</HintPath>
     </Reference>
-    <Reference Include="Unity.Plastic.Antlr3.Runtime">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@2.1.0\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
-    </Reference>
     <Reference Include="Unity.VisualScripting.YamlDotNet">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.9.1\Editor\VisualScripting.Core\Dependencies\YamlDotNet\Unity.VisualScripting.YamlDotNet.dll</HintPath>
     </Reference>
     <Reference Include="Sirenix.OdinInspector.Editor">
       <HintPath>Assets\Plugins\Sirenix\Assemblies\Sirenix.OdinInspector.Editor.dll</HintPath>
+    </Reference>
+    <Reference Include="Unity.Plastic.Antlr3.Runtime">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@2.1.0\Lib\Editor\PlasticSCM\Unity.Plastic.Antlr3.Runtime.dll</HintPath>
     </Reference>
     <Reference Include="Sirenix.OdinInspector.Attributes">
       <HintPath>Assets\Plugins\Sirenix\Assemblies\Sirenix.OdinInspector.Attributes.dll</HintPath>
@@ -387,14 +387,14 @@
     <Reference Include="Unity.VisualScripting.IonicZip">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.9.1\Editor\VisualScripting.Core\Dependencies\DotNetZip\Unity.VisualScripting.IonicZip.dll</HintPath>
     </Reference>
-    <Reference Include="log4netPlastic">
-      <HintPath>Library\PackageCache\com.unity.collab-proxy@2.1.0\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
-    </Reference>
     <Reference Include="Sirenix.Serialization.Config">
       <HintPath>Assets\Plugins\Sirenix\Assemblies\Sirenix.Serialization.Config.dll</HintPath>
     </Reference>
     <Reference Include="Sirenix.Utilities">
       <HintPath>Assets\Plugins\Sirenix\Assemblies\Sirenix.Utilities.dll</HintPath>
+    </Reference>
+    <Reference Include="log4netPlastic">
+      <HintPath>Library\PackageCache\com.unity.collab-proxy@2.1.0\Lib\Editor\PlasticSCM\log4netPlastic.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VisualScripting.Antlr3.Runtime">
       <HintPath>Library\PackageCache\com.unity.visualscripting@1.9.1\Runtime\VisualScripting.Flow\Dependencies\NCalc\Unity.VisualScripting.Antlr3.Runtime.dll</HintPath>

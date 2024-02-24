@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using AmalgamGames.Utils;
+using AmalgamGames.Conditionals;
 
 namespace AmalgamGames.Effects
 {
@@ -59,8 +60,15 @@ namespace AmalgamGames.Effects
             Invoke(nameof(ActivateEffect),_activationDelay);
         }
 
-        protected void DelayedActivateEffectWithParam(object param)
+        protected void DelayedActivateEffectWithParam(DynamicEvent sourceEvent, object param)
         {
+            foreach(ConditionalCheck conditional in sourceEvent.Conditionals)
+            {
+                if(!conditional.ApplyCheck(param))
+                {
+                    return;
+                }
+            }
             DelayedActivateEffect();
         }
 
@@ -69,8 +77,15 @@ namespace AmalgamGames.Effects
             Invoke(nameof(DeactivateEffect),_deactivationDelay);
         }
 
-        protected void DelayedDeactivateEffectWithParam(object param)
+        protected void DelayedDeactivateEffectWithParam(DynamicEvent sourceEvent, object param)
         {
+            foreach (ConditionalCheck conditional in sourceEvent.Conditionals)
+            {
+                if (!conditional.ApplyCheck(param))
+                {
+                    return;
+                }
+            }
             DelayedDeactivateEffect();
         }
 
@@ -90,11 +105,19 @@ namespace AmalgamGames.Effects
 
                     if (activateEvent.EventHasParam)
                     {
-                        activateHandler = Tools.WireUpEvent(rawObj, activateEvent.EventName, this, nameof(DelayedActivateEffectWithParam));
+                        Action<object> dynamicEvent = (param) => { DelayedActivateEffectWithParam(activateEvent, param); };
+
+                        activateHandler = Tools.WireUpEvent(rawObj, activateEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
+
+                        //activateHandler = Tools.WireUpEvent(rawObj, activateEvent.EventName, this, nameof(DelayedActivateEffectWithParam));
                     }
                     else
                     {
-                        activateHandler = Tools.WireUpEvent(rawObj, activateEvent.EventName, this, nameof(DelayedActivateEffect));
+                        Action dynamicEvent = () => { DelayedActivateEffect(); };
+
+                        activateHandler = Tools.WireUpEvent(rawObj, activateEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
+
+                        //activateHandler = Tools.WireUpEvent(rawObj, activateEvent.EventName, this, nameof(DelayedActivateEffect));
                     }
                     activateEvent.EventHandler = activateHandler;
                 }
@@ -107,11 +130,19 @@ namespace AmalgamGames.Effects
 
                     if (deactivateEvent.EventHasParam)
                     {
-                        deactivateHandler = Tools.WireUpEvent(rawObj, deactivateEvent.EventName, this, nameof(DelayedDeactivateEffectWithParam));
+                        Action<object> dynamicEvent = (param) => { DelayedDeactivateEffectWithParam(deactivateEvent, param); };
+
+                        deactivateHandler = Tools.WireUpEvent(rawObj, deactivateEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
+
+                        //deactivateHandler = Tools.WireUpEvent(rawObj, deactivateEvent.EventName, this, nameof(DelayedDeactivateEffectWithParam));
                     }
                     else
                     {
-                        deactivateHandler = Tools.WireUpEvent(rawObj, deactivateEvent.EventName, this, nameof(DelayedDeactivateEffect));
+                        Action dynamicEvent = () => { DelayedDeactivateEffect(); };
+
+                        deactivateHandler = Tools.WireUpEvent(rawObj, deactivateEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
+
+                        //deactivateHandler = Tools.WireUpEvent(rawObj, deactivateEvent.EventName, this, nameof(DelayedDeactivateEffect));
                     }
                     deactivateEvent.EventHandler = deactivateHandler;
                 }

@@ -11,13 +11,16 @@ namespace AmalgamGames.Abilities
     {
 
         [Title("Settings")]
-        [SerializeField] private float _nudgeForce = 1;
+        [SerializeField] private float _nudgeForce = 5000f;
         [SerializeField] private float _juiceDrainPerSecond = 10f;
         [Space]
         [Title("Components")]
         [SerializeField] private Transform _rocketTransform;
         [SerializeField] private SharedFloatValue _juice;
         [SerializeField] private Rigidbody _rb;
+        [Space]
+        [FoldoutGroup("Dynamic Events")][SerializeField] private EventHookup[] _hookupEvents;
+
 
         // Events
         public event Action<object> OnNudgeDirectionChanged;
@@ -28,17 +31,16 @@ namespace AmalgamGames.Abilities
 
         // Subscriptions
         private bool _isSubscribedToInput = false;
-        private bool _isSubscribedToRocket = false;
+        private bool _isSubscribedToEvents = false;
 
         // Nudging
         private bool _canNudge = false;
         private Vector2 _nudgeDirection = Vector2.zero;
-        private float _nudgeForceMultiplier = 0;
+        private float _nudgeForceMultiplier = 1;
         private bool _isNudging = false;
 
         // COMPONENTS
         private IInputProcessor _inputProcessor;
-        private IRocketController _rocketController;
 
         // Coroutines
         private Coroutine _nudgeMultiplierRoutine = null;
@@ -48,31 +50,30 @@ namespace AmalgamGames.Abilities
         private void Start()
         {
             _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketTransform);
-            _rocketController = Tools.GetFirstComponentInHierarchy<IRocketController>(_rocketTransform);
 
             SubscribeToInput();
-            SubscribeToRocket();
+            HookUpEvents();
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
             SubscribeToInput();
-            SubscribeToRocket();
+            HookUpEvents();
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
             UnsubscribeFromInput();
-            UnsubscribeFromRocket();
+            UnhookEvents();
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             UnsubscribeFromInput();
-            UnsubscribeFromRocket();
+            UnhookEvents();
         }
 
         public override void ManagedFixedUpdate(float deltaTime)
@@ -120,6 +121,16 @@ namespace AmalgamGames.Abilities
 
         #region Nudging
 
+        private void EnableNudging()
+        {
+            _canNudge = true;
+        }
+
+        private void DisableNudging()
+        {
+            _canNudge = false;
+        }
+
         private void OnNudge(Vector2 nudgeDelta)
         {
             _nudgeDirection = nudgeDelta;
@@ -129,9 +140,9 @@ namespace AmalgamGames.Abilities
 
         #region Charging
 
-        private void OnChargingStart(ChargingInfo chargingInfo)
+        private void OnChargingStart()
         {
-            _canNudge = false;
+            DisableNudging();
         }
 
         private void OnLaunch(LaunchInfo launchInfo)
@@ -141,15 +152,21 @@ namespace AmalgamGames.Abilities
                 StopCoroutine(_nudgeMultiplierRoutine);
             }
             _nudgeMultiplierRoutine = StartCoroutine(Tools.lerpFloatOverTime(0, 1, launchInfo.BurnDuration, (value) =>
-            {
-                _nudgeForceMultiplier = value;
-            },
-            () =>
-            {
-                _nudgeMultiplierRoutine = null;
-            }
-                ));
-            _canNudge = true;
+                {
+                    _nudgeForceMultiplier = value;
+                },
+                () =>
+                {
+                    _nudgeMultiplierRoutine = null;
+                }
+            ));
+            
+            EnableNudging();
+        }
+
+        private void OnBurnComplete()
+        {
+            EnableNudging();
         }
 
         #endregion
@@ -213,21 +230,32 @@ namespace AmalgamGames.Abilities
             }
         }
 
-        private void SubscribeToRocket()
+        private void HookUpEvents()
         {
-            if(!_isSubscribedToRocket && _rocketController != null)
+            if (!_isSubscribedToEvents)
             {
-                _rocketController.OnChargingStart += OnChargingStart;
-                _rocketController.OnLaunch += OnLaunch;
+                foreach (EventHookup hookup in _hookupEvents)
+                {
+                    DynamicEvent sourceEvent = hookup.SourceEvent;
+                    object rawObj = (object)sourceEvent.EventSource;
+
+                    Delegate activateHandler = Tools.WireUpEvent(rawObj, sourceEvent.EventName, this, hookup.TargetInternalMethod);
+                    sourceEvent.EventHandler = activateHandler;
+                }
+                _isSubscribedToEvents = true;
             }
         }
 
-        private void UnsubscribeFromRocket()
+        private void UnhookEvents()
         {
-            if (!_isSubscribedToRocket && _rocketController != null)
+            if (_isSubscribedToEvents)
             {
-                _rocketController.OnChargingStart -= OnChargingStart;
-                _rocketController.OnLaunch -= OnLaunch;
+                foreach (EventHookup hookup in _hookupEvents)
+                {
+                    DynamicEvent sourceEvent = hookup.SourceEvent;
+                    Tools.DisconnectEvent((object)sourceEvent.EventSource, sourceEvent.EventName, sourceEvent.EventHandler);
+                }
+                _isSubscribedToEvents = false;
             }
         }
 

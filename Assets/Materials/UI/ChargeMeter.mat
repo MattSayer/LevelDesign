@@ -7,10 +7,11 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: FilledMeter
+  m_Name: ChargeMeter
   m_Shader: {fileID: -6465566751694194690, guid: c9308c702a540564c931c546da636fe4,
     type: 3}
-  m_ValidKeywords: []
+  m_ValidKeywords:
+  - _USEGRADIENT
   m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
@@ -47,8 +48,14 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
-    - _Fill: 1
+    - _Fill: 0
+    - _HorizontalFill: 0
+    - _PositiveDirection: 0
+    - _USEGRADIENT: 1
+    - _USEOVERLAY: 0
     m_Colors:
+    - _EmptyColour: {r: 1, g: 0.88915, b: 0, a: 1}
+    - _FullColour: {r: 1, g: 0, b: 0, a: 1}
     - _OverlayColour: {r: 0.922, g: 0.87499607, b: 0.87499607, a: 1}
     - _OverlayTiling: {r: 3, g: 3, b: 0, a: 0}
     - _ScrollSpeed: {r: -0.5, g: 0, b: 0, a: 0}

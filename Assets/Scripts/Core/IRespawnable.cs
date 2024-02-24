@@ -12,4 +12,14 @@ namespace AmalgamGames.Core
         OnRespawnEnd,
         BeforeRespawn
     }
+
+    public class RespawnEventInfo
+    {
+        public RespawnEvent Event;
+
+        public RespawnEventInfo(RespawnEvent @event)
+        {
+            Event = @event;
+        }
+    }
 }

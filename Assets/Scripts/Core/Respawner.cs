@@ -24,7 +24,7 @@ namespace AmalgamGames.Core
         [SerializeField] private Transform _respawnPoint;
 
         // EVENTS
-        public event Action<RespawnEvent> OnRespawnEvent;
+        public event Action<RespawnEventInfo> OnRespawnEvent;
         
         // COMPONENTS
         private IInputProcessor _inputProcessor;
@@ -86,7 +86,7 @@ namespace AmalgamGames.Core
                 respawnable.OnRespawnEvent(RespawnEvent.BeforeRespawn);
             }
 
-            OnRespawnEvent?.Invoke(RespawnEvent.BeforeRespawn);
+            OnRespawnEvent?.Invoke(new RespawnEventInfo(RespawnEvent.BeforeRespawn));
 
             // Fade screen down
 
@@ -99,7 +99,7 @@ namespace AmalgamGames.Core
                 respawnable.OnRespawnEvent(RespawnEvent.OnRespawnStart);
             }
 
-            OnRespawnEvent?.Invoke(RespawnEvent.OnRespawnStart);
+            OnRespawnEvent?.Invoke(new RespawnEventInfo(RespawnEvent.OnRespawnStart));
 
             // Fade screen back up
 
@@ -110,7 +110,7 @@ namespace AmalgamGames.Core
                 respawnable.OnRespawnEvent(RespawnEvent.OnRespawnEnd);
             }
 
-            OnRespawnEvent?.Invoke(RespawnEvent.OnRespawnEnd);
+            OnRespawnEvent?.Invoke(new RespawnEventInfo(RespawnEvent.OnRespawnEnd));
 
         }
 
@@ -184,7 +184,7 @@ namespace AmalgamGames.Core
                 respawnable.OnRespawnEvent(RespawnEvent.OnCollision);
             }
 
-            OnRespawnEvent?.Invoke(RespawnEvent.OnCollision);
+            OnRespawnEvent?.Invoke(new RespawnEventInfo(RespawnEvent.OnCollision));
 
             yield return new WaitForSeconds(_respawnDelay);
 

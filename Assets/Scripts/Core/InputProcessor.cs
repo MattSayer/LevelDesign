@@ -14,8 +14,8 @@ namespace AmalgamGames.Core
 
         public event Action<Vector2> OnCameraInputChange;
         public event Action<Vector2> OnNudgeInputChange;
-        public event Action<float> OnSlowMoChargeInputChange;
-        public event Action<float> OnRealtimeChargeInputChange;
+        public event Action<float> OnChargeInputChange;
+        public event Action<float> OnSlowmoInputChange;
         public event Action OnRespawn;
         
 
@@ -29,16 +29,16 @@ namespace AmalgamGames.Core
             OnCameraInputChange?.Invoke(rawInput);
         }
 
-        public void OnSlowMoChargeInput(InputAction.CallbackContext context)
+        public void OnSlowmoInput(InputAction.CallbackContext context)
         {
             float rawInput = context.ReadValue<float>();
-            OnSlowMoChargeInputChange?.Invoke(rawInput);
+            OnSlowmoInputChange?.Invoke(rawInput);
         }
 
-        public void OnRealtimeChargeInput(InputAction.CallbackContext context)
+        public void OnChargeInput(InputAction.CallbackContext context)
         {
             float rawInput = context.ReadValue<float>();
-            OnRealtimeChargeInputChange?.Invoke(rawInput);
+            OnChargeInputChange?.Invoke(rawInput);
         }
 
         public void OnRespawnInput(InputAction.CallbackContext context)
@@ -63,8 +63,8 @@ namespace AmalgamGames.Core
     {
         public event Action<Vector2> OnCameraInputChange;
         public event Action<Vector2> OnNudgeInputChange;
-        public event Action<float> OnSlowMoChargeInputChange;
-        public event Action<float> OnRealtimeChargeInputChange;
+        public event Action<float> OnSlowmoInputChange;
+        public event Action<float> OnChargeInputChange;
         public event Action OnRespawn;
     }
 }

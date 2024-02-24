@@ -1,27 +1,28 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using AmalgamGames.Conditionals;
 using AmalgamGames.Core;
 using AmalgamGames.Effects;
+using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace AmalgamGames.Abilities
 {
-    public class Slowmo : MonoBehaviour, IRestartable, IRespawnable
+    public class Slowmo : MonoBehaviour, IRestartable, IRespawnable, IPausable
     {
         [Title("Events")]
-        [FoldoutGroup("Events")][SerializeField] private DynamicEvent[] _activateEvents;
-        [FoldoutGroup("Events")][SerializeField] private DynamicEvent[] _deactivateEvents;
-        [FoldoutGroup("Events")][SerializeField] private DynamicEvent _reenableEvent;
+        [FoldoutGroup("Events")][SerializeField] private DynamicEvent[] _cancelEvents;
+        [FoldoutGroup("Events")][SerializeField] private DynamicEvent[] _reenableEvents;
         [Title("Settings")]
         [SerializeField] private float _juiceDrainRatePerSecond = 10;
         [SerializeField] private float _slowMoTimeScale = 0.5f;
         [SerializeField] private float _timeScaleTransitionTime = 0.5f;
         [Space]
         [Title("Components")]
-        [SerializeField] private Transform _rocketControllerTransform;
+        [SerializeField] private Transform _rocketObject;
         [SerializeField] private SharedFloatValue _juice;
 
         // CONSTANTS
@@ -33,22 +34,30 @@ namespace AmalgamGames.Abilities
 
         // STATE
         private bool _isSubscribedToEvents = false;
+        private bool _isSubscribedToInput = false;
 
         private bool _isActive = false;
         private bool _canActivate = false;
+        private bool _isPaused = false;
+        
+        private bool _isLocked = false;
 
-        // DELEGATES
-        private List<Delegate> _activateHandlers;
-        private List<Delegate> _deactivateHandlers;
+        private bool _cachedIsActive = false;
 
         // COROUTINES
         private Coroutine _drainRoutine = null;
         private Coroutine _lerpTimescaleRoutine = null;
 
+        // COMPONENTS
+        private IInputProcessor _inputProcessor;
+
         #region Lifecycle
 
         private void Start()
         {
+            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketObject);
+            
+            SubscribeToInput();
             SubscribeToEvents();
 
             PHYSICS_TIMESTEP = Time.fixedDeltaTime;
@@ -56,16 +65,19 @@ namespace AmalgamGames.Abilities
 
         private void OnEnable()
         {
+            SubscribeToInput();
             SubscribeToEvents();
         }
 
         private void OnDisable()
         {
+            UnsubscribeFromInput();
             UnsubscribeFromEvents();
         }
 
         private void OnDestroy()
         {
+            UnsubscribeFromInput();
             UnsubscribeFromEvents();
         }
 
@@ -92,15 +104,23 @@ namespace AmalgamGames.Abilities
 
         #endregion
 
+        #region Pausing
+
+        public void Pause()
+        {
+            _isPaused = true;
+        }
+
+        public void Resume()
+        {
+            _isPaused = false;
+
+        }
+
+        #endregion
+
         #region Charging/Launching
 
-        private void OnChargingStart(ChargingType chargingType)
-        {
-            if(chargingType == ChargingType.Slowmo)
-            {
-                ActivateSlowmo();
-            }
-        }
 
         private void OnLaunch(LaunchInfo launchInfo)
         {
@@ -113,44 +133,50 @@ namespace AmalgamGames.Abilities
             }
         }
 
-        private void OnActivateEvent()
+        private void OnSlowmoInputChange(float inputVal)
         {
-            ActivateSlowmo();
-        }
-
-        private void OnActivateEventWithParam(object param)
-        {
-            if(param.GetType() == typeof(ChargingInfo))
+            if (_isPaused)
             {
-                ChargingInfo chargingInfo = (ChargingInfo)param;
-                if(chargingInfo.chargingType == ChargingType.Slowmo)
-                {
-                    ActivateSlowmo();
-                }
+                _cachedIsActive = inputVal > 0;
             }
             else
             {
-                ActivateSlowmo();
+                if (inputVal > 0 && !_isActive)
+                {
+                    ActivateSlowmo();
+                }
+                else if (inputVal == 0 && _isActive)
+                {
+                    EndSlowmo();
+                }
             }
-        }
 
-        private void OnDeactivateEvent()
-        {
-            EndSlowmo();
-        }
-
-        private void OnDeactivateEventWithParam(object param)
-        {
-            EndSlowmo();
+            // Remove lock when trigger is released
+            if(inputVal == 0)
+            {
+                _isLocked = false;
+            }
         }
 
         #endregion
 
         #region Slow-mo
 
+        private void ApplyCachedSlowmo()
+        {
+            if(_cachedIsActive && !_isActive)
+            {
+                ActivateSlowmo();
+            }
+            else if (!_cachedIsActive && _isActive)
+            {
+                EndSlowmo();
+            }
+        }
+
         private void ActivateSlowmo()
         {
-            if(!_isActive && _canActivate && HasJuice())
+            if(!_isActive && _canActivate && HasJuice() && !_isLocked)
             {
                 _isActive = true;
 
@@ -216,8 +242,15 @@ namespace AmalgamGames.Abilities
             }
         }
 
-        private void ReenableSlowmoWithParam(object param)
+        private void ReenableSlowmoWithParam(DynamicEvent sourceEvent, object param)
         {
+            foreach (ConditionalCheck conditional in sourceEvent.Conditionals)
+            {
+                if (!conditional.ApplyCheck(param))
+                {
+                    return;
+                }
+            }
             ReenableSlowmo();
         }
 
@@ -232,7 +265,22 @@ namespace AmalgamGames.Abilities
 
                 OnSlowmoEnd?.Invoke();
                 _isActive = false;
+
+                // Lock slowmo until trigger is fully released
+                _isLocked = true;
             }
+        }
+
+        private void OnCancelEventWithParam(DynamicEvent sourceEvent, object param)
+        {
+            foreach (ConditionalCheck conditional in sourceEvent.Conditionals)
+            {
+                if (!conditional.ApplyCheck(param))
+                {
+                    return;
+                }
+            }
+            CancelSlowmo();
         }
 
         #endregion
@@ -263,61 +311,68 @@ namespace AmalgamGames.Abilities
 
         #region Subscriptions
 
+        private void UnsubscribeFromInput()
+        {
+            if (_isSubscribedToInput && _inputProcessor != null)
+            {
+                _inputProcessor.OnSlowmoInputChange -= OnSlowmoInputChange;
+                _isSubscribedToInput = false;
+            }
+        }
+
+        private void SubscribeToInput()
+        {
+            if (!_isSubscribedToInput && _inputProcessor != null)
+            {
+                _inputProcessor.OnSlowmoInputChange += OnSlowmoInputChange;
+                _isSubscribedToInput = true;
+            }
+        }
+
         private void SubscribeToEvents()
         {
             if (!_isSubscribedToEvents)
             {
-                foreach (DynamicEvent activateEvent in _activateEvents)
+                foreach(DynamicEvent cancelEvent in _cancelEvents)
                 {
-                    object rawObj = (object)activateEvent.EventSource;
+                    object rawObj = (object)cancelEvent.EventSource;
 
-                    Delegate activateHandler;
+                    Delegate cancelHandler;
 
-                    if (activateEvent.EventHasParam)
+                    if (cancelEvent.EventHasParam)
                     {
-                        activateHandler = Tools.WireUpEvent(rawObj, activateEvent.EventName, this, nameof(OnActivateEventWithParam));
+                        Action<object> dynamicEvent = (param) => { OnCancelEventWithParam(cancelEvent, param); };
+
+                        cancelHandler = Tools.WireUpEvent(rawObj, cancelEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
                     }
                     else
                     {
-                        activateHandler = Tools.WireUpEvent(rawObj, activateEvent.EventName, this, nameof(OnActivateEvent));
+                        Action dynamicEvent = () => { CancelSlowmo(); };
+
+                        cancelHandler = Tools.WireUpEvent(rawObj, cancelEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
                     }
-                    activateEvent.EventHandler = activateHandler;
+                    cancelEvent.EventHandler = cancelHandler;
                 }
 
-                foreach (DynamicEvent deactivateEvent in _deactivateEvents)
+                foreach (DynamicEvent reenableEvent in _reenableEvents)
                 {
-                    object rawObj = (object)deactivateEvent.EventSource;
-
-                    Delegate deactivateHandler;
-
-                    if (deactivateEvent.EventHasParam)
-                    {
-                        deactivateHandler = Tools.WireUpEvent(rawObj, deactivateEvent.EventName, this, nameof(OnDeactivateEventWithParam));
-                    }
-                    else
-                    {
-                        deactivateHandler = Tools.WireUpEvent(rawObj, deactivateEvent.EventName, this, nameof(OnDeactivateEvent));
-                    }
-                    deactivateEvent.EventHandler = deactivateHandler;
-                }
-
-                if(_reenableEvent.EventSource != null)
-                {
-                    object rawObj = (object)_reenableEvent.EventSource;
+                    object rawObj = (object)reenableEvent.EventSource;
 
                     Delegate reenableHandler;
 
-                    if(_reenableEvent.EventHasParam)
+                    if (reenableEvent.EventHasParam)
                     {
-                        reenableHandler = Tools.WireUpEvent(rawObj, _reenableEvent.EventName, this, nameof(ReenableSlowmoWithParam));
+                        Action<object> dynamicEvent = (param) => { ReenableSlowmoWithParam(reenableEvent, param); };
+
+                        reenableHandler = Tools.WireUpEvent(rawObj, reenableEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
                     }
                     else
                     {
-                        reenableHandler = Tools.WireUpEvent(rawObj, _reenableEvent.EventName, this, nameof(ReenableSlowmo));
+                        Action dynamicEvent = () => { ReenableSlowmo(); };
+
+                        reenableHandler = Tools.WireUpEvent(rawObj, reenableEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
                     }
-
-                    _reenableEvent.EventHandler = reenableHandler;
-
+                    reenableEvent.EventHandler = reenableHandler;
                 }
 
                 _isSubscribedToEvents = true;
@@ -328,19 +383,14 @@ namespace AmalgamGames.Abilities
         {
             if (_isSubscribedToEvents)
             {
-                foreach (DynamicEvent activateEvent in _activateEvents)
+                foreach (DynamicEvent cancelEvent in _cancelEvents)
                 {
-                    Tools.DisconnectEvent((object)activateEvent.EventSource, activateEvent.EventName, activateEvent.EventHandler);
+                    Tools.DisconnectEvent((object)cancelEvent.EventSource, cancelEvent.EventName, cancelEvent.EventHandler);
                 }
 
-                foreach (DynamicEvent deactivateEvent in _deactivateEvents)
+                foreach (DynamicEvent reenableEvent in _reenableEvents)
                 {
-                    Tools.DisconnectEvent((object)deactivateEvent.EventSource, deactivateEvent.EventName, deactivateEvent.EventHandler);
-                }
-
-                if(_reenableEvent.EventSource != null)
-                {
-                    Tools.DisconnectEvent((object)_reenableEvent.EventSource, _reenableEvent.EventName, _reenableEvent.EventHandler);
+                    Tools.DisconnectEvent((object)reenableEvent.EventSource, reenableEvent.EventName, reenableEvent.EventHandler);
                 }
 
                 _isSubscribedToEvents = false;

@@ -7,13 +7,13 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Smoke
+  m_Name: Fire
   m_Shader: {fileID: -6465566751694194690, guid: c15f046b0b0691b47a2b4127a1e04f12,
     type: 3}
   m_ValidKeywords:
-  - _RECEIVE_SHADOWS_OFF
   - _SURFACE_TYPE_TRANSPARENT
-  m_InvalidKeywords: []
+  m_InvalidKeywords:
+  - _RECEIVE_SHADOWS_OFF
   m_LightmapFlags: 0
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -94,7 +94,7 @@ Material:
     - _CastShadows: 0
     - _ClearCoatMask: 0
     - _ClearCoatSmoothness: 0
-    - _ColorIsEmission: 0
+    - _ColorIsEmission: 1
     - _ColorMode: 0
     - _Cull: 2
     - _Cutoff: 0.5
@@ -112,7 +112,7 @@ Material:
     - _GlossMapScale: 0
     - _Glossiness: 0
     - _GlossyReflections: 0
-    - _IntensityMultiplier: 1
+    - _IntensityMultiplier: 3
     - _LightingEnabled: 1
     - _Metallic: 0
     - _Mode: 0

@@ -19,7 +19,7 @@ namespace AmalgamGames.Core
         [SerializeField] private RocketConfig _config;
         
         // EVENTS
-        public event Action<ChargingInfo> OnChargingStart;
+        public event Action OnChargingStart;
         public event Action<LaunchInfo> OnLaunch;
         public event Action OnBurnComplete;
         public event Action<object> OnVelocityChanged;
@@ -42,13 +42,12 @@ namespace AmalgamGames.Core
 
         // Charging
         private float _chargeLevel = 0;
-        private ChargingType _chargingType;
         private bool _isCharging = false;
         private bool _canCharge = true;
         private bool _cachedCanCharge = true;
-        
+
         // Cached charging
-        private Dictionary<ChargingType, float> _cachedChargeLevels = new Dictionary<ChargingType, float>();
+        private float _cachedChargeLevel = 0;
         private bool _runDelayedChargeCheck = false;
 
         // Burning
@@ -170,6 +169,14 @@ namespace AmalgamGames.Core
             _isBurning = false;
         }
 
+        private void CacheChargeLevel()
+        {
+            if(_cachedChargeLevel == 0)
+            {
+                _cachedChargeLevel = _chargeLevel;
+            }
+        }
+
         private void ResetChargeState()
         {
             _isCharging = false;
@@ -178,10 +185,8 @@ namespace AmalgamGames.Core
 
         private void DisableRocket()
         {
-            if (!_cachedChargeLevels.ContainsKey(_chargingType) || _cachedChargeLevels[_chargingType] == 0)
-            {
-                _cachedChargeLevels[_chargingType] = _chargeLevel;
-            }
+            CacheChargeLevel();
+
             ResetChargeState();
             
             StopBurnRoutine();
@@ -193,6 +198,8 @@ namespace AmalgamGames.Core
 
         private void ResetRocket()
         {
+            CacheChargeLevel();
+
             ResetChargeState();
 
             StopBurnRoutine();
@@ -229,35 +236,20 @@ namespace AmalgamGames.Core
         
         private void CheckDelayedChargeForce()
         {
-            // Use whichever trigger is held down further as the active charge type
-            float cachedCharge = 0;
-            ChargingType cachedChargingType = ChargingType.Realtime;
-            foreach(ChargingType chargingType in _cachedChargeLevels.Keys.ToList())
-            {
-                if (_cachedChargeLevels[chargingType] > cachedCharge)
-                {
-                    cachedCharge = _cachedChargeLevels[chargingType];
-                    cachedChargingType = chargingType;
-                }
-                // Clear cached value
-                _cachedChargeLevels[chargingType] = 0;
-            }
-
-
             // Start charge immediately if trigger was held down while game was paused
-            if (!_isCharging && cachedCharge > 0)
+            if (!_isCharging && _cachedChargeLevel > 0)
             {
-                OnCharge(cachedChargingType, cachedCharge);
+                OnChargeInputChange(_cachedChargeLevel);
             }
             // If player was holding trigger when they paused, and they're still holding it now
             // Set the actual charge force to the current charge force, ignoring launch criteria
             // so it doesn't launch if they soften their pressure on the trigger while paused
-            else if (_isCharging && cachedCharge > 0)
+            else if (_isCharging && _cachedChargeLevel > 0)
             {
-                _chargeLevel = cachedCharge;
+                _chargeLevel = _cachedChargeLevel;
                 OnChargeLevelChanged?.Invoke(_chargeLevel);
             }
-            else if(_isCharging && cachedCharge == 0)
+            else if(_isCharging)
             {
                 if(_canLaunch)
                 {
@@ -269,38 +261,24 @@ namespace AmalgamGames.Core
                     _chargeLevel = 0;
                 }
             }
+
+            // Clear cached charge level
+            _cachedChargeLevel = 0;
         }
 
         #endregion
 
         #region Charging
 
-        private void OnSlowmoCharge(float chargeLevel)
+        private void OnChargeInputChange(float chargeLevel)
         {
-            OnCharge(ChargingType.Slowmo, chargeLevel);
-        }
-
-        private void OnRealtimeCharge(float chargeLevel)
-        {
-            OnCharge(ChargingType.Realtime, chargeLevel);
-        }
-
-        private void OnCharge(ChargingType chargingType, float chargeLevel)
-        {
-            // If player is already charging one trigger and pulls the other trigger, just ignore it
-            if(_isCharging && _chargingType != chargingType)
-            {
-                return;
-            }
-
             if (_canCharge)
             {
                 // Just started charging
                 if (!_isCharging && _chargeLevel == 0 && chargeLevel > 0)
                 {
                     _isCharging = true;
-                    _chargingType = chargingType;
-                    OnChargingStart?.Invoke(new ChargingInfo(chargingType));
+                    OnChargingStart?.Invoke();
 
                     _targetOrienter?.ToggleMode(OrientMode.Source);
 
@@ -320,9 +298,9 @@ namespace AmalgamGames.Core
             }
             else
             {
-                _cachedChargeLevels[chargingType] = chargeLevel;
+                _cachedChargeLevel = chargeLevel;
 
-                Debug.Log($"Delayed charging: {chargeLevel} | {chargingType}");
+                Debug.Log($"Delayed charging: {chargeLevel}");
             }
         }
 
@@ -450,8 +428,7 @@ namespace AmalgamGames.Core
         {
             if (_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnSlowMoChargeInputChange -= OnSlowmoCharge;
-                _inputProcessor.OnRealtimeChargeInputChange -= OnRealtimeCharge;
+                _inputProcessor.OnChargeInputChange -= OnChargeInputChange;
                 _isSubscribedToInput = false;
             }
         }
@@ -460,8 +437,7 @@ namespace AmalgamGames.Core
         {
             if (!_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnSlowMoChargeInputChange += OnSlowmoCharge;
-                _inputProcessor.OnRealtimeChargeInputChange += OnRealtimeCharge;
+                _inputProcessor.OnChargeInputChange += OnChargeInputChange;
                 _isSubscribedToInput = true;
             }
         }
@@ -499,7 +475,7 @@ namespace AmalgamGames.Core
 
     public interface IRocketController
     {
-        public event Action<ChargingInfo> OnChargingStart;
+        public event Action OnChargingStart;
         public event Action<LaunchInfo> OnLaunch;
         public event Action OnBurnComplete;
     }
