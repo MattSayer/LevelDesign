@@ -19,6 +19,7 @@ namespace AmalgamGames.Control
         [Range(0f,1f)]
         [SerializeField] private float _burnRotationSpeedLimit = 0.1f;
         [SerializeField] private float _speedLimitTransitionTime = 1;
+        [SerializeField] private AnimationCurve _timeScaleSpeedMultiplier;
         [Space]
         [Title("Rotation")]
         [MinMaxSlider(-90, 90)]
@@ -126,7 +127,7 @@ namespace AmalgamGames.Control
             if(_isActive)
             {
                 UpdatePosition(Time.unscaledDeltaTime);
-                UpdateCameraRotation(Time.unscaledDeltaTime);
+                UpdateCameraRotation(Time.unscaledDeltaTime * _timeScaleSpeedMultiplier.Evaluate(Time.timeScale));
             }
         }
 

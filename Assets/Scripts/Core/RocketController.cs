@@ -181,6 +181,7 @@ namespace AmalgamGames.Core
         {
             _isCharging = false;
             _chargeLevel = 0;
+            OnChargeLevelChanged?.Invoke(_chargeLevel);
         }
 
         private void DisableRocket()

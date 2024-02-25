@@ -17,6 +17,7 @@ namespace AmalgamGames.Core
         public event Action<float> OnChargeInputChange;
         public event Action<float> OnSlowmoInputChange;
         public event Action OnRespawn;
+        public event Action OnRestart;
         
 
         #endregion
@@ -55,6 +56,14 @@ namespace AmalgamGames.Core
             OnNudgeInputChange?.Invoke(rawInput);
         }
 
+        public void OnRestartInput(InputAction.CallbackContext context)
+        {
+            if(context.phase == InputActionPhase.Started)
+            {
+                OnRestart?.Invoke();
+            }
+        }
+
         #endregion
 
     }
@@ -66,5 +75,6 @@ namespace AmalgamGames.Core
         public event Action<float> OnSlowmoInputChange;
         public event Action<float> OnChargeInputChange;
         public event Action OnRespawn;
+        public event Action OnRestart;
     }
 }
