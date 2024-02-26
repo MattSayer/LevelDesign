@@ -71,7 +71,8 @@
     <Compile Include="Assets\Scripts\Effects\RumbleController.cs" />
     <Compile Include="Assets\Scripts\Core\IRestartable.cs" />
     <Compile Include="Assets\Scripts\Transformations\Transformation.cs" />
-    <Compile Include="Assets\Scripts\Abilities\SharedFloatValue.cs" />
+    <Compile Include="Assets\Scripts\Visualisation\BezierPathVisualisation.cs" />
+    <Compile Include="Assets\Scripts\Core\SharedFloatValue.cs" />
     <Compile Include="Assets\Scripts\Control\TargetOrienter.cs" />
     <Compile Include="Assets\Scripts\Abilities\Slowmo.cs" />
     <Compile Include="Assets\Scripts\Transformations\RaiseToPowerTransformation.cs" />
@@ -79,6 +80,7 @@
     <Compile Include="Assets\Scripts\Effects\VignetteEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\ScreenShakeEffect.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedFixedBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Visualisation\TransformPathVisualisation.cs" />
     <Compile Include="Assets\Scripts\CustomEditor\RequireInterfaceAttribute.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedUpdater.cs" />
     <Compile Include="Assets\Scripts\Core\IRespawnable.cs" />
@@ -91,6 +93,7 @@
     <Compile Include="Assets\Scripts\Utils\ExternalTimeProvider.cs" />
     <Compile Include="Assets\Scripts\Core\IValueProvider.cs" />
     <Compile Include="Assets\Scripts\SceneManagement\PhysicsSimulation.cs" />
+    <Compile Include="Assets\Scripts\Control\BezierPathFollower.cs" />
     <Compile Include="Assets\Scripts\Utils\DependencyRequest.cs" />
     <Compile Include="Assets\Scripts\Simulation\SimulatedRocketController.cs" />
     <Compile Include="Assets\Scripts\Update\IUpdateable.cs" />
@@ -102,14 +105,15 @@
     <Compile Include="Assets\Scripts\Utils\Easing.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketTrajectory.cs" />
+    <Compile Include="Assets\Scripts\Control\TransformPathFollower.cs" />
     <Compile Include="Assets\Scripts\Effects\ObjectToggler.cs" />
     <Compile Include="Assets\Scripts\Utils\Tools.cs" />
     <Compile Include="Assets\Scripts\Control\ObjectRotator.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Control\BezierPathFollower.cs" />
-    <Compile Include="Assets\Scripts\Control\TransformPathFollower.cs" />
-    <Compile Include="Assets\Scripts\Visualisation\TransformPathVisualisation.cs" />
+    <Compile Include="Assets\Scripts\Scoring\ScoreTracker.cs" />
+    <Compile Include="Assets\Scripts\Core\SharedIntValue.cs" />
+    <Compile Include="Assets\Scripts\Scoring\ScoreTrigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -915,13 +919,13 @@
       <Project>{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}</Project>
       <Name>Sirenix.OdinInspector.Modules.UnityMathematics</Name>
     </ProjectReference>
-    <ProjectReference Include="PathCreatorEditor.csproj">
-      <Project>{E93B410B-CECF-3014-070C-F6BFC47C73DF}</Project>
-      <Name>PathCreatorEditor</Name>
-    </ProjectReference>
     <ProjectReference Include="PathCreator.csproj">
       <Project>{CC3E22C5-8A55-B897-584C-4BB8C7C3BE3C}</Project>
       <Name>PathCreator</Name>
+    </ProjectReference>
+    <ProjectReference Include="PathCreatorEditor.csproj">
+      <Project>{E93B410B-CECF-3014-070C-F6BFC47C73DF}</Project>
+      <Name>PathCreatorEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

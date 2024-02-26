@@ -889,13 +889,13 @@
       <Project>{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}</Project>
       <Name>Sirenix.OdinInspector.Modules.UnityMathematics</Name>
     </ProjectReference>
-    <ProjectReference Include="PathCreatorEditor.csproj">
-      <Project>{E93B410B-CECF-3014-070C-F6BFC47C73DF}</Project>
-      <Name>PathCreatorEditor</Name>
-    </ProjectReference>
     <ProjectReference Include="PathCreator.csproj">
       <Project>{CC3E22C5-8A55-B897-584C-4BB8C7C3BE3C}</Project>
       <Name>PathCreator</Name>
+    </ProjectReference>
+    <ProjectReference Include="PathCreatorEditor.csproj">
+      <Project>{E93B410B-CECF-3014-070C-F6BFC47C73DF}</Project>
+      <Name>PathCreatorEditor</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

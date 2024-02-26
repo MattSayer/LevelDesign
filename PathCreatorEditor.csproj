@@ -58,9 +58,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\PathCreator\Core\Editor\Helper\ScreenSpacePolyLine.cs" />
-    <Compile Include="Assets\PathCreator\Core\Editor\Helper\MouseUtility.cs" />
-    <Compile Include="Assets\PathCreator\Core\Editor\Helper\PathHandle.cs" />
     <Compile Include="Assets\PathCreator\Core\Editor\PathEditor.cs" />
+    <Compile Include="Assets\PathCreator\Core\Editor\Helper\PathHandle.cs" />
+    <Compile Include="Assets\PathCreator\Core\Editor\Helper\MouseUtility.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\PathCreator\Core\Editor\PathCreatorEditor.asmdef" />

@@ -5,54 +5,54 @@ using UnityEngine;
 
 namespace AmalgamGames.Core
 {
-    public class SharedFloatValue : MonoBehaviour, IRestartable, IValueProvider
+    public class SharedIntValue: MonoBehaviour, IRestartable, IValueProvider
     {
 
         [Title("Settings")]
         [SerializeField] private string _valueKey;
-        [SerializeField] private float _initialValue;
+        [SerializeField] private int _initialValue;
         [SerializeField] private bool _initialiseOnStart = true;
         [Space]
         [Title("Minimum value")]
         [SerializeField] private bool _useMinValue;
         [ShowIf("@this._useMinValue == true")]
-        [SerializeField] private float _minValue;
+        [SerializeField] private int _minValue;
         [ShowIf("@this._useMinValue == true")]
         [Tooltip("Allow operations that would decrease value below min value by clamping to min value")]
         [SerializeField] private bool _allowOverflowOperationsAndClampMin = false;
         [ShowIf("@this._useMinValue == true")]
         [Tooltip("The maximum amount a Subtract operation can go below the specified minimum value. Set to < 0 to allow unlimited overflow")]
-        [SerializeField] private float _overflowAllowanceMin;
+        [SerializeField] private int _overflowAllowanceMin;
 
         [Space]
         [Title("Maximum value")]
         [SerializeField] private bool _useMaxValue;
         [ShowIf("@this._useMaxValue == true")]
-        [SerializeField] private float _maxValue;
+        [SerializeField] private int _maxValue;
         [ShowIf("@this._useMaxValue == true")]
         [Tooltip("Allow operations that would increase value above max value by clamping to max value")]
         [SerializeField] private bool _allowOverflowOperationsAndClampMax = true;
         [ShowIf("@this._useMaxValue == true")]
         [Tooltip("The maximum amount an Add operation can go above the specified maximum value. Set to < 0 to allow unlimited overflow")]
-        [SerializeField] private float _overflowAllowanceMax;
+        [SerializeField] private int _overflowAllowanceMax;
 
-        
+
         // STATE
-        private float _currentValue;
+        private int _currentValue;
         private bool _isInitialised = false;
 
-        private event Action<float> OnValueChanged;
+        private event Action<int> OnValueChanged;
         private event Action<object> OnValueChangedObj;
 
         public string Key { get { return _valueKey; } }
         /// <summary>
         /// Returns the maximum value set for this shared value, or null if no maximum is set
         /// </summary>
-        public float? MaxValue {  get { if (_useMaxValue) { return _maxValue; } else { return null; } } }
+        public int? MaxValue { get { if (_useMaxValue) { return _maxValue; } else { return null; } } }
         /// <summary>
         /// Returns the minimum value set for this shared value, or null if no minimum is set
         /// </summary>
-        public float? MinValue {  get { if (_useMinValue) { return _minValue; } else { return null; } } }
+        public int? MinValue { get { if (_useMinValue) { return _minValue; } else { return null; } } }
 
         #region Lifecycle
 
@@ -63,7 +63,7 @@ namespace AmalgamGames.Core
 
         private void Start()
         {
-            if(_initialiseOnStart)
+            if (_initialiseOnStart)
             {
                 _currentValue = _initialValue;
                 BroadcastValueChanged();
@@ -75,9 +75,9 @@ namespace AmalgamGames.Core
 
         #region Initialisation
 
-        public void Initialise(SharedFloatValueConfig config)
+        public void Initialise(SharedIntValueConfig config)
         {
-            if(!_isInitialised)
+            if (!_isInitialised)
             {
                 _initialValue = config.InitialValue;
                 _useMinValue = config.UseMinValue;
@@ -100,9 +100,28 @@ namespace AmalgamGames.Core
 
         #region Public methods
 
-        public bool AddValue(float valueToAdd)
+        public bool SetValue(int newValue)
         {
-            if(!CanAdd(valueToAdd))
+            if (_useMaxValue && newValue > _maxValue)
+            {
+                return false;
+            }
+            
+            if(_useMinValue && newValue < _minValue)
+            {
+                return false;
+            }
+
+            _currentValue = newValue;
+
+            BroadcastValueChanged();
+
+            return true;
+        }
+
+        public bool AddValue(int valueToAdd)
+        {
+            if (!CanAdd(valueToAdd))
             {
                 return false;
             }
@@ -121,14 +140,14 @@ namespace AmalgamGames.Core
             return true;
         }
 
-        public bool SubtractValue(float valueToSubtract)
+        public bool SubtractValue(int valueToSubtract)
         {
-            if(!CanSubtract(valueToSubtract))
+            if (!CanSubtract(valueToSubtract))
             {
                 return false;
             }
 
-            if(_useMinValue && (_currentValue - valueToSubtract < _minValue))
+            if (_useMinValue && (_currentValue - valueToSubtract < _minValue))
             {
                 _currentValue = _minValue;
             }
@@ -138,33 +157,33 @@ namespace AmalgamGames.Core
             }
 
             BroadcastValueChanged();
-            
-            return true;
-        }
-
-        public bool CanAdd(float valueToAdd)
-        {
-            if (valueToAdd < 0 || _currentValue >= _maxValue)
-            {
-                return false;
-            }
-
-            if(_useMaxValue && ((!_allowOverflowOperationsAndClampMax && (_currentValue + valueToAdd > _maxValue)) || (_allowOverflowOperationsAndClampMax && _overflowAllowanceMax > 0 && (_currentValue + valueToAdd > _maxValue + _overflowAllowanceMax))))
-            {
-                return false;
-            }
 
             return true;
         }
 
-        public bool CanSubtract(float valueToSubtract)
+        public bool CanAdd(int valueToAdd)
         {
-            if (valueToSubtract < 0 || _currentValue <= _minValue)
+            if (valueToAdd < 0 || (_useMaxValue && _currentValue >= _maxValue))
             {
                 return false;
             }
 
-            if(_useMinValue && ((!_allowOverflowOperationsAndClampMin && (_currentValue - valueToSubtract < _minValue)) || (_allowOverflowOperationsAndClampMin && _overflowAllowanceMin > 0 && (_currentValue - valueToSubtract < _minValue - _overflowAllowanceMin))))
+            if (_useMaxValue && ((!_allowOverflowOperationsAndClampMax && (_currentValue + valueToAdd > _maxValue)) || (_allowOverflowOperationsAndClampMax && _overflowAllowanceMax > 0 && (_currentValue + valueToAdd > _maxValue + _overflowAllowanceMax))))
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool CanSubtract(int valueToSubtract)
+        {
+            if (valueToSubtract < 0 || (_useMinValue && _currentValue <= _minValue))
+            {
+                return false;
+            }
+
+            if (_useMinValue && ((!_allowOverflowOperationsAndClampMin && (_currentValue - valueToSubtract < _minValue)) || (_allowOverflowOperationsAndClampMin && _overflowAllowanceMin > 0 && (_currentValue - valueToSubtract < _minValue - _overflowAllowanceMin))))
             {
                 return false;
             }
@@ -192,15 +211,15 @@ namespace AmalgamGames.Core
             OnValueChangedObj?.Invoke(_currentValue);
         }
 
-        // For SharedFloatValue subscribers
+        // For SharedIntValue subscribers
 
-        public float SubscribeToValueChanged(Action<float> callback)
+        public int SubscribeToValueChanged(Action<int> callback)
         {
             OnValueChanged += callback;
             return _currentValue;
         }
 
-        public void UnsubscribeFromValueChanged(Action<float> callback)
+        public void UnsubscribeFromValueChanged(Action<int> callback)
         {
             OnValueChanged -= callback;
         }
@@ -208,21 +227,17 @@ namespace AmalgamGames.Core
         // For IValueProvider subscribers
         public void SubscribeToValue(string valueKey, Action<object> callback)
         {
-            switch(valueKey)
+            if (valueKey == _valueKey)
             {
-                case Globals.JUICE_LEVEL_CHANGED_KEY:
-                    OnValueChangedObj += callback;
-                    break;
+                OnValueChangedObj += callback;
             }
         }
 
         public void UnsubscribeFromValue(string valueKey, Action<object> callback)
         {
-            switch (valueKey)
+            if (valueKey == _valueKey)
             {
-                case Globals.JUICE_LEVEL_CHANGED_KEY:
-                    OnValueChangedObj -= callback;
-                    break;
+                OnValueChangedObj -= callback;
             }
         }
 
@@ -230,17 +245,17 @@ namespace AmalgamGames.Core
 
     }
 
-    public struct SharedFloatValueConfig
+    public struct SharedIntValueConfig
     {
-        public float InitialValue;
+        public int InitialValue;
         public bool UseMinValue;
-        public float MinValue;
+        public int MinValue;
         public bool AllowOverflowOperationsAndClampMin;
-        public float OverflowAllowanceMin;
+        public int OverflowAllowanceMin;
 
         public bool UseMaxValue;
-        public float MaxValue;
+        public int MaxValue;
         public bool AllowOverflowOperationsAndClampMax;
-        public float OverflowAllowanceMax;
+        public int OverflowAllowanceMax;
     }
 }
