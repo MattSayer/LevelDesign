@@ -28,5 +28,8 @@ namespace AmalgamGames.Utils
 
         // Tags
         public const string FATAL_COLLIDER_TAG = "FatalCollider";
+
+        // Layers
+        public const int CHECKPOINT_LAYER = 8;
     }
 }

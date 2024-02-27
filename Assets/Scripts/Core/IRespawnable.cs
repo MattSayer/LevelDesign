@@ -10,7 +10,8 @@ namespace AmalgamGames.Core
         OnCollision,
         OnRespawnStart,
         OnRespawnEnd,
-        BeforeRespawn
+        BeforeRespawn,
+        OnCheckpoint
     }
 
     public class RespawnEventInfo

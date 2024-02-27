@@ -11,6 +11,9 @@ namespace AmalgamGames.Utils
 {
     public static class Tools
     {
+
+        #region Angles
+
         /// <summary>
         /// Lerps between two vectors, with each component of the vectors treated as a 360-degree angle. This prevents issues when wrapping around from 360 degrees back to 0
         /// </summary>
@@ -41,6 +44,51 @@ namespace AmalgamGames.Utils
             float z = Mathf.MoveTowardsAngle(startAngle.z, endAngle.z, maxDelta);
             return new Vector3(x, y, z);
         }
+
+        #endregion
+
+        #region Coordinate space
+
+        /// <summary>
+        /// Converts the provided TransformAxis from the local space of the provided transform to world space
+        /// </summary>
+        /// <param name="transform">The transform representing the local space from which the TransformAxis will be converted</param>
+        /// <param name="axis">The axis, interpreted as local space to the provided transform, which will be converted into world space</param>
+        /// <returns></returns>
+        public static Vector3 TranslateAxisInLocalSpace(Transform transform, TransformAxis axis)
+        {
+            return transform.TransformDirection(TranslateAxisInWorldSpace(axis));
+        }
+
+        /// <summary>
+        /// Converts the provided TransformAxis to its world space representation (e.g. Z_pos will return Vector3.forward)
+        /// </summary>
+        /// <param name="axis">The axis to convert</param>
+        /// <returns></returns>
+        public static Vector3 TranslateAxisInWorldSpace(TransformAxis axis)
+        {
+            switch(axis)
+            {
+                case TransformAxis.X_pos:
+                    return Vector3.right;
+                case TransformAxis.Y_pos: 
+                    return Vector3.up;
+                case TransformAxis.Z_pos:
+                    return Vector3.forward;
+                case TransformAxis.X_neg:
+                    return Vector3.left;
+                case TransformAxis.Y_neg:
+                    return Vector3.down;
+                case TransformAxis.Z_neg:
+                    return Vector3.back;
+            }
+            return Vector3.zero;
+        }
+
+        #endregion
+
+
+        #region Layers and flags
 
         /// <summary>
         /// Checks whether the provided layer is contained within the provided layer mask
@@ -73,6 +121,10 @@ namespace AmalgamGames.Utils
             // If the bitmask check doesn't resolve to 0, flags contains flag
             return (allFlags & flagToCheck) != 0;
         }
+
+        #endregion
+
+        #region Hierarchy traversal
 
         /// <summary>
         /// Gets the closest component T in the target transform's parent hierarcy
@@ -136,6 +188,9 @@ namespace AmalgamGames.Utils
             return default(T);
         }
 
+        #endregion
+
+        #region Lerping
 
         /// <summary>
         /// Coroutine that lerps a float from the specified 'from' value to the 'to' value over 'duration'. 
@@ -253,6 +308,10 @@ namespace AmalgamGames.Utils
             onComplete?.Invoke();
         }
 
+        #endregion
+
+        #region Events
+
 
 
         /// <summary>
@@ -307,8 +366,30 @@ namespace AmalgamGames.Utils
         }
 
 
+        #endregion
+
+        #region Coroutines
+
+        public static IEnumerator delayThenAction(float duration, Action action)
+        {
+            yield return new WaitForSeconds(duration);
+            action?.Invoke();
+        }
+
+        #endregion
+
+
     }
 
+    public enum TransformAxis
+    {
+        X_pos,
+        Y_pos,
+        Z_pos,
+        X_neg,
+        Y_neg,
+        Z_neg
+    }
 
     [Serializable]
     public class DynamicEvent

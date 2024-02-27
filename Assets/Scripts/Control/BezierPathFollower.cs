@@ -80,7 +80,7 @@ namespace AmalgamGames.Control
                         isAtEndOfPath = true;
                         _isMoving = false;
 
-                        StartCoroutine(delayThenAction(_endOfPathDelay, () =>
+                        StartCoroutine(Tools.delayThenAction(_endOfPathDelay, () =>
                         {
                             switch (_endOfPathInstruction)
                             {
@@ -108,7 +108,7 @@ namespace AmalgamGames.Control
                         isAtEndOfPath = true;
                         _isMoving = false;
 
-                        StartCoroutine(delayThenAction(_endOfPathDelay, () =>
+                        StartCoroutine(Tools.delayThenAction(_endOfPathDelay, () =>
                         {
                             switch (_endOfPathInstruction)
                             {
@@ -189,14 +189,6 @@ namespace AmalgamGames.Control
 
         #endregion
 
-        #region Coroutines
-
-        private IEnumerator delayThenAction(float duration, Action action)
-        {
-            yield return new WaitForSeconds(duration);
-            action?.Invoke();
-        }
-
-        #endregion
+        
     }
 }

@@ -9,9 +9,6 @@ namespace AmalgamGames.Scoring
 {
     public class ScoreTracker : MonoBehaviour, IRespawnable
     {
-        [Title("Settings")]
-        [SerializeField] private LayerMask _checkPointLayer;
-        [Space]
         [Title("Components")]
         [SerializeField] private SharedIntValue _scoreValue;
 
@@ -58,16 +55,10 @@ namespace AmalgamGames.Scoring
 
         private void OnTriggerEnter(Collider other)
         {
-            // Check for checkpoint triggers
-            if(Tools.IsInLayerMask(other.gameObject.layer,_checkPointLayer))
-            {
-                _scoreAtLastCheckpoint = _currentScore;
-            }
-
             // Check for score triggers
             if(other.TryGetComponent(out IScoreTrigger scoreTrigger))
             {
-                _scoreValue.AddValue(scoreTrigger.ScoreValue);
+                _scoreValue.AddValue(scoreTrigger.TakeScore());
             }
         }
 
@@ -81,6 +72,9 @@ namespace AmalgamGames.Scoring
             {
                 case RespawnEvent.OnRespawnStart:
                     _scoreValue.SetValue(_scoreAtLastCheckpoint);
+                    break;
+                case RespawnEvent.OnCheckpoint:
+                    _scoreAtLastCheckpoint = _currentScore;
                     break;
             }
         }

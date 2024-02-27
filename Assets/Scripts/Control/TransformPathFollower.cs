@@ -3,6 +3,7 @@ using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using PathCreation;
 using Sirenix.OdinInspector;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using Unity.VisualScripting;
@@ -46,7 +47,9 @@ namespace AmalgamGames.Control
         private Transform[] _pointTransforms;
         private Vector3[] _points;
         private int _pathSize;
-        
+
+        // Coroutines
+        private Coroutine _waitRoutine = null;
 
 
         #region Lifecycle
@@ -61,6 +64,8 @@ namespace AmalgamGames.Control
             {
                 _isMoving = true;
             }
+
+            
         }
 
         public override void ManagedUpdate(float deltaTime)
@@ -84,6 +89,12 @@ namespace AmalgamGames.Control
 
         private void ResetPathProgress()
         {
+            if (_waitRoutine != null)
+            {
+                StopCoroutine(_waitRoutine);
+            }
+
+            _isMoving = false;
             _progress = 0;
             _nextPointIndex = 1;
             _isMovingForward = true;
@@ -155,7 +166,14 @@ namespace AmalgamGames.Control
                 if (_progress >= 1)
                 {
                     transform.position = GetPathPoint(_nextPointIndex);
-                    GetNextPathPoint();
+
+                    _isMoving = false;
+
+                    if(_waitRoutine != null)
+                    {
+                        StopCoroutine(_waitRoutine);
+                    }
+                    _waitRoutine = StartCoroutine(Tools.delayThenAction(_pointWaitTime, () => { GetNextPathPoint(); _waitRoutine = null; }));
                 }
                 else
                 {
@@ -252,6 +270,8 @@ namespace AmalgamGames.Control
             {
                 transform.forward = toNextPoint.normalized;
             }
+
+            _isMoving = true;
 
             float distanceRatio = nextDistance / _totalPathDistance;
             float nextTime = _totalPathTime * distanceRatio;

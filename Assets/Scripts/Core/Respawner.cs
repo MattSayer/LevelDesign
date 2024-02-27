@@ -19,6 +19,7 @@ namespace AmalgamGames.Core
         [Title("Components")]
         [SerializeField] private GameObject _meshObject;
         [SerializeField] private Transform _rocketTransform;
+        [SerializeField] private TriggerProxy _checkpointTrigger;
         [Space]
         [Title("DEBUG")]
         [SerializeField] private Transform _respawnPoint;
@@ -33,6 +34,7 @@ namespace AmalgamGames.Core
 
         // STATE
         private bool _isSubscribedToInput = false;
+        private bool _isSubscribedToTrigger = false;
         private bool _canCollide = true;
         private Transform _lastCheckpoint;
         private bool _isRespawning = false;
@@ -46,6 +48,8 @@ namespace AmalgamGames.Core
         {
             _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketTransform);
             SubscribeToInput();
+
+            SubscribeToTrigger();
             _lastCheckpoint = _respawnPoint;
 
             // Get all respawnables in the level
@@ -57,14 +61,23 @@ namespace AmalgamGames.Core
             }
         }
 
+        private void OnEnable()
+        {
+            SubscribeToInput();
+
+            SubscribeToTrigger();
+        }
+
         private void OnDisable()
         {
             UnsubscribeFromInput();
+            UnsubscribeFromTrigger();
         }
 
         private void OnDestroy()
         {
             UnsubscribeFromInput();
+            UnsubscribeFromTrigger();
         }
 
         #endregion
@@ -136,7 +149,42 @@ namespace AmalgamGames.Core
             }
         }
 
+        private void SubscribeToTrigger()
+        {
+            if(!_isSubscribedToTrigger && _checkpointTrigger != null)
+            {
+                _checkpointTrigger.OnProxyTriggerEnter += OnProxyTriggerEnter;
+                _isSubscribedToTrigger = true;
+            }
+        }
 
+        private void UnsubscribeFromTrigger()
+        {
+            if (_isSubscribedToTrigger && _checkpointTrigger != null)
+            {
+                _checkpointTrigger.OnProxyTriggerEnter -= OnProxyTriggerEnter;
+                _isSubscribedToTrigger = false;
+            }
+        }
+
+        #endregion
+
+        #region Triggers
+
+        private void OnProxyTriggerEnter(Collider other)
+        {
+            // Check for checkpoint triggers
+            if (other.gameObject.layer == Globals.CHECKPOINT_LAYER)
+            {
+                // Notify respawnables that a new checkpoint has been reached
+                foreach(IRespawnable respawnable in _respawnables)
+                {
+                    respawnable.OnRespawnEvent(RespawnEvent.OnCheckpoint);
+                }
+
+                _lastCheckpoint = other.transform;
+            }
+        }
 
         #endregion
 
@@ -164,7 +212,7 @@ namespace AmalgamGames.Core
 
             // Play explosion vfx
 
-            Debug.Log("Boom!");
+            //Debug.Log("Boom!");
 
 
             _canCollide = false;

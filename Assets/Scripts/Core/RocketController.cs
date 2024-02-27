@@ -283,7 +283,7 @@ namespace AmalgamGames.Core
 
                     _targetOrienter?.ToggleMode(OrientMode.Source);
 
-                    Debug.Log("Charging");
+                    //Debug.Log("Charging");
                 }
 
                 float delta = _chargeLevel - chargeLevel;
@@ -301,7 +301,7 @@ namespace AmalgamGames.Core
             {
                 _cachedChargeLevel = chargeLevel;
 
-                Debug.Log($"Delayed charging: {chargeLevel}");
+                //Debug.Log($"Delayed charging: {chargeLevel}");
             }
         }
 
@@ -309,7 +309,7 @@ namespace AmalgamGames.Core
         {
             if (_isCharging)
             {
-                Debug.Log("Launch: " + _chargeLevel);
+                //Debug.Log("Launch: " + _chargeLevel);
 
                 // Reactivate gravity if it was disabled
                 _rb.useGravity = true;
@@ -356,7 +356,7 @@ namespace AmalgamGames.Core
             // Start charge immediately if trigger was held down during burn
             CheckDelayedChargeForce();
 
-            Debug.Log("Burn complete");
+            //Debug.Log("Burn complete");
         }
 
         private void TriggerLaunchEvent(LaunchInfo launchInfo)
