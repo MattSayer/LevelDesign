@@ -29,6 +29,7 @@ namespace AmalgamGames.Core
         private float _chargeDeltaThreshold = 0.1f;
         private float _playerChargeForce;
         private float _minChargeForce;
+        private float _minEngineBurnTime = 1f;
         private float _engineBurnTime = 2f;
         private float _engineBurnForce = 10f;
 
@@ -128,6 +129,7 @@ namespace AmalgamGames.Core
             _chargeDeltaThreshold = _config.ChargeDeltaThreshold;
             _playerChargeForce = _config.PlayerChargeForce;
             _minChargeForce = _config.MinChargeForce;
+            _minEngineBurnTime = _config.MinEngineBurnTime;
             _engineBurnTime = _config.EngineBurnTime;
             _engineBurnForce = _config.EngineBurnForce;
         }
@@ -314,7 +316,7 @@ namespace AmalgamGames.Core
                 // Reactivate gravity if it was disabled
                 _rb.useGravity = true;
 
-                float engineBurnTime = _engineBurnTime * _chargeLevel;
+                float engineBurnTime = Mathf.Max(_minEngineBurnTime, _engineBurnTime * _chargeLevel);
 
                 LaunchInfo launchInfo = new LaunchInfo(_chargeLevel, engineBurnTime);
 

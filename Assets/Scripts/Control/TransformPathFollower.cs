@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Control
 {
-    public class TransformPathFollower : ManagedBehaviour, IRespawnable
+    public class TransformPathFollower : ManagedBehaviour, IRespawnable, ITriggerable
     {
         [Title("Path")]
         [SerializeField] private Transform _pathParent;
@@ -36,6 +36,7 @@ namespace AmalgamGames.Control
         // State
         private int _nextPointIndex = 1;
         private float _progress = 0;
+        private bool _isActive = false;
         private bool _isMoving = false;
         private bool _isMovingForward = true;
         private float _currentSpeed;
@@ -62,7 +63,8 @@ namespace AmalgamGames.Control
 
             if(_moveOnStart)
             {
-                _isMoving = true;
+                _isActive = true;
+                StartMoving();
             }
 
             
@@ -99,7 +101,23 @@ namespace AmalgamGames.Control
             _nextPointIndex = 1;
             _isMovingForward = true;
 
-            CalculateCurrentSpeed();
+            if (_moveOnStart)
+            {
+                StartMoving();
+            }
+        }
+
+        #endregion
+
+        #region Triggers
+
+        public void Trigger()
+        {
+            if (!_isMoving && !_isActive)
+            {
+                _isActive = true;
+                StartMoving();
+            }
         }
 
         #endregion
@@ -154,12 +172,13 @@ namespace AmalgamGames.Control
 
             _totalPathTime = _totalPathDistance / _moveSpeed;
 
-            CalculateCurrentSpeed();
+            // Start transform at first point
+            transform.position = GetPathPoint(0);
         }
 
         private void FollowPath(float deltaTime)
         {
-            if (_isMoving)
+            if (_isMoving && _isActive)
             {
                 _progress += _currentSpeed * deltaTime;
 
@@ -246,10 +265,10 @@ namespace AmalgamGames.Control
 
             
 
-            CalculateCurrentSpeed();
+            StartMoving();
         }
 
-        private void CalculateCurrentSpeed()
+        private void StartMoving()
         {
             float nextDistance;
             Vector3 toNextPoint;

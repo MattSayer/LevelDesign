@@ -15,6 +15,7 @@ namespace AmalgamGames.Config
         [Space]
         [Title("Engine Burn")]
         [SerializeField] private float _engineBurnTime = 2f;
+        [SerializeField] private float _minEngineBurnTime = 1f;
         [SerializeField] private float _engineBurnForce = 10f;
 
         public float ChargeDeltaThreshold { get { return _chargeDeltaThreshold; } }
@@ -22,5 +23,7 @@ namespace AmalgamGames.Config
         public float MinChargeForce {  get { return _minChargeForce; } }
         public float EngineBurnTime {  get { return _engineBurnTime; } }    
         public float EngineBurnForce {  get { return _engineBurnForce; } }
+
+        public float MinEngineBurnTime { get { return _minEngineBurnTime; } }
     }
 }

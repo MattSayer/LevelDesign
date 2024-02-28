@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: RocketConfig
   m_EditorClassIdentifier: 
   _chargeDeltaThreshold: 0.1
-  _playerChargeForce: 120
-  _minChargeForce: 30
+  _playerChargeForce: 80
+  _minChargeForce: 70
   _engineBurnTime: 1.5
   _engineBurnForce: 100

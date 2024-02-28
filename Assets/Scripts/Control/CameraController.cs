@@ -57,6 +57,7 @@ namespace AmalgamGames.Control
         private float _currentHorizontalRotation = 0;
         private float _currentVerticalRotation = 0;
         private Vector2 _currentRotationSpeed;
+        private Vector3 _initialForward;
 
         // Position
         private Vector3 _offset = Vector3.zero;
@@ -99,6 +100,8 @@ namespace AmalgamGames.Control
 
             SubscribeToInput();
             HookUpEvents();
+
+            _initialForward = transform.forward;
         }
 
         protected override void OnEnable()
@@ -217,6 +220,8 @@ namespace AmalgamGames.Control
             // Reset transform position and rotation to prevent the camera wigging out
             transform.position = _followTarget.position;
             transform.rotation = _followTarget.rotation;
+
+            _initialForward = _followTarget.forward;
 
             _playerCam.OnTargetObjectWarped(transform, delta);
 
@@ -360,7 +365,8 @@ namespace AmalgamGames.Control
             _currentVerticalRotation += _currentRotationSpeed.y * deltaTime * verticalSpeed;
             _currentVerticalRotation = Mathf.Clamp(_currentVerticalRotation, _minMaxVerticalRotation.x, _minMaxVerticalRotation.y);
 
-            Vector3 forward = Vector3.forward;
+            //Vector3 forward = Vector3.forward;
+            Vector3 forward = _initialForward;
             forward = Quaternion.AngleAxis(_currentHorizontalRotation, Vector3.up) * forward;
             Vector3 verticalAxis = Vector3.Cross(forward, Vector3.up);
             forward = Quaternion.AngleAxis(_currentVerticalRotation, verticalAxis) * forward;
