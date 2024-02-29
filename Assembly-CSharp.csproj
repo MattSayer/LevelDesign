@@ -71,6 +71,7 @@
     <Compile Include="Assets\Scripts\UI\DynamicFilledImage.cs" />
     <Compile Include="Assets\Scripts\Effects\RumbleController.cs" />
     <Compile Include="Assets\Scripts\Core\IRestartable.cs" />
+    <Compile Include="Assets\Scripts\Control\TriggerZone.cs" />
     <Compile Include="Assets\Scripts\Transformations\Transformation.cs" />
     <Compile Include="Assets\Scripts\Scoring\ScoreTrigger.cs" />
     <Compile Include="Assets\Scripts\Visualisation\BezierPathVisualisation.cs" />
@@ -116,7 +117,9 @@
     <Compile Include="Assets\Scripts\Control\ObjectRotator.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Control\TriggerZone.cs" />
+    <Compile Include="Assets\Scripts\Control\ObjectSpawner.cs" />
+    <Compile Include="Assets\Scripts\Control\IPathFollower.cs" />
+    <Compile Include="Assets\Scripts\Control\PathObjectSpawner.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

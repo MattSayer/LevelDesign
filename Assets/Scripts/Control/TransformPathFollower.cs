@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Control
 {
-    public class TransformPathFollower : ManagedBehaviour, IRespawnable, ITriggerable
+    public class TransformPathFollower : ManagedBehaviour, IRespawnable, ITriggerable, IPathFollower, ISpawnable
     {
         [Title("Path")]
         [SerializeField] private Transform _pathParent;
@@ -26,6 +26,7 @@ namespace AmalgamGames.Control
         [Unit(Units.MetersPerSecond)]
         [SerializeField] private float _moveSpeed;
         [SerializeField] private bool _moveOnStart = true;
+        [SerializeField] private float _activationDelay = 0;
         [SerializeField] private EasingFunction.Ease _easingType = EasingFunction.Ease.Linear;
 
         [Space]
@@ -40,6 +41,7 @@ namespace AmalgamGames.Control
         private bool _isMoving = false;
         private bool _isMovingForward = true;
         private float _currentSpeed;
+        private bool _pathInitialised = false;
 
         // Path
         private EasingFunction.Function _easingFunction;
@@ -49,30 +51,61 @@ namespace AmalgamGames.Control
         private Vector3[] _points;
         private int _pathSize;
 
+        // Spawning
+        private ISpawner _spawner;
+
         // Coroutines
         private Coroutine _waitRoutine = null;
 
 
         #region Lifecycle
 
-        private void Start()
+        private void Awake()
         {
             _easingFunction = EasingFunction.GetEasingFunction(_easingType);
 
-            InitialisePath();
-
-            if(_moveOnStart)
+            if (_pathParent != null)
             {
-                _isActive = true;
-                StartMoving();
+                InitialisePath();
             }
+        }
 
-            
+        private void Start()
+        {
+            if (_moveOnStart)
+            {
+                StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
+                {
+                    _isActive = true;
+                    StartMoving();
+                }));
+            }
         }
 
         public override void ManagedUpdate(float deltaTime)
         {
             FollowPath(deltaTime);
+        }
+
+        #endregion
+
+        #region Spawning
+
+        public void DeactivateAndReset()
+        {
+            _isActive = false;
+            ResetPathProgress();
+        }
+
+        public void Activate()
+        {
+            _isActive = true;
+            StartMoving();
+        }
+
+        public void SetSpawner(ISpawner spawner)
+        {
+            _spawner = spawner;
         }
 
         #endregion
@@ -101,10 +134,31 @@ namespace AmalgamGames.Control
             _nextPointIndex = 1;
             _isMovingForward = true;
 
+            // Reset transform to first point
+            if (_pathInitialised)
+            {
+                transform.position = GetPathPoint(0);
+            }
+
             if (_moveOnStart)
             {
+                _isActive = true;
                 StartMoving();
             }
+            else
+            {
+                _isActive = false;
+            }
+        }
+
+        #endregion
+
+        #region Path follower
+
+        public void SetPath(GameObject pathObject)
+        {
+            _pathParent = pathObject.transform;
+            InitialisePath();
         }
 
         #endregion
@@ -113,10 +167,13 @@ namespace AmalgamGames.Control
 
         public void Trigger()
         {
-            if (!_isMoving && !_isActive)
+            if (!_isMoving && !_isActive && _pathInitialised)
             {
-                _isActive = true;
-                StartMoving();
+                StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
+                {
+                    _isActive = true;
+                    StartMoving();
+                }));
             }
         }
 
@@ -128,7 +185,7 @@ namespace AmalgamGames.Control
         {
             int totalPoints = _pathParent.childCount;
 
-            _pathSize = _isClosedPath ? totalPoints + 1: totalPoints;
+            _pathSize = _isClosedPath ? totalPoints + 1 : totalPoints;
 
             if (_useDynamicPoints)
             {
@@ -139,7 +196,7 @@ namespace AmalgamGames.Control
                 _points = new Vector3[_pathSize];
             }
 
-            for(int i = 0 ; i < totalPoints; i++)
+            for (int i = 0; i < totalPoints; i++)
             {
                 if (_useDynamicPoints)
                 {
@@ -151,14 +208,14 @@ namespace AmalgamGames.Control
                 }
                 if (i > 0)
                 {
-                    _totalPathDistance += Vector3.Distance(GetPathPoint(i), GetPathPoint(i-1));
+                    _totalPathDistance += Vector3.Distance(GetPathPoint(i), GetPathPoint(i - 1));
                 }
             }
 
             // Add the first position to the points array if this is a closed loop
-            if(_isClosedPath)
+            if (_isClosedPath)
             {
-                if(_useDynamicPoints)
+                if (_useDynamicPoints)
                 {
                     _pointTransforms[totalPoints] = _pointTransforms[0];
                 }
@@ -174,11 +231,13 @@ namespace AmalgamGames.Control
 
             // Start transform at first point
             transform.position = GetPathPoint(0);
+
+            _pathInitialised = true;
         }
 
         private void FollowPath(float deltaTime)
         {
-            if (_isMoving && _isActive)
+            if (_pathInitialised && _isMoving && _isActive)
             {
                 _progress += _currentSpeed * deltaTime;
 

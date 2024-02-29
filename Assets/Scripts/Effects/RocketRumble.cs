@@ -92,11 +92,11 @@ namespace AmalgamGames.Effects
             switch(evt)
             {
                 case RespawnEvent.OnCollision:
-                    _rumbleController.RumbleBurst(new RumbleIntensity(_collisionLowFrequency, _collisionHighFrequency), _collisionRumbleDuration, _collisionRumbleEasing);
-                    _rumbleController.StopContinuousRumble(this);
+                    _rumbleController?.RumbleBurst(new RumbleIntensity(_collisionLowFrequency, _collisionHighFrequency), _collisionRumbleDuration, _collisionRumbleEasing);
+                    _rumbleController?.StopContinuousRumble(this);
                     break;
                 case RespawnEvent.OnRespawnStart:
-                    _rumbleController.StopContinuousRumble(this);
+                    _rumbleController?.StopContinuousRumble(this);
                     break;
             }
         }
@@ -110,13 +110,13 @@ namespace AmalgamGames.Effects
             if (rawValue.GetType() == typeof(float))
             {
                 float chargeLevel = Mathf.Pow((float)rawValue, _chargeLevelPower);
-                _rumbleController.ContinuousRumble(this, new RumbleIntensity(chargeLevel * _maxLowFrequency,chargeLevel * _maxHighFrequency));
+                _rumbleController?.ContinuousRumble(this, new RumbleIntensity(chargeLevel * _maxLowFrequency,chargeLevel * _maxHighFrequency));
             }
         }
 
         private void OnLaunch(LaunchInfo launchInfo)
         {
-            _rumbleController.RumbleBurst(new RumbleIntensity(_launchLowFrequency,_launchHighFrequency),launchInfo.BurnDuration,_launchRumbleEasing);
+            _rumbleController?.RumbleBurst(new RumbleIntensity(_launchLowFrequency,_launchHighFrequency),launchInfo.BurnDuration,_launchRumbleEasing);
         }
 
         #endregion

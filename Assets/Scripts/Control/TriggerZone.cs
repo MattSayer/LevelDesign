@@ -8,11 +8,11 @@ using UnityEngine;
 namespace AmalgamGames.Control
 {
     [RequireComponent(typeof(Collider))]
-    public class TriggerZone : MonoBehaviour
+    public class TriggerZone : MonoBehaviour, IRespawnable
     {
         [Title("Trigger")]
         [RequireInterface(typeof(ITriggerable))]
-        [SerializeField] private UnityEngine.Object _triggerObject;
+        [SerializeField] private UnityEngine.Object[] _triggerObjects;
         [Space]
         [Title("Settings")]
         [SerializeField] private bool _onlyTriggerOnce = true;
@@ -20,12 +20,51 @@ namespace AmalgamGames.Control
         [ShowIf("@this._checkTag == true")]
         [SerializeField] private string _tagToCheck = "";
         [SerializeField] private float _transformCacheTime = 0.2f;
+        [SerializeField] private bool _resetOnRespawn = true;
 
-        private ITriggerable _trigger => _triggerObject as ITriggerable;
+        private ITriggerable[] _triggers;
 
         // STATE
         private bool _hasTriggered = false;
         private List<Transform> _cachedTriggerParents = new List<Transform>();
+
+        #region Lifecycle
+
+        private void Start()
+        {
+            _triggers = new ITriggerable[_triggerObjects.Length];
+            for(int i = 0; i < _triggerObjects.Length; i++)
+            {
+                _triggers[i] = _triggerObjects[i] as ITriggerable;
+            }
+        }
+
+        #endregion
+
+        #region Respawning
+
+        public void OnRespawnEvent(RespawnEvent evt)
+        {
+            switch(evt)
+            {
+                case RespawnEvent.OnRespawnStart:
+                    ResetTrigger();
+                    break;
+            }
+        }
+
+        private void ResetTrigger()
+        {
+            if (_resetOnRespawn)
+            {
+                _hasTriggered = false;
+            }
+
+            StopAllCoroutines();
+            _cachedTriggerParents.Clear();
+        }
+
+        #endregion
 
         #region Triggers
 
@@ -55,7 +94,10 @@ namespace AmalgamGames.Control
 
             if (toTrigger)
             {
-                _trigger.Trigger();
+                foreach(ITriggerable trigger in _triggers)
+                {
+                    trigger.Trigger();
+                }
                 _hasTriggered = true;
                 
                 _cachedTriggerParents.Add(colliderParent);

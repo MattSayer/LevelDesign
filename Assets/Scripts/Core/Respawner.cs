@@ -59,6 +59,8 @@ namespace AmalgamGames.Core
             {
                 _respawnables.Add(respawnable);
             }
+
+            Respawn();
         }
 
         private void OnEnable()

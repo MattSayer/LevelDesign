@@ -8,8 +8,10 @@ using AmalgamGames.Utils;
 
 namespace AmalgamGames.Control
 {
-    public class ConstantRotation : ManagedBehaviour, IRespawnable
+    public class ConstantRotation : ManagedBehaviour, IRespawnable, ITriggerable
     {
+        [Title("Trigger")]
+        [SerializeField] private bool _rotateOnStart = true;
         [Title("Settings")]
         [Unit(Units.DegreesPerSecond)]
         [SerializeField] private float _rotationSpeed;
@@ -18,6 +20,7 @@ namespace AmalgamGames.Control
 
         // State
         private Quaternion _startRotation;
+        private bool _isRotating = false;
 
         private Vector3 _worldRotationAxis;
 
@@ -36,11 +39,31 @@ namespace AmalgamGames.Control
             }
 
             _startRotation = transform.rotation;
+
+            if(_rotateOnStart)
+            {
+                _isRotating = true;
+            }
         }
 
         public override void ManagedUpdate(float deltaTime)
         {
-            Rotate(deltaTime);
+            if(_isRotating)
+            {
+                Rotate(deltaTime);
+            }
+        }
+
+        #endregion
+
+        #region Triggers
+
+        public void Trigger()
+        {
+            if(!_isRotating)
+            {
+                _isRotating = true;
+            }
         }
 
         #endregion
@@ -53,6 +76,14 @@ namespace AmalgamGames.Control
             {
                 case RespawnEvent.OnRespawnStart:
                     transform.rotation = _startRotation;
+                    if(_rotateOnStart)
+                    {
+                        _isRotating = true;
+                    }
+                    else
+                    {
+                        _isRotating = false;
+                    }
                     break;
             }
         }
