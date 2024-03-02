@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace AmalgamGames.UpdateLoop
@@ -182,44 +183,90 @@ namespace AmalgamGames.UpdateLoop
 
         public void RegisterUpdate(IUpdateable script)
         {
-            // Make sure script hasn't already been registered
-            if (!_updateQueue.Contains(script) && !_updateAddQueue.Contains(script))
+            // In case the script is still queued up for removal
+            if (_updateRemovalQueue.Contains(script))
             {
-                _updateAddQueue.Add(script);
+                _updateRemovalQueue.Remove(script);
+            }
+            else
+            {
+                // Make sure script hasn't already been registered
+                if (!_updateQueue.Contains(script) && !_updateAddQueue.Contains(script))
+                {
+                    _updateAddQueue.Add(script);
+                }
             }
         }
 
         public void RegisterUpdate(IFixedUpdateable script)
         {
-            // Make sure script hasn't already been registered
-            if (!_fixedUpdateQueue.Contains(script) && !_fixedUpdateAddQueue.Contains(script))
+            // In case the script is still queued up for removal
+            if (_fixedUpdateRemovalQueue.Contains(script))
             {
-                _fixedUpdateAddQueue.Add(script);
+                _fixedUpdateRemovalQueue.Remove(script);
+            }
+            else
+            {
+                // Make sure script hasn't already been registered
+                if (!_fixedUpdateQueue.Contains(script) && !_fixedUpdateAddQueue.Contains(script))
+                {
+                    _fixedUpdateAddQueue.Add(script);
+                }
             }
         }
 
         public void RegisterUpdate(ILateUpdateable script)
         {
-            // Make sure script hasn't already been registered
-            if (!_lateUpdateQueue.Contains(script) && !_lateUpdateAddQueue.Contains(script))
+            // In case the script is still queued up for removal
+            if (_lateUpdateRemovalQueue.Contains(script))
             {
-                _lateUpdateAddQueue.Add(script);
+                _lateUpdateRemovalQueue.Remove(script);
+            }
+            else
+            {
+                // Make sure script hasn't already been registered
+                if (!_lateUpdateQueue.Contains(script) && !_lateUpdateAddQueue.Contains(script))
+                {
+                    _lateUpdateAddQueue.Add(script);
+                }
             }
         }
 
         public void UnregisterUpdate(IUpdateable script)
         {
-            _updateRemovalQueue.Add(script);
+            // In case script hasn't been added yet (e.g. when register and unregister are called in the same frame)
+            if (_updateAddQueue.Contains(script))
+            {
+                _updateAddQueue.Remove(script);
+            }
+            else
+            {
+                _updateRemovalQueue.Add(script);
+            }
         }
 
         public void UnregisterUpdate(IFixedUpdateable script)
         {
-            _fixedUpdateRemovalQueue.Add(script);
+            if (_fixedUpdateAddQueue.Contains(script))
+            {
+                _fixedUpdateAddQueue.Remove(script);
+            }
+            else
+            {
+                _fixedUpdateRemovalQueue.Add(script);
+            }
         }
 
         public void UnregisterUpdate(ILateUpdateable script)
         {
-            _lateUpdateRemovalQueue.Add(script);
+            if (_lateUpdateAddQueue.Contains(script))
+            {
+                _lateUpdateAddQueue.Remove(script);
+            }
+            else
+            {
+                _lateUpdateRemovalQueue.Add(script);
+            }
         }
 
         #endregion

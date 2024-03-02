@@ -8,15 +8,17 @@ using AmalgamGames.Utils;
 
 namespace AmalgamGames.Control
 {
-    public class ConstantRotation : ManagedBehaviour, IRespawnable, ITriggerable
+    public class ConstantRotation : ManagedFixedBehaviour, IRespawnable, ITriggerable
     {
         [Title("Trigger")]
         [SerializeField] private bool _rotateOnStart = true;
+        [SerializeField] private float _startDelay = 0;
         [Title("Settings")]
         [Unit(Units.DegreesPerSecond)]
         [SerializeField] private float _rotationSpeed;
         [SerializeField] private TransformAxis _rotationAxis;
         [SerializeField] private Space _rotationSpace;
+        
 
         // State
         private Quaternion _startRotation;
@@ -24,11 +26,16 @@ namespace AmalgamGames.Control
 
         private Vector3 _worldRotationAxis;
 
+        // Coroutines
+        private Coroutine _startRoutine = null;
+
         #region Lifecycle
 
-        private void Start()
+        private void Awake()
         {
-            switch(_rotationSpace)
+            _startRotation = transform.rotation;
+
+            switch (_rotationSpace)
             {
                 case Space.Self:
                     _worldRotationAxis = Tools.TranslateAxisInLocalSpace(transform, _rotationAxis);
@@ -37,16 +44,17 @@ namespace AmalgamGames.Control
                     _worldRotationAxis = Tools.TranslateAxisInWorldSpace(_rotationAxis);
                     break;
             }
+        }
 
-            _startRotation = transform.rotation;
-
+        private void Start()
+        {
             if(_rotateOnStart)
             {
-                _isRotating = true;
+                StartRotating();
             }
         }
 
-        public override void ManagedUpdate(float deltaTime)
+        public override void ManagedFixedUpdate(float deltaTime)
         {
             if(_isRotating)
             {
@@ -62,7 +70,7 @@ namespace AmalgamGames.Control
         {
             if(!_isRotating)
             {
-                _isRotating = true;
+                StartRotating();
             }
         }
 
@@ -76,13 +84,17 @@ namespace AmalgamGames.Control
             {
                 case RespawnEvent.OnRespawnStart:
                     transform.rotation = _startRotation;
-                    if(_rotateOnStart)
+                    
+                    if(_startRoutine != null)
                     {
-                        _isRotating = true;
+                        StopCoroutine(_startRoutine);
                     }
-                    else
+
+                    _isRotating = false;
+
+                    if (_rotateOnStart)
                     {
-                        _isRotating = false;
+                        StartRotating();
                     }
                     break;
             }
@@ -91,6 +103,22 @@ namespace AmalgamGames.Control
         #endregion
 
         #region Rotation
+
+        private void StartRotating()
+        {
+            if (_startDelay > 0)
+            {
+                _startRoutine = StartCoroutine(Tools.delayThenAction(_startDelay, () =>
+                {
+                    _isRotating = true;
+                    _startRoutine = null;
+                }));
+            }
+            else
+            {
+                _isRotating = true;
+            }
+        }
 
         private void Rotate(float deltaTime)
         {

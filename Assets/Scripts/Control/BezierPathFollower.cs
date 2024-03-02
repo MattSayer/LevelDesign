@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Control
 {
-    public class BezierPathFollower : ManagedBehaviour, IRespawnable
+    public class BezierPathFollower : ManagedFixedBehaviour, IRespawnable, ISpawnable, IPathFollower
     {
 
         [Title("Pathing")]
@@ -23,6 +23,7 @@ namespace AmalgamGames.Control
         [Unit(Units.MetersPerSecond)]
         [SerializeField] private float _moveSpeed;
         [SerializeField] private bool _moveOnStart = true;
+        [SerializeField] private float _activationDelay = 0;
         [SerializeField] private EasingFunction.Ease _easingType = EasingFunction.Ease.Linear;
 
         [Space]
@@ -38,35 +39,70 @@ namespace AmalgamGames.Control
         // Components
         private VertexPath _path;
         private EasingFunction.Function _easingFunction;
+        private ISpawner _spawner;
 
         // State
         private float _progress = 0;
         private float _currentDistance = 0;
         private bool _isMovingForward = true;
         private bool _isMoving = false;
-
+        private bool _isActive = false;
+        private bool _isInitialised = false;
         private float _normalizedSpeed;
+
+        // Coroutines
+        private Coroutine _activationRoutine = null;
 
         // Constants
         private const EndOfPathInstruction EOP_ACTION = EndOfPathInstruction.Stop;
 
         #region Lifecycle
 
-        private void Start()
+        private void Awake()
+        {
+            if(_pathCreator != null)
+            {
+                InitialisePath();
+            }
+        }
+
+        public override void ManagedFixedUpdate(float deltaTime)
+        {
+            FollowPath(deltaTime);
+        }
+
+        #endregion
+
+        #region Pathing
+
+        private void InitialisePath()
         {
             _path = _pathCreator.path;
             _normalizedSpeed = 1 / (_path.length / _moveSpeed);
             _easingFunction = EasingFunction.GetEasingFunction(_easingType);
-            if (_moveOnStart)
+            if (_moveOnStart && _activationRoutine == null)
             {
-                _isMoving = true;
+                _activationRoutine = StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
+                {
+                    _isActive = true;
+                    _isMoving = true;
+                    _activationRoutine = null;
+                }));
             }
+            _isInitialised = true;
+
         }
 
-        public override void ManagedUpdate(float deltaTime)
+        public void SetPath(GameObject pathObject)
+        {
+            _pathCreator = pathObject.GetComponent<PathCreator>();
+            InitialisePath();
+        }
+
+        private void FollowPath(float deltaTime)
         {
             // Only process when the follower is active
-            if (_isMoving && _path != null)
+            if (_isActive && _isInitialised && _isMoving)
             {
                 bool isAtEndOfPath = false;
 
@@ -137,6 +173,34 @@ namespace AmalgamGames.Control
                     RotateToFacePathDirection(isAtEndOfPath, deltaTime);
                 }
             }
+        }
+
+        #endregion
+
+        #region Spawning
+
+        public void Activate()
+        {
+            if (_activationRoutine == null)
+            {
+                _activationRoutine = StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
+                {
+                    _isActive = true;
+                    _isMoving = true;
+                    _activationRoutine = null;
+                }));
+            }
+        }
+
+        public void DeactivateAndReset()
+        {
+            ResetPathProgress();
+            _isActive = false;
+        }
+
+        public void SetSpawner(ISpawner spawner)
+        {
+            _spawner = spawner;
         }
 
         #endregion

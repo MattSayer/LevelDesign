@@ -31,5 +31,9 @@ namespace AmalgamGames.Utils
 
         // Layers
         public const int CHECKPOINT_LAYER = 8;
+
+        // Animation
+        public const string ANIMATION_START_TRIGGER = "Start";
+        public const string ANIMATION_STOP_TRIGGER = "Stop";
     }
 }

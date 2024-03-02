@@ -86,6 +86,7 @@
     <Compile Include="Assets\Scripts\Visualisation\TransformPathVisualisation.cs" />
     <Compile Include="Assets\Scripts\CustomEditor\RequireInterfaceAttribute.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedUpdater.cs" />
+    <Compile Include="Assets\Scripts\Control\PathObjectSpawner.cs" />
     <Compile Include="Assets\Scripts\Core\IRespawnable.cs" />
     <Compile Include="Assets\Scripts\Control\ObjectPositioner.cs" />
     <Compile Include="Assets\Scripts\Update\IPausable.cs" />
@@ -95,6 +96,7 @@
     <Compile Include="Assets\Scripts\Core\InputProcessor.cs" />
     <Compile Include="Assets\Scripts\Utils\ExternalTimeProvider.cs" />
     <Compile Include="Assets\Scripts\Core\IValueProvider.cs" />
+    <Compile Include="Assets\Scripts\Control\IPathFollower.cs" />
     <Compile Include="Assets\Scripts\Control\ConstantRotation.cs" />
     <Compile Include="Assets\Scripts\SceneManagement\PhysicsSimulation.cs" />
     <Compile Include="Assets\Scripts\Control\BezierPathFollower.cs" />
@@ -115,11 +117,11 @@
     <Compile Include="Assets\Scripts\Utils\Tools.cs" />
     <Compile Include="Assets\Scripts\Core\TriggerProxy.cs" />
     <Compile Include="Assets\Scripts\Control\ObjectRotator.cs" />
+    <Compile Include="Assets\Scripts\Control\ObjectSpawner.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Control\ObjectSpawner.cs" />
-    <Compile Include="Assets\Scripts\Control\IPathFollower.cs" />
-    <Compile Include="Assets\Scripts\Control\PathObjectSpawner.cs" />
+    <Compile Include="Assets\Scripts\Control\AnimationController.cs" />
+    <Compile Include="Assets\Scripts\Debug\JuiceRefiller.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

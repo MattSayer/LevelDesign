@@ -6,12 +6,12 @@ using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using Unity.VisualScripting;
+using Technie.PhysicsCreator;
 using UnityEngine;
 
 namespace AmalgamGames.Control
 {
-    public class TransformPathFollower : ManagedBehaviour, IRespawnable, ITriggerable, IPathFollower, ISpawnable
+    public class TransformPathFollower : ManagedFixedBehaviour, IRespawnable, ITriggerable, IPathFollower, ISpawnable
     {
         [Title("Path")]
         [SerializeField] private Transform _pathParent;
@@ -28,6 +28,11 @@ namespace AmalgamGames.Control
         [SerializeField] private bool _moveOnStart = true;
         [SerializeField] private float _activationDelay = 0;
         [SerializeField] private EasingFunction.Ease _easingType = EasingFunction.Ease.Linear;
+
+        [Space]
+
+        [Title("Respawning")]
+        [SerializeField] private bool _handleRespawnEvents = true;
 
         [Space]
         
@@ -56,7 +61,7 @@ namespace AmalgamGames.Control
 
         // Coroutines
         private Coroutine _waitRoutine = null;
-
+        private Coroutine _activationRoutine = null;
 
         #region Lifecycle
 
@@ -72,17 +77,21 @@ namespace AmalgamGames.Control
 
         private void Start()
         {
-            if (_moveOnStart)
+            if (_moveOnStart && _pathInitialised)
             {
-                StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
+                if (_activationRoutine == null)
                 {
-                    _isActive = true;
-                    StartMoving();
-                }));
+                    _activationRoutine = StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
+                    {
+                        _isActive = true;
+                        StartMoving();
+                        _activationRoutine = null;
+                    }));
+                }
             }
         }
 
-        public override void ManagedUpdate(float deltaTime)
+        public override void ManagedFixedUpdate(float deltaTime)
         {
             FollowPath(deltaTime);
         }
@@ -93,14 +102,21 @@ namespace AmalgamGames.Control
 
         public void DeactivateAndReset()
         {
-            _isActive = false;
             ResetPathProgress();
+            _isActive = false;
         }
 
         public void Activate()
         {
-            _isActive = true;
-            StartMoving();
+            if (_activationRoutine == null)
+            {
+                _activationRoutine = StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
+                {
+                    _isActive = true;
+                    StartMoving();
+                    _activationRoutine = null;
+                }));
+            }
         }
 
         public void SetSpawner(ISpawner spawner)
@@ -114,11 +130,15 @@ namespace AmalgamGames.Control
 
         public void OnRespawnEvent(RespawnEvent evt)
         {
-            switch (evt)
+            if (_handleRespawnEvents)
             {
-                case RespawnEvent.OnRespawnStart:
-                    ResetPathProgress();
-                    break;
+                switch (evt)
+                {
+                    case RespawnEvent.OnRespawnStart:
+                        DeactivateAndReset();
+                        CheckMoveOnStart();
+                        break;
+                }
             }
         }
 
@@ -127,6 +147,13 @@ namespace AmalgamGames.Control
             if (_waitRoutine != null)
             {
                 StopCoroutine(_waitRoutine);
+                _waitRoutine = null;
+            }
+
+            if(_activationRoutine != null)
+            {
+                StopCoroutine( _activationRoutine);
+                _activationRoutine = null;
             }
 
             _isMoving = false;
@@ -139,15 +166,22 @@ namespace AmalgamGames.Control
             {
                 transform.position = GetPathPoint(0);
             }
+            
+        }
 
-            if (_moveOnStart)
+        private void CheckMoveOnStart()
+        {
+            if (_moveOnStart && _activationRoutine == null)
             {
-                _isActive = true;
-                StartMoving();
-            }
-            else
-            {
-                _isActive = false;
+                if (_activationRoutine == null)
+                {
+                    _activationRoutine = StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
+                    {
+                        _isActive = true;
+                        StartMoving();
+                        _activationRoutine = null;
+                    }));
+                }
             }
         }
 
@@ -167,12 +201,13 @@ namespace AmalgamGames.Control
 
         public void Trigger()
         {
-            if (!_isMoving && !_isActive && _pathInitialised)
+            if (!_isMoving && !_isActive && _pathInitialised && _activationRoutine == null)
             {
-                StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
+                _activationRoutine = StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
                 {
                     _isActive = true;
                     StartMoving();
+                    _activationRoutine = null;
                 }));
             }
         }

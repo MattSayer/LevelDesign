@@ -372,7 +372,10 @@ namespace AmalgamGames.Utils
 
         public static IEnumerator delayThenAction(float duration, Action action)
         {
-            yield return new WaitForSeconds(duration);
+            if(duration > 0)
+            {
+                yield return new WaitForSeconds(duration);
+            }
             action?.Invoke();
         }
 

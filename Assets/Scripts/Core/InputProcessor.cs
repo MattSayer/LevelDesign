@@ -18,7 +18,8 @@ namespace AmalgamGames.Core
         public event Action<float> OnSlowmoInputChange;
         public event Action OnRespawn;
         public event Action OnRestart;
-        
+        public event Action OnRefillJuice;
+
 
         #endregion
 
@@ -64,6 +65,14 @@ namespace AmalgamGames.Core
             }
         }
 
+        public void OnRefillJuiceInput(InputAction.CallbackContext context)
+        {
+            if(context.phase == InputActionPhase.Started)
+            {
+                OnRefillJuice?.Invoke();
+            }
+        }
+
         #endregion
 
     }
@@ -76,5 +85,6 @@ namespace AmalgamGames.Core
         public event Action<float> OnChargeInputChange;
         public event Action OnRespawn;
         public event Action OnRestart;
+        public event Action OnRefillJuice;
     }
 }

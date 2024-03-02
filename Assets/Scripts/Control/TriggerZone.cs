@@ -94,6 +94,7 @@ namespace AmalgamGames.Control
 
             if (toTrigger)
             {
+                
                 foreach(ITriggerable trigger in _triggers)
                 {
                     trigger.Trigger();

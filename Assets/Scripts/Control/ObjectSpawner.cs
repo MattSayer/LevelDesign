@@ -1,4 +1,5 @@
 using AmalgamGames.Core;
+using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
@@ -13,6 +14,7 @@ namespace AmalgamGames.Control
         [SerializeField] private GameObject _spawnPrefab;
         [SerializeField] private float _spawnRatePerSecond = 1;
         [SerializeField] private bool _spawnOnStart = true;
+        [SerializeField] private float _spawnDelay = 0;
         [SerializeField] private Transform _spawnPoint;
         [Title("Pooling")]
         [SerializeField] private int _poolSize = 5;
@@ -20,6 +22,7 @@ namespace AmalgamGames.Control
 
         // Coroutines
         private Coroutine _spawnRoutine = null;
+        private Coroutine _activationRoutine = null;
 
         private List<GameObject> _activeObjects;
         private List<GameObject> _inactiveObjects;
@@ -35,9 +38,13 @@ namespace AmalgamGames.Control
 
         private void Start()
         {
-            if (_spawnOnStart)
+            if (_spawnOnStart && _activationRoutine == null && _spawnRoutine == null)
             {
-                _spawnRoutine = StartCoroutine(spawnNewObject());
+                _activationRoutine = StartCoroutine(Tools.delayThenAction(_spawnDelay,() =>
+                {
+                    _spawnRoutine = StartCoroutine(spawnNewObject());
+                    _activationRoutine = null;
+                }));
             }
         }
 
@@ -60,7 +67,15 @@ namespace AmalgamGames.Control
             if (_spawnRoutine != null)
             {
                 StopCoroutine(_spawnRoutine);
+                _spawnRoutine = null;
             }
+
+            if(_activationRoutine != null)
+            {
+                StopCoroutine(_activationRoutine);
+                _activationRoutine = null;
+            }
+
             foreach (GameObject obj in _activeObjects.ToList())
             {
                 _activeObjects.Remove(obj);
@@ -72,9 +87,13 @@ namespace AmalgamGames.Control
                 _inactiveObjects.Add(obj);
             }
 
-            if (_spawnOnStart)
+            if (_spawnOnStart && _activationRoutine == null)
             {
-                _spawnRoutine = StartCoroutine(spawnNewObject());
+                _activationRoutine = StartCoroutine(Tools.delayThenAction(_spawnDelay, () =>
+                {
+                    _spawnRoutine = StartCoroutine(spawnNewObject());
+                    _activationRoutine = null;
+                }));
             }
         }
 
@@ -91,10 +110,13 @@ namespace AmalgamGames.Control
             {
                 GameObject newObj = Instantiate(_spawnPrefab);
                 newObj.name += "_" + i;
+                newObj.transform.SetParent(transform);
                 newObj.SetActive(false);
 
                 _inactiveObjects.Add(newObj);
             }
+
+            
 
         }
 
@@ -116,6 +138,7 @@ namespace AmalgamGames.Control
                 case EmptyPoolAction.InstantiateNew:
                     GameObject newObject = Instantiate(_spawnPrefab);
                     newObject.name += "_" + _poolSize;
+                    newObject.transform.SetParent(transform);
                     _poolSize++;
                     return newObject;
                 default:
@@ -144,9 +167,13 @@ namespace AmalgamGames.Control
 
         public void Trigger()
         {
-            if(_spawnRoutine == null)
+            if(_spawnRoutine == null && _activationRoutine == null)
             {
-                _spawnRoutine = StartCoroutine(spawnNewObject());
+                _activationRoutine = StartCoroutine(Tools.delayThenAction(_spawnDelay, () =>
+                {
+                    _spawnRoutine = StartCoroutine(spawnNewObject());
+                    _activationRoutine = null;
+                }));
             }
         }
 
@@ -191,7 +218,6 @@ namespace AmalgamGames.Control
             {
                 yield break;
             }
-
             yield return new WaitForSeconds(1f / _spawnRatePerSecond);
 
             _spawnRoutine = StartCoroutine(spawnNewObject());

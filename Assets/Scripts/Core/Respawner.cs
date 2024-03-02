@@ -192,11 +192,11 @@ namespace AmalgamGames.Core
 
         #region Collision
 
-        private void OnCollisionEnter(Collision collision)
+        private void OnTriggerEnter(Collider collider)
         {
             if (_canCollide)
             {
-                if (collision.collider.CompareTag(Globals.FATAL_COLLIDER_TAG))
+                if (collider.CompareTag(Globals.FATAL_COLLIDER_TAG))
                 {
                     if (_explodeRoutine == null)
                     {
