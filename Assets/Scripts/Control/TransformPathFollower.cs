@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using Technie.PhysicsCreator;
 using UnityEngine;
 
@@ -19,6 +20,9 @@ namespace AmalgamGames.Control
         [SerializeField] private float _pointWaitTime = 0;
         [SerializeField] private bool _isClosedPath = false;
         [SerializeField] private bool _useDynamicPoints = false;
+        [Range(0f,1f)]
+        [SerializeField] private float _pathStartPosition = 0;
+        [SerializeField] private PathDirection _startDirection = PathDirection.Forward;
 
         [Space]
         
@@ -157,14 +161,18 @@ namespace AmalgamGames.Control
             }
 
             _isMoving = false;
-            _progress = 0;
-            _nextPointIndex = 1;
-            _isMovingForward = true;
 
-            // Reset transform to first point
+            // Reset transform to start point
             if (_pathInitialised)
             {
-                transform.position = GetPathPoint(0);
+                CalculateStartPosition();
+            }
+            else
+            {
+                // Defaults if not initialised yet
+                _progress = 0;
+                _nextPointIndex = 1;
+                _isMovingForward = true;
             }
             
         }
@@ -265,9 +273,52 @@ namespace AmalgamGames.Control
             _totalPathTime = _totalPathDistance / _moveSpeed;
 
             // Start transform at first point
-            transform.position = GetPathPoint(0);
+            //transform.position = GetPathPoint(0);
+
+            CalculateStartPosition();
 
             _pathInitialised = true;
+        }
+
+        private void CalculateStartPosition()
+        {
+            float overallStartPos = _pathStartPosition * (_pathSize - 1);
+            int startPointIndex = Mathf.FloorToInt(overallStartPos);
+            float startProgress = overallStartPos - startPointIndex;
+
+            if (_startDirection == PathDirection.Forward)
+            {
+                _isMovingForward = true;
+                if (startPointIndex >= _pathSize - 1)
+                {
+                    transform.position = GetPathPoint(_pathSize-2);
+                    _progress = 1;
+                    _nextPointIndex = _pathSize-1;
+                }
+                else
+                {
+                    transform.position = GetPathPoint(startPointIndex);
+                    _progress = startProgress;
+                    _nextPointIndex = startPointIndex + 1;
+                }
+            }
+            else
+            {
+                _isMovingForward = false;
+                if (startPointIndex <= 0 && startProgress == 0)
+                {
+                    transform.position = GetPathPoint(1);
+                    _progress = 1;
+                    _nextPointIndex = 0;
+                }
+                else
+                {
+                    transform.position = GetPathPoint(startPointIndex + 1);
+                    _progress = (1 - startProgress);
+                    _nextPointIndex = startPointIndex;
+                }
+            }
+
         }
 
         private void FollowPath(float deltaTime)
@@ -406,5 +457,11 @@ namespace AmalgamGames.Control
 
         #endregion
 
+    }
+
+    public enum PathDirection
+    {
+        Forward,
+        Backward
     }
 }

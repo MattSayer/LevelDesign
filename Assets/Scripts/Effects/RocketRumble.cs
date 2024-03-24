@@ -10,7 +10,7 @@ using UnityEngine.InputSystem;
 
 namespace AmalgamGames.Effects
 {
-    public class RocketRumble : MonoBehaviour, IRespawnable, IPausable
+    public class RocketRumble : MonoBehaviour, IRespawnable
     {
         [Title("Charging")]
         [SerializeField] private float _maxLowFrequency;
@@ -68,20 +68,6 @@ namespace AmalgamGames.Effects
             UnsubscribeFromCharging();
         }
 
-
-        #endregion
-
-        #region Pausing
-
-        public void Pause()
-        {
-            Gamepad.current?.PauseHaptics();
-        }
-
-        public void Resume()
-        {
-            Gamepad.current?.ResumeHaptics();
-        }
 
         #endregion
 

@@ -63,6 +63,8 @@ namespace AmalgamGames.Core
         private ITargetOrienter _targetOrienter;
         private Rigidbody _rb;
 
+        private const float METRES_SECOND_TO_KILOMETERS_HOUR = 3.6f;
+
         #region Lifecycle
 
         
@@ -102,11 +104,10 @@ namespace AmalgamGames.Core
             if(_isBurning)
             {
                 _rb.AddForce(transform.forward * _burnForce * deltaTime, ForceMode.Force);
-                //Debug.Log("actual position: " + transform.position);
             }
 
             // TODO Normalize value based on max velocity
-            OnVelocityChanged?.Invoke(_rb.velocity.magnitude*10);
+            OnVelocityChanged?.Invoke(_rb.velocity.magnitude*METRES_SECOND_TO_KILOMETERS_HOUR);
 
             if(_runDelayedChargeCheck)
             {
@@ -168,6 +169,8 @@ namespace AmalgamGames.Core
                 _engineBurnRoutine = null;
             }
 
+            OnBurnComplete?.Invoke();
+
             _isBurning = false;
         }
 
@@ -206,6 +209,7 @@ namespace AmalgamGames.Core
             ResetChargeState();
 
             StopBurnRoutine();
+            
             _rb.useGravity = false;
             SetVelocityToZero();
 
@@ -217,6 +221,21 @@ namespace AmalgamGames.Core
 
         private void RestartRocket()
         {
+            _canLaunch = true;
+        }
+
+        public void EnableImmediateLaunch()
+        {
+            CacheChargeLevel();
+
+            ResetChargeState();
+
+            StopBurnRoutine();
+
+            _canCharge = true;
+            _canLaunch = false;
+
+            _runDelayedChargeCheck = true;
             _canLaunch = true;
         }
 
@@ -481,5 +500,7 @@ namespace AmalgamGames.Core
         public event Action OnChargingStart;
         public event Action<LaunchInfo> OnLaunch;
         public event Action OnBurnComplete;
+
+        public void EnableImmediateLaunch();
     }
 }

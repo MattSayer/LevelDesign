@@ -3,11 +3,12 @@ using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using System;
+using UnityEditor.Animations;
 using UnityEngine;
 
 namespace AmalgamGames.Abilities
 {
-    public class Nudge : ManagedFixedBehaviour, IRespawnable, INudger, IValueProvider
+    public class Nudge : ManagedFixedBehaviour, IRespawnable, IPausable, INudger, IValueProvider
     {
 
         [Title("Settings")]
@@ -186,6 +187,20 @@ namespace AmalgamGames.Abilities
 
         #endregion
 
+        #region Pausing
+
+        public void Pause()
+        {
+            gameObject.SetActive(false);
+        }
+
+        public void Resume()
+        {
+            gameObject.SetActive(true);
+        }
+
+        #endregion
+
         #region Value provider
 
         public void SubscribeToValue(string valueKey, Action<object> callback)
@@ -234,14 +249,8 @@ namespace AmalgamGames.Abilities
         {
             if (!_isSubscribedToEvents)
             {
-                foreach (EventHookup hookup in _hookupEvents)
-                {
-                    DynamicEvent sourceEvent = hookup.SourceEvent;
-                    object rawObj = (object)sourceEvent.EventSource;
-
-                    Delegate activateHandler = Tools.WireUpEvent(rawObj, sourceEvent.EventName, this, hookup.TargetInternalMethod);
-                    sourceEvent.EventHandler = activateHandler;
-                }
+                Tools.HookUpEventHookups(_hookupEvents, this);
+                
                 _isSubscribedToEvents = true;
             }
         }
@@ -250,11 +259,7 @@ namespace AmalgamGames.Abilities
         {
             if (_isSubscribedToEvents)
             {
-                foreach (EventHookup hookup in _hookupEvents)
-                {
-                    DynamicEvent sourceEvent = hookup.SourceEvent;
-                    Tools.DisconnectEvent((object)sourceEvent.EventSource, sourceEvent.EventName, sourceEvent.EventHandler);
-                }
+                Tools.UnhookEventHookups(_hookupEvents);
                 _isSubscribedToEvents = false;
             }
         }

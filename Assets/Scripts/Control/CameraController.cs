@@ -11,7 +11,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Control
 {
-    public class CameraController : ManagedBehaviour, IPausable, IRespawnable
+    public class CameraController : ManagedBehaviour, IPausable, IRespawnable, ICameraController
     {
         [Title("Speed")]
         [SerializeField] private float _horizontalSpeed;
@@ -203,7 +203,7 @@ namespace AmalgamGames.Control
             _offset = Vector3.zero;
         }
 
-        private void ResetRotation()
+        public void ResetRotation()
         {
             // Reset rotation
             _currentHorizontalRotation = 0;
@@ -290,6 +290,22 @@ namespace AmalgamGames.Control
             ChangeSpeedLimit(1, _speedLimitTransitionTime);
         }
 
+        public void RemoveSpeedLimit(bool removeImmediately = false)
+        {
+            if (removeImmediately)
+            {
+                if(_speedLimitRoutine != null)
+                {
+                    StopCoroutine(_speedLimitRoutine);
+                }
+                _rotationSpeedLimit = 1;
+            }
+            else
+            {
+                ChangeSpeedLimit(1, _speedLimitTransitionTime);
+            }
+        }
+
         #endregion
 
         #region Subscriptions
@@ -321,14 +337,8 @@ namespace AmalgamGames.Control
         {
             if (!_isSubscribedToEvents)
             {
-                foreach (EventHookup hookup in _hookupEvents)
-                {
-                    DynamicEvent sourceEvent = hookup.SourceEvent;
-                    object rawObj = (object)sourceEvent.EventSource;
+                Tools.HookUpEventHookups(_hookupEvents, this);
 
-                    Delegate activateHandler = Tools.WireUpEvent(rawObj, sourceEvent.EventName, this, hookup.TargetInternalMethod);
-                    sourceEvent.EventHandler = activateHandler;
-                }
                 _isSubscribedToEvents = true;
             }
         }
@@ -337,11 +347,7 @@ namespace AmalgamGames.Control
         {
             if(_isSubscribedToEvents)
             {
-                foreach (EventHookup hookup in _hookupEvents)
-                {
-                    DynamicEvent sourceEvent = hookup.SourceEvent;
-                    Tools.DisconnectEvent((object)sourceEvent.EventSource, sourceEvent.EventName, sourceEvent.EventHandler);
-                }
+                Tools.UnhookEventHookups(_hookupEvents);
                 _isSubscribedToEvents = false;
             }
         }
@@ -471,5 +477,11 @@ namespace AmalgamGames.Control
         }
 
         #endregion
+    }
+
+    public interface ICameraController
+    {
+        public void RemoveSpeedLimit(bool removeImmediately = false);
+        public void ResetRotation();
     }
 }

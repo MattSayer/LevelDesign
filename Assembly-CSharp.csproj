@@ -63,6 +63,7 @@
     <Compile Include="Assets\Scripts\Effects\ScreenShaker.cs" />
     <Compile Include="Assets\Scripts\Core\SharedIntValue.cs" />
     <Compile Include="Assets\Scripts\Core\Respawner.cs" />
+    <Compile Include="Assets\Scripts\Interactables\LaunchPickup.cs" />
     <Compile Include="Assets\Scripts\Transformations\NormalizeTransformation.cs" />
     <Compile Include="Assets\Scripts\Core\RocketController.cs" />
     <Compile Include="Assets\Scripts\UI\DynamicText.cs" />
@@ -71,6 +72,7 @@
     <Compile Include="Assets\Scripts\UI\DynamicFilledImage.cs" />
     <Compile Include="Assets\Scripts\Effects\RumbleController.cs" />
     <Compile Include="Assets\Scripts\Core\IRestartable.cs" />
+    <Compile Include="Assets\Scripts\Control\BezierPathsFollower.cs" />
     <Compile Include="Assets\Scripts\Control\TriggerZone.cs" />
     <Compile Include="Assets\Scripts\Transformations\Transformation.cs" />
     <Compile Include="Assets\Scripts\Scoring\ScoreTrigger.cs" />
@@ -80,8 +82,10 @@
     <Compile Include="Assets\Scripts\Abilities\Slowmo.cs" />
     <Compile Include="Assets\Scripts\Transformations\RaiseToPowerTransformation.cs" />
     <Compile Include="Assets\Scripts\Control\CameraController.cs" />
+    <Compile Include="Assets\Scripts\Debug\JuiceRefiller.cs" />
     <Compile Include="Assets\Scripts\Effects\VignetteEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\ScreenShakeEffect.cs" />
+    <Compile Include="Assets\Scripts\Core\ExternalForcesController.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedFixedBehaviour.cs" />
     <Compile Include="Assets\Scripts\Visualisation\TransformPathVisualisation.cs" />
     <Compile Include="Assets\Scripts\CustomEditor\RequireInterfaceAttribute.cs" />
@@ -99,6 +103,7 @@
     <Compile Include="Assets\Scripts\Control\IPathFollower.cs" />
     <Compile Include="Assets\Scripts\Control\ConstantRotation.cs" />
     <Compile Include="Assets\Scripts\SceneManagement\PhysicsSimulation.cs" />
+    <Compile Include="Assets\Scripts\Interactables\BouncePad.cs" />
     <Compile Include="Assets\Scripts\Control\BezierPathFollower.cs" />
     <Compile Include="Assets\Scripts\Utils\DependencyRequest.cs" />
     <Compile Include="Assets\Scripts\Simulation\SimulatedRocketController.cs" />
@@ -106,12 +111,14 @@
     <Compile Include="Assets\Scripts\Conditionals\RespawnEventConditional.cs" />
     <Compile Include="Assets\Scripts\Conditionals\ConditionalCheck.cs" />
     <Compile Include="Assets\Scripts\Transformations\MultiplyTransformation.cs" />
-    <Compile Include="Assets\Scripts\Effects\LaunchOffset.cs" />
+    <Compile Include="Assets\Scripts\Control\AnimationController.cs" />
+    <Compile Include="Assets\Scripts\Effects\MoveRBToTarget.cs" />
     <Compile Include="Assets\Scripts\Effects\ParticleEffect.cs" />
     <Compile Include="Assets\Scripts\Utils\Easing.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Scoring\ScoreTracker.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketTrajectory.cs" />
+    <Compile Include="Assets\Scripts\Interactables\Interactable.cs" />
     <Compile Include="Assets\Scripts\Control\TransformPathFollower.cs" />
     <Compile Include="Assets\Scripts\Effects\ObjectToggler.cs" />
     <Compile Include="Assets\Scripts\Utils\Tools.cs" />
@@ -120,8 +127,6 @@
     <Compile Include="Assets\Scripts\Control\ObjectSpawner.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Control\AnimationController.cs" />
-    <Compile Include="Assets\Scripts\Debug\JuiceRefiller.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

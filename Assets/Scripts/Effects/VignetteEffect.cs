@@ -42,6 +42,11 @@ namespace AmalgamGames.Effects
 
         #region Respawning/restarting
 
+        public void OnRestart()
+        {
+            RemoveVignette();
+        }
+
         public void OnRespawnEvent(RespawnEvent evt)
         {
             switch(evt)
@@ -51,17 +56,11 @@ namespace AmalgamGames.Effects
                     RemoveVignette();
                     break;
             }
-            
         }
         
         private void RemoveVignette()
         {
             _vignette.intensity.value = _defaultVignetteIntensity;
-        }
-
-        public void DoRestart()
-        {
-            RemoveVignette();
         }
 
         #endregion

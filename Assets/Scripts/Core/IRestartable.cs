@@ -1,7 +1,7 @@
 namespace AmalgamGames.Core
 {
-    interface IRestartable
+    public interface IRestartable
     {
-        public void DoRestart();
+        public void OnRestart();
     }
 }

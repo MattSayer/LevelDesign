@@ -195,7 +195,7 @@ namespace AmalgamGames.Core
 
         #region Restarting
 
-        public void DoRestart()
+        public void OnRestart()
         {
             _currentValue = _initialValue;
             BroadcastValueChanged();

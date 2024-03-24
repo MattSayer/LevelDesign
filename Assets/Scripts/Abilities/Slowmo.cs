@@ -1,17 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using AmalgamGames.Conditionals;
 using AmalgamGames.Core;
 using AmalgamGames.Effects;
 using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using UnityEngine.SceneManagement;
+using UnityEngine.UIElements;
 
 namespace AmalgamGames.Abilities
 {
-    public class Slowmo : MonoBehaviour, IRestartable, IRespawnable, IPausable
+    public class Slowmo : MonoBehaviour, IRestartable, IRespawnable, IPausable, ISlowmo
     {
         [Title("Events")]
         [FoldoutGroup("Events")][SerializeField] private DynamicEvent[] _cancelEvents;
@@ -41,6 +45,8 @@ namespace AmalgamGames.Abilities
         private bool _isPaused = false;
         
         private bool _isLocked = false;
+        private bool _ignoreInput = false;
+        private float _cachedInput = 0;
 
         private bool _cachedIsActive = false;
 
@@ -53,6 +59,48 @@ namespace AmalgamGames.Abilities
 
         #region Lifecycle
 
+        // TODO: move to proper classes
+        class LevelConfig
+        {
+            public string LevelID { get; set; }
+            public string LevelName { get; set; }
+            public Image Thumbnail { get; set; }    
+            public int[] StarPointThresholds { get; set; }
+            public float ThresholdTime {  get; set; }
+            public int ThresholdRespawns { get; set; }
+            public int ThresholdLaunches { get; set; }
+            public int MaxJuice {  get; set; }
+            public Scene SceneFile { get; set; }
+
+        }
+
+        class LevelSaveData
+        {
+            public string LevelID { get; set; }
+            public bool HasBeenCompleted { get; set; }
+            public int NumAttempts { get; set; }
+            public LevelCompletionStats LevelCompletionStats { get; set; }
+        }
+
+        class LevelCompletionStats
+        {
+            public int StarCount {  get; set; }
+            public int Score {  get; set; }
+            public float TimeTaken { get; set; }
+            public int BonusPoints { get; set; }
+            public int NumRespawns { get; set; }
+            public int NumLaunches { get; set; }
+            public float JuiceRemaining {  get; set; }
+            public RocketCharacter Character { get; set; }
+        }
+
+        enum RocketCharacter
+        {
+            Heavy,
+            Technical,
+            AllRounder
+        }
+
         private void Start()
         {
             _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketObject);
@@ -61,8 +109,25 @@ namespace AmalgamGames.Abilities
             SubscribeToEvents();
 
             PHYSICS_TIMESTEP = Time.fixedDeltaTime;
+
+            /*
+            LevelConfig testLevel = new LevelConfig() { LevelID = "1", LevelName = "Test" , MaxJuice = 100, StarPointThresholds = new int[] { 1000,2000,3000 }, ThresholdLaunches = 5, ThresholdRespawns = 5, ThresholdTime = 90 };
+
+            LevelCompletionStats stats = new LevelCompletionStats() { BonusPoints = 100, Character = RocketCharacter.AllRounder, JuiceRemaining = 23, NumLaunches = 4, NumRespawns = 3, Score = 5000, StarCount = 2, TimeTaken = 65 };
+
+            LevelSaveData saveData = new LevelSaveData() { HasBeenCompleted = true, LevelID = "1", NumAttempts = 3, LevelCompletionStats = stats };
+
+            Dictionary<string, object> flattenedDictionary = Tools.GetPropertyDictionary(new object[] { testLevel, saveData });
+
+            foreach(string key in flattenedDictionary.Keys)
+            {
+                Debug.Log($"{key}: {flattenedDictionary[key]}");
+            }
+            */
+
         }
 
+       
         private void OnEnable()
         {
             SubscribeToInput();
@@ -97,7 +162,7 @@ namespace AmalgamGames.Abilities
             }
         }
 
-        public void DoRestart()
+        public void OnRestart()
         {
             CancelSlowmo();
         }
@@ -114,13 +179,17 @@ namespace AmalgamGames.Abilities
         public void Resume()
         {
             _isPaused = false;
-
+            ApplyCachedSlowmo();
         }
 
         #endregion
 
         #region Charging/Launching
 
+        public void IgnoreInput(bool ignoreInput)
+        {
+            _ignoreInput = ignoreInput;
+        }
 
         private void OnLaunch(LaunchInfo launchInfo)
         {
@@ -135,6 +204,13 @@ namespace AmalgamGames.Abilities
 
         private void OnSlowmoInputChange(float inputVal)
         {
+            _cachedInput = inputVal;
+
+            if (_ignoreInput)
+            {
+                _cachedIsActive = inputVal > 0;
+                return;
+            }
             if (_isPaused)
             {
                 _cachedIsActive = inputVal > 0;
@@ -203,7 +279,32 @@ namespace AmalgamGames.Abilities
             }
         }
 
-        private void EndSlowmo()
+        public void ForceActivateSlowmo()
+        {
+            _isActive = true;
+
+            StopAllCoroutines();
+
+            OnSlowmoStart?.Invoke();
+
+            float timeScaleDiff = (Time.timeScale - _slowMoTimeScale) / (1 - _slowMoTimeScale);
+
+            _lerpTimescaleRoutine = StartCoroutine(Tools.lerpFloatOverTimeUnscaled(Time.timeScale, _slowMoTimeScale, _timeScaleTransitionTime * timeScaleDiff,
+                    (value) =>
+                    {
+                        Time.timeScale = value;
+                        Time.fixedDeltaTime = PHYSICS_TIMESTEP * value;
+                    },
+                    () =>
+                    {
+                        Time.timeScale = _slowMoTimeScale;
+                        Time.fixedDeltaTime = PHYSICS_TIMESTEP * _slowMoTimeScale;
+                        _lerpTimescaleRoutine = null;
+                    }
+                ));
+        }
+
+        public void EndSlowmo()
         {
             if (_isActive)
             {
@@ -254,7 +355,7 @@ namespace AmalgamGames.Abilities
             ReenableSlowmo();
         }
 
-        private void CancelSlowmo()
+        public void CancelSlowmo()
         {
             if(_isActive)
             {
@@ -266,8 +367,11 @@ namespace AmalgamGames.Abilities
                 OnSlowmoEnd?.Invoke();
                 _isActive = false;
 
-                // Lock slowmo until trigger is fully released
-                _isLocked = true;
+                // If trigger is currently held down, lock slowmo until trigger is fully released
+                if(_cachedInput > 0)
+                {
+                    _isLocked = true;
+                }
             }
         }
 
@@ -333,47 +437,9 @@ namespace AmalgamGames.Abilities
         {
             if (!_isSubscribedToEvents)
             {
-                foreach(DynamicEvent cancelEvent in _cancelEvents)
-                {
-                    object rawObj = (object)cancelEvent.EventSource;
+                Tools.SubscribeToDynamicEvents(_cancelEvents, CancelSlowmo, OnCancelEventWithParam);
 
-                    Delegate cancelHandler;
-
-                    if (cancelEvent.EventHasParam)
-                    {
-                        Action<object> dynamicEvent = (param) => { OnCancelEventWithParam(cancelEvent, param); };
-
-                        cancelHandler = Tools.WireUpEvent(rawObj, cancelEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
-                    }
-                    else
-                    {
-                        Action dynamicEvent = () => { CancelSlowmo(); };
-
-                        cancelHandler = Tools.WireUpEvent(rawObj, cancelEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
-                    }
-                    cancelEvent.EventHandler = cancelHandler;
-                }
-
-                foreach (DynamicEvent reenableEvent in _reenableEvents)
-                {
-                    object rawObj = (object)reenableEvent.EventSource;
-
-                    Delegate reenableHandler;
-
-                    if (reenableEvent.EventHasParam)
-                    {
-                        Action<object> dynamicEvent = (param) => { ReenableSlowmoWithParam(reenableEvent, param); };
-
-                        reenableHandler = Tools.WireUpEvent(rawObj, reenableEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
-                    }
-                    else
-                    {
-                        Action dynamicEvent = () => { ReenableSlowmo(); };
-
-                        reenableHandler = Tools.WireUpEvent(rawObj, reenableEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
-                    }
-                    reenableEvent.EventHandler = reenableHandler;
-                }
+                Tools.SubscribeToDynamicEvents(_reenableEvents, ReenableSlowmo, ReenableSlowmoWithParam);
 
                 _isSubscribedToEvents = true;
             }
@@ -383,15 +449,8 @@ namespace AmalgamGames.Abilities
         {
             if (_isSubscribedToEvents)
             {
-                foreach (DynamicEvent cancelEvent in _cancelEvents)
-                {
-                    Tools.DisconnectEvent((object)cancelEvent.EventSource, cancelEvent.EventName, cancelEvent.EventHandler);
-                }
-
-                foreach (DynamicEvent reenableEvent in _reenableEvents)
-                {
-                    Tools.DisconnectEvent((object)reenableEvent.EventSource, reenableEvent.EventName, reenableEvent.EventHandler);
-                }
+                Tools.UnsubscribeFromDynamicEvents(_cancelEvents);
+                Tools.UnsubscribeFromDynamicEvents(_reenableEvents);
 
                 _isSubscribedToEvents = false;
             }
@@ -400,5 +459,13 @@ namespace AmalgamGames.Abilities
 
         #endregion
 
+    }
+
+    public interface ISlowmo
+    {
+        public void ForceActivateSlowmo();
+        public void EndSlowmo();
+        public void CancelSlowmo();
+        public void IgnoreInput(bool ignoreInput);
     }
 }

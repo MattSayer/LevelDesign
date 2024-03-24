@@ -67,11 +67,11 @@ namespace AmalgamGames.Utils
         /// <returns></returns>
         public static Vector3 TranslateAxisInWorldSpace(TransformAxis axis)
         {
-            switch(axis)
+            switch (axis)
             {
                 case TransformAxis.X_pos:
                     return Vector3.right;
-                case TransformAxis.Y_pos: 
+                case TransformAxis.Y_pos:
                     return Vector3.up;
                 case TransformAxis.Z_pos:
                     return Vector3.forward;
@@ -168,17 +168,17 @@ namespace AmalgamGames.Utils
             Queue<Transform> queue = new Queue<Transform>();
             queue.Enqueue(root);
 
-            while(queue.Count > 0) 
+            while (queue.Count > 0)
             {
                 Transform t = queue.Dequeue();
                 T comp = t.GetComponent<T>();
-                if(comp != null)
+                if (comp != null)
                 {
                     return comp;
                 }
                 else
                 {
-                    foreach(Transform child in t)
+                    foreach (Transform child in t)
                     {
                         queue.Enqueue(child);
                     }
@@ -211,7 +211,7 @@ namespace AmalgamGames.Utils
             float time = 0;
             EasingFunction.Function func = EasingFunction.GetEasingFunction(easingFunction);
             float val;
-            while(time < duration)
+            while (time < duration)
             {
                 val = func(from, to, time / duration);
                 returnSetter(val);
@@ -313,6 +313,83 @@ namespace AmalgamGames.Utils
         #region Events
 
 
+        /// <summary>
+        /// Hook up all the passed DynamicEvents to the provided actions
+        /// </summary>
+        /// <param name="dynamicEvents">An array of DynamicEvents that will trigger the provided actions</param>
+        /// <param name="noParamEvent">A no parameter action to be called when the DynamicEvents fire</param>
+        /// <param name="paramEvent">An action that takes a DynamicEvent and an object as parameters. The DynamicEvent will be the triggered DynamicEvent, and the object will be the parameter included in that event</param>
+        public static void SubscribeToDynamicEvents(DynamicEvent[] dynamicEvents, Action noParamEvent, Action<DynamicEvent, object> paramEvent)
+        {
+            foreach (DynamicEvent evt in dynamicEvents)
+            {
+                object rawObj = (object)evt.EventSource;
+
+                Delegate eventHandler;
+
+                if (evt.EventHasParam && paramEvent != null)
+                {
+                    Action<object> dynamicEvent = (param) => { paramEvent(evt, param); };
+
+                    eventHandler = WireUpEvent(rawObj, evt.EventName, dynamicEvent.Target, dynamicEvent.Method);
+                }
+                else if(!evt.EventHasParam && noParamEvent != null)
+                {
+                    Action dynamicEvent = () => { noParamEvent(); };
+
+                    eventHandler = WireUpEvent(rawObj, evt.EventName, dynamicEvent.Target, dynamicEvent.Method);
+                }
+                else
+                {
+                    continue;
+                }
+                evt.EventHandler = eventHandler;
+            }
+        }
+
+        /// <summary>
+        /// Disconnects wired-up events from every DynamicEvent in the provided array
+        /// </summary>
+        /// <param name="dynamicEvents">An array of DynamicEvents to disconnect</param>
+        public static void UnsubscribeFromDynamicEvents(DynamicEvent[] dynamicEvents)
+        {
+            foreach (DynamicEvent evt in dynamicEvents)
+            {
+                DisconnectEvent((object)evt.EventSource, evt.EventName, evt.EventHandler);
+            }
+        }
+
+        /// <summary>
+        /// Wires up all the provided EventHookups to their corresponding event on the provided caller
+        /// </summary>
+        /// <param name="eventHookups">An array of EventHookups to wire up</param>
+        /// <param name="caller">The object containing the target hookup method</param>
+        public static void HookUpEventHookups(EventHookup[] eventHookups, object caller)
+        {
+            foreach (EventHookup hookup in eventHookups)
+            {
+                DynamicEvent sourceEvent = hookup.SourceEvent;
+                object rawObj = (object)sourceEvent.EventSource;
+
+                Delegate activateHandler = WireUpEvent(rawObj, sourceEvent.EventName, caller, hookup.TargetInternalMethod);
+                sourceEvent.EventHandler = activateHandler;
+            }
+        }
+
+
+        /// <summary>
+        /// Disconnects all the provided EventHookups
+        /// </summary>
+        /// <param name="eventHookups">An array of EventHookups to disconnect</param>
+        public static void UnhookEventHookups(EventHookup[] eventHookups)
+        {
+            foreach (EventHookup hookup in eventHookups)
+            {
+                DynamicEvent sourceEvent = hookup.SourceEvent;
+                DisconnectEvent((object)sourceEvent.EventSource, sourceEvent.EventName, sourceEvent.EventHandler);
+            }
+        }
+
 
         /// <summary>
         /// Dynamically wires up the specified method on the caller object to execute when the 
@@ -372,11 +449,102 @@ namespace AmalgamGames.Utils
 
         public static IEnumerator delayThenAction(float duration, Action action)
         {
-            if(duration > 0)
+            if (duration > 0)
             {
                 yield return new WaitForSeconds(duration);
             }
             action?.Invoke();
+        }
+
+        #endregion
+
+        #region Property Dictionaries
+
+        public static Dictionary<string, object> GetPropertyDictionary(object obj)
+        {
+            HashSet<object> visitedObjects = new HashSet<object>();
+            Dictionary<string, object> flattenedDictionary = new Dictionary<string, object>();
+
+            GetPropertyDictionary(obj, flattenedDictionary, visitedObjects);
+
+            return flattenedDictionary;
+        }
+
+        public static Dictionary<string, object> GetPropertyDictionary(object[] objects)
+        {
+            HashSet<object> visitedObjects = new HashSet<object>();
+            Dictionary<string, object> flattenedDictionary = new Dictionary<string, object>();
+
+            foreach(object obj in objects)
+            {
+                GetPropertyDictionary(obj, flattenedDictionary, visitedObjects);
+            }
+
+            return flattenedDictionary;
+        }
+
+        private static void GetPropertyDictionary(object obj, Dictionary<string, object> dict, HashSet<object> visitedObjects, string prefix = "")
+        {
+            if (obj == null || visitedObjects.Contains(obj))
+            {
+                return;
+            }
+
+            visitedObjects.Add(obj);
+
+            foreach (PropertyInfo prop in obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
+            {
+                string propName = prop.Name;
+                var propValue = prop.GetValue(obj);
+
+                if (propValue != null && IsPrimitiveType(propValue))
+                {
+                    dict[prefix + propName] = propValue;
+                }
+                else if (propValue != null)
+                {
+                    if (propValue.GetType().IsArray)
+                    {
+                        GetPropertyDictionaryArrayValues(propValue, dict, visitedObjects, propName + "_");
+                    }
+                    else if (propValue.GetType().IsClass)
+                    {
+                        GetPropertyDictionary(propValue, dict, visitedObjects, propName + "_");
+                    }
+
+                }
+            }
+        }
+
+        private static void GetPropertyDictionaryArrayValues(object obj, Dictionary<string, object> dict, HashSet<object> visitedObjects, string prefix)
+        {
+            if (obj == null || visitedObjects.Contains(obj))
+            {
+                return;
+            }
+
+            if (obj.GetType().IsArray)
+            {
+                var arrayObj = (Array)obj;
+                int counter = 0;
+                foreach (var item in arrayObj)
+                {
+                    if (IsPrimitiveType(item))
+                    {
+                        dict[prefix + counter] = item;
+                    }
+                    else
+                    {
+                        GetPropertyDictionary(item, dict, visitedObjects, prefix + counter + "_");
+                    }
+                    counter++;
+                }
+            }
+        }
+
+        public static bool IsPrimitiveType(object obj)
+        {
+            return obj.GetType().IsPrimitive || obj is string || obj is decimal;
         }
 
         #endregion

@@ -97,55 +97,9 @@ namespace AmalgamGames.Effects
         {
             if (!_isSubscribedToEvents)
             {
-                foreach(DynamicEvent activateEvent in _activateEvents)
-                {
-                    object rawObj = (object)activateEvent.EventSource;
+                Tools.SubscribeToDynamicEvents(_activateEvents, DelayedActivateEffect, DelayedActivateEffectWithParam);
 
-                    Delegate activateHandler;
-
-                    if (activateEvent.EventHasParam)
-                    {
-                        Action<object> dynamicEvent = (param) => { DelayedActivateEffectWithParam(activateEvent, param); };
-
-                        activateHandler = Tools.WireUpEvent(rawObj, activateEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
-
-                        //activateHandler = Tools.WireUpEvent(rawObj, activateEvent.EventName, this, nameof(DelayedActivateEffectWithParam));
-                    }
-                    else
-                    {
-                        Action dynamicEvent = () => { DelayedActivateEffect(); };
-
-                        activateHandler = Tools.WireUpEvent(rawObj, activateEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
-
-                        //activateHandler = Tools.WireUpEvent(rawObj, activateEvent.EventName, this, nameof(DelayedActivateEffect));
-                    }
-                    activateEvent.EventHandler = activateHandler;
-                }
-
-                foreach (DynamicEvent deactivateEvent in _deactivateEvents)
-                {
-                    object rawObj = (object)deactivateEvent.EventSource;
-
-                    Delegate deactivateHandler;
-
-                    if (deactivateEvent.EventHasParam)
-                    {
-                        Action<object> dynamicEvent = (param) => { DelayedDeactivateEffectWithParam(deactivateEvent, param); };
-
-                        deactivateHandler = Tools.WireUpEvent(rawObj, deactivateEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
-
-                        //deactivateHandler = Tools.WireUpEvent(rawObj, deactivateEvent.EventName, this, nameof(DelayedDeactivateEffectWithParam));
-                    }
-                    else
-                    {
-                        Action dynamicEvent = () => { DelayedDeactivateEffect(); };
-
-                        deactivateHandler = Tools.WireUpEvent(rawObj, deactivateEvent.EventName, dynamicEvent.Target, dynamicEvent.Method);
-
-                        //deactivateHandler = Tools.WireUpEvent(rawObj, deactivateEvent.EventName, this, nameof(DelayedDeactivateEffect));
-                    }
-                    deactivateEvent.EventHandler = deactivateHandler;
-                }
+                Tools.SubscribeToDynamicEvents(_deactivateEvents, DelayedDeactivateEffect, DelayedDeactivateEffectWithParam);
 
                 _isSubscribedToEvents = true;
             }
@@ -155,15 +109,9 @@ namespace AmalgamGames.Effects
         {
             if (_isSubscribedToEvents)
             {
-                foreach (DynamicEvent activateEvent in _activateEvents)
-                {
-                    Tools.DisconnectEvent((object)activateEvent.EventSource, activateEvent.EventName, activateEvent.EventHandler);
-                }
+                Tools.UnsubscribeFromDynamicEvents(_activateEvents);
 
-                foreach (DynamicEvent deactivateEvent in _deactivateEvents)
-                {
-                    Tools.DisconnectEvent((object)deactivateEvent.EventSource, deactivateEvent.EventName, deactivateEvent.EventHandler);
-                }
+                Tools.UnsubscribeFromDynamicEvents(_deactivateEvents);
 
                 _isSubscribedToEvents = false;
             }

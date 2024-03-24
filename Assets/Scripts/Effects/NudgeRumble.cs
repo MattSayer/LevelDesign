@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Effects
 {
-    public class NudgeRumble : MonoBehaviour
+    public class NudgeRumble : MonoBehaviour, IRespawnable
     {
         [Title("Rumble settings")]
         [SerializeField] private float _maxHighIntensity;
@@ -50,6 +50,20 @@ namespace AmalgamGames.Effects
         private void OnEnable()
         {
             SubscribeToNudger();
+        }
+
+        #endregion
+
+        #region Respawning/Restarting
+
+        public void OnRespawnEvent(RespawnEvent evt)
+        {
+            switch(evt)
+            {
+                case RespawnEvent.OnRespawnStart:
+                    _rumbleController?.StopContinuousRumble(this);
+                    break;
+            }
         }
 
         #endregion

@@ -204,7 +204,34 @@ namespace AmalgamGames.Core
                     }
                 }
             }
-            
+        }
+
+        private void OnCollisionEnter(Collision collision)
+        {
+            if (_canCollide)
+            {
+                if (collision.collider.CompareTag(Globals.FATAL_COLLIDER_TAG))
+                {
+                    if (_explodeRoutine == null)
+                    {
+                        _explodeRoutine = StartCoroutine(explodeThenRespawn());
+                    }
+                }
+            }
+        }
+
+        private void OnParticleCollision(GameObject other)
+        {
+            if (_canCollide)
+            {
+                if (other.CompareTag(Globals.FATAL_COLLIDER_TAG))
+                {
+                    if (_explodeRoutine == null)
+                    {
+                        _explodeRoutine = StartCoroutine(explodeThenRespawn());
+                    }
+                }
+            }
         }
 
         private void Explode()
