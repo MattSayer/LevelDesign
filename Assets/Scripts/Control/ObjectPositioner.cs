@@ -3,6 +3,7 @@ using AmalgamGames.Editor;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using AmalgamGames.UpdateLoop;
+using AmalgamGames.Transformation;
 
 namespace AmalgamGames.Control
 {
@@ -18,7 +19,7 @@ namespace AmalgamGames.Control
         [SerializeField] private string _valueKey;
         [Space]
         [Title("Transformations")]
-        [SerializeField] private Transformation.Transformation[] _transformations;
+        [SerializeField] private ConditionalTransformationGroup[] _transformations;
 
         private IValueProvider _valueProvider => valueProvider as IValueProvider;
 
@@ -79,7 +80,7 @@ namespace AmalgamGames.Control
         {
             for(int i = 0; i < _transformations.Length; i++)
             {
-                Transformation.Transformation t = _transformations[i];
+                ConditionalTransformationGroup t = _transformations[i];
                 rawValue = t.TransformObject(rawValue);
             }
 

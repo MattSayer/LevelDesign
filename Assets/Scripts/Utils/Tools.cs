@@ -445,6 +445,50 @@ namespace AmalgamGames.Utils
 
         #endregion
 
+        #region Conditionals
+
+        public static bool ApplyConditionals(object param, ConditionalGroup conditionalGroup)
+        {
+            bool result = true;
+
+            if(conditionalGroup == null)
+            {
+                return true;
+            }
+
+            foreach(ConditionalORGroup orGroup in conditionalGroup.OrChecks)
+            {
+                bool orCheck = true;
+
+                foreach(ConditionalCheckItem check in orGroup.AndChecks)
+                {
+                    bool andCheck = check.Check.ApplyCheck(param);
+                    andCheck = check.NegateCheck ? !andCheck : andCheck;
+
+                    // If any of the AND checks is false, the entire group is false
+                    if (!andCheck)
+                    {
+                        orCheck = false;
+                        break;
+                    }
+                }
+
+                // Only need one OR check to be true for the conditional to be true
+                if(orCheck)
+                {
+                    return true;
+                }
+                else
+                {
+                    result = false;
+                }
+            }
+
+            return result;
+        }
+
+        #endregion
+
         #region Coroutines
 
         public static IEnumerator delayThenAction(float duration, Action action)
@@ -569,7 +613,7 @@ namespace AmalgamGames.Utils
         public string EventName;
         public bool EventHasParam = false;
         public Delegate EventHandler;
-        public ConditionalCheck[] Conditionals;
+        public ConditionalGroup Conditionals;
     }
 
     [Serializable]

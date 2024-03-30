@@ -9,7 +9,7 @@ namespace AmalgamGames.Transformation
     {
         [SerializeField] private Vector3 _vectorToAdd = Vector3.zero;
 
-        public override object TransformObject(object input)
+        public override object TransformInput(object input)
         {
             if(input.GetType() == typeof(Vector3))
             {

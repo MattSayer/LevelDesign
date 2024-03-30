@@ -7,7 +7,7 @@ namespace AmalgamGames.Transformation
     [CreateAssetMenu(menuName ="Transformations/Normalize", fileName ="NormalizeTransformation")]
     public class NormalizeTransformation : Transformation
     {
-        public override object TransformObject(object input)
+        public override object TransformInput(object input)
         {
             if(input.GetType() == typeof(Vector3))
             {

@@ -1,6 +1,7 @@
 using AmalgamGames.Core;
 using AmalgamGames.Editor;
 using AmalgamGames.Utils;
+using AmalgamGames.Transformation;
 using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
@@ -14,11 +15,11 @@ namespace AmalgamGames.Effects
         [RequireInterface(typeof(IValueProvider))]
         [FoldoutGroup("Amplitude")] [SerializeField] private UnityEngine.Object amplitudeValueProvider;
         [FoldoutGroup("Amplitude")] [SerializeField] private string _amplitudeValueKey;
-        [FoldoutGroup("Amplitude")] [SerializeField] private Transformation.Transformation[] _amplitudeTransformations;
+        [FoldoutGroup("Amplitude")] [SerializeField] private ConditionalTransformationGroup[] _amplitudeTransformations;
         [RequireInterface(typeof(IValueProvider))]
         [FoldoutGroup("Frequency")][SerializeField] private UnityEngine.Object frequencyValueProvider;
         [FoldoutGroup("Frequency")][SerializeField] private string _frequencyValueKey;
-        [FoldoutGroup("Frequency")][SerializeField] private Transformation.Transformation[] _frequencyTransformations;
+        [FoldoutGroup("Frequency")][SerializeField] private ConditionalTransformationGroup[] _frequencyTransformations;
         [Space]
         [Title("Dependencies")]
         [SerializeField] private DependencyRequest _getScreenShaker;

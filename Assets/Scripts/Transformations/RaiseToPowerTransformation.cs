@@ -9,7 +9,7 @@ namespace AmalgamGames.Transformation
     {
         [SerializeField] private float _exponent = 1;
 
-        public override object TransformObject(object input)
+        public override object TransformInput(object input)
         {
             if(input.GetType() == typeof(float))
             {

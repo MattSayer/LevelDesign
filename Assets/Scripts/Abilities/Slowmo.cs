@@ -345,12 +345,10 @@ namespace AmalgamGames.Abilities
 
         private void ReenableSlowmoWithParam(DynamicEvent sourceEvent, object param)
         {
-            foreach (ConditionalCheck conditional in sourceEvent.Conditionals)
+            bool conditionalCheck = Tools.ApplyConditionals(param, sourceEvent.Conditionals);
+            if(!conditionalCheck)
             {
-                if (!conditional.ApplyCheck(param))
-                {
-                    return;
-                }
+                return;
             }
             ReenableSlowmo();
         }
@@ -377,12 +375,10 @@ namespace AmalgamGames.Abilities
 
         private void OnCancelEventWithParam(DynamicEvent sourceEvent, object param)
         {
-            foreach (ConditionalCheck conditional in sourceEvent.Conditionals)
+            bool conditionalCheck = Tools.ApplyConditionals(param, sourceEvent.Conditionals);
+            if(!conditionalCheck)
             {
-                if (!conditional.ApplyCheck(param))
-                {
-                    return;
-                }
+                return;
             }
             CancelSlowmo();
         }

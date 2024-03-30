@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Core\Respawner.cs" />
     <Compile Include="Assets\Scripts\Interactables\LaunchPickup.cs" />
     <Compile Include="Assets\Scripts\Transformations\NormalizeTransformation.cs" />
+    <Compile Include="Assets\Scripts\Transformations\SetFloatValueTransformation.cs" />
     <Compile Include="Assets\Scripts\Core\RocketController.cs" />
     <Compile Include="Assets\Scripts\UI\DynamicText.cs" />
     <Compile Include="Assets\Scripts\Utils\Globals.cs" />
@@ -83,6 +84,7 @@
     <Compile Include="Assets\Scripts\Transformations\RaiseToPowerTransformation.cs" />
     <Compile Include="Assets\Scripts\Control\CameraController.cs" />
     <Compile Include="Assets\Scripts\Debug\JuiceRefiller.cs" />
+    <Compile Include="Assets\Scripts\Effects\MaterialPropertyEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\VignetteEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\ScreenShakeEffect.cs" />
     <Compile Include="Assets\Scripts\Core\ExternalForcesController.cs" />
@@ -127,6 +129,10 @@
     <Compile Include="Assets\Scripts\Control\ObjectSpawner.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
+    <Compile Include="Assets\Scripts\Conditionals\Vector2Conditional.cs" />
+    <Compile Include="Assets\Scripts\Transformations\IsolateVectorComponentTransformation.cs" />
+    <Compile Include="Assets\Scripts\Conditionals\FloatConditional.cs" />
+    <Compile Include="Assets\Scripts\Transformations\VectorMultiplyTransformation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
