@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Core\Respawner.cs" />
     <Compile Include="Assets\Scripts\Interactables\LaunchPickup.cs" />
     <Compile Include="Assets\Scripts\Transformations\NormalizeTransformation.cs" />
+    <Compile Include="Assets\Scripts\Transformations\VectorMultiplyTransformation.cs" />
     <Compile Include="Assets\Scripts\Transformations\SetFloatValueTransformation.cs" />
     <Compile Include="Assets\Scripts\Core\RocketController.cs" />
     <Compile Include="Assets\Scripts\UI\DynamicText.cs" />
@@ -99,10 +100,12 @@
     <Compile Include="Assets\Scripts\Effects\NudgeRumble.cs" />
     <Compile Include="Assets\Scripts\Utils\FrameCounter.cs" />
     <Compile Include="Assets\Scripts\Configuration\RocketConfig.cs" />
+    <Compile Include="Assets\Scripts\Transformations\IsolateVectorComponentTransformation.cs" />
     <Compile Include="Assets\Scripts\Core\InputProcessor.cs" />
     <Compile Include="Assets\Scripts\Utils\ExternalTimeProvider.cs" />
     <Compile Include="Assets\Scripts\Core\IValueProvider.cs" />
     <Compile Include="Assets\Scripts\Control\IPathFollower.cs" />
+    <Compile Include="Assets\Scripts\Conditionals\Vector2Conditional.cs" />
     <Compile Include="Assets\Scripts\Control\ConstantRotation.cs" />
     <Compile Include="Assets\Scripts\SceneManagement\PhysicsSimulation.cs" />
     <Compile Include="Assets\Scripts\Interactables\BouncePad.cs" />
@@ -127,12 +130,9 @@
     <Compile Include="Assets\Scripts\Core\TriggerProxy.cs" />
     <Compile Include="Assets\Scripts\Control\ObjectRotator.cs" />
     <Compile Include="Assets\Scripts\Control\ObjectSpawner.cs" />
+    <Compile Include="Assets\Scripts\Conditionals\FloatConditional.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Conditionals\Vector2Conditional.cs" />
-    <Compile Include="Assets\Scripts\Transformations\IsolateVectorComponentTransformation.cs" />
-    <Compile Include="Assets\Scripts\Conditionals\FloatConditional.cs" />
-    <Compile Include="Assets\Scripts\Transformations\VectorMultiplyTransformation.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

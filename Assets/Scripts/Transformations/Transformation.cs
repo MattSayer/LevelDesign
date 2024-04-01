@@ -39,13 +39,15 @@ namespace AmalgamGames.Transformation
 
         public object TransformObject(object input)
         {
-            // Applies the transformation for the first conditional transformation that returns true
+            // Applies the transformation for the first conditional transformation that changes the input
+            // (i.e. the first transformation where its conditions return true)
             for(int i = 0; i < _conditionalTransformations.Length; i++)
             {
-                bool conditionPassed = Tools.ApplyConditionals(input, _conditionalTransformations[i]._conditionals);
-                if(conditionPassed)
+                object transformedInput = _conditionalTransformations[i].TransformObject(input);
+                
+                if(transformedInput != input)
                 {
-                    return _conditionalTransformations[i].TransformObject(input);
+                    return transformedInput;
                 }
             }
 

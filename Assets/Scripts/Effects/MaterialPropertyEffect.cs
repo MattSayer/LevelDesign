@@ -1,15 +1,17 @@
 using AmalgamGames.Conditionals;
+using AmalgamGames.Core;
 using AmalgamGames.Transformation;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Technie.PhysicsCreator;
 using UnityEngine;
 
 namespace AmalgamGames.Effects
 {
-    public class MaterialPropertyEffect : MonoBehaviour
+    public class MaterialPropertyEffect : MonoBehaviour, IRespawnable
     {
         [FoldoutGroup("Events")]
         [SerializeField] private DynamicEventWithTransformations[] _transformationEvents;
@@ -17,15 +19,16 @@ namespace AmalgamGames.Effects
         [Title("Material settings")]
         [SerializeField] private string _materialPropertyID;
         [SerializeField] private MaterialPropertyType _materialPropertyType;
-        [SerializeField] private Renderer _materialRenderer;
+        [SerializeField] private Renderer[] _materialRenderers;
         [SerializeField] private bool _createNewInstancedMaterial = false;
 
         // Material
-        private Material _material;
+        private Material[] _materials;
         private int _materialPropertyHash;
+        private object _defaultPropertyValue;
 
         // Coroutines
-        private Coroutine _lerpRoutine = null;
+        private Coroutine[] _lerpRoutines = null;
 
         // State
         private bool _isSubscribedToEvents = false;
@@ -36,15 +39,37 @@ namespace AmalgamGames.Effects
         {
             _materialPropertyHash = Shader.PropertyToID(_materialPropertyID);
 
+            _materials = new Material[_materialRenderers.Length];
+
             if (_createNewInstancedMaterial)
             {
-                // Make a copy of the renderer's material and set it, so we can modify it uniquely
-                _material = new Material(_materialRenderer.sharedMaterial);
-                _materialRenderer.material = _material;
+                // Make a copy of each of the renderer's material and set it, so we can modify it uniquely
+                for (int i = 0; i < _materialRenderers.Length; i++)
+                {
+                    _materials[i] = new Material(_materialRenderers[i].sharedMaterial);
+                    _materialRenderers[i].material = _materials[i];
+                }
             }
             else
             {
-                _material = _materialRenderer.sharedMaterial;
+                for (int i = 0; i < _materialRenderers.Length; i++)
+                {
+                    _materials[i] = _materialRenderers[i].material;
+                }
+            }
+
+            // Initialise coroutine array
+            _lerpRoutines = new Coroutine[_materials.Length];
+            for(int i = 0; i < _materials.Length; i++)
+            {
+                _lerpRoutines[i] = null;
+            }
+
+            // Set default property value to initial value of first material
+            // Default property value is used when respawning
+            if (_materials.Length > 0)
+            {
+                _defaultPropertyValue = GetCurrentPropertyValue(_materials[0]);
             }
 
             SubscribeToEvents();
@@ -66,76 +91,116 @@ namespace AmalgamGames.Effects
         }
 
         #endregion
-        
-        #region Material properties
 
-        private void ApplyTransformationToMaterialProperty(ConditionalTransformationGroup[] transformations, float lerpTime, object paramValue = null)
+        #region Respawning
+
+        public void OnRespawnEvent(RespawnEvent evt)
         {
-            // Get current material property value
-            object currentValue = paramValue ?? GetCurrentPropertyValue();
-
-            // Apply transformations
-            for(int i = 0; i < transformations.Length; i++)
+            switch (evt)
             {
-                ConditionalTransformationGroup t = transformations[i];
-                currentValue = t.TransformObject(currentValue);
-            }
-
-            // Set new material property value
-            if (lerpTime > 0)
-            {
-                if(_lerpRoutine != null)
-                {
-                    StopCoroutine(_lerpRoutine);
-                }
-
-                _lerpRoutine = StartCoroutine(lerpValueOverTime(GetCurrentPropertyValue(), currentValue, lerpTime));
-            }
-            else
-            {
-                SetPropertyValue(currentValue);
+                case RespawnEvent.OnRespawnStart:
+                    KillAllCoroutines();
+                    ResetPropertyToDefaultValue();
+                    break;
             }
         }
 
-        private object GetCurrentPropertyValue()
+        private void ResetPropertyToDefaultValue()
+        {
+            foreach(Material mat in _materials)
+            {
+                SetPropertyValue(mat, _defaultPropertyValue);
+            }
+        }
+
+        private void KillAllCoroutines()
+        {
+            foreach(Coroutine coroutine in _lerpRoutines)
+            {
+                if (coroutine != null)
+                {
+                    StopCoroutine(coroutine);
+                }
+            }
+        }
+
+        #endregion
+
+        #region Material properties
+
+        private void ApplyTransformationToMaterialProperty(ConditionalTransformationGroup[] transformations, float lerpTime, EasingFunction.Ease lerpEasing, object paramValue = null)
+        {
+            KillAllCoroutines();
+
+            for (int i = 0; i < _materials.Length; i++)
+            {
+                Material mat = _materials[i];
+                // Get current material property value
+                object currentValue = paramValue ?? GetCurrentPropertyValue(mat);
+
+                // Apply transformations
+                for (int j = 0; j < transformations.Length; j++)
+                {
+                    ConditionalTransformationGroup t = transformations[j];
+                    currentValue = t.TransformObject(currentValue);
+                }
+                
+                // Set new material property value
+                if (lerpTime > 0)
+                {
+                    if (_lerpRoutines[i] != null)
+                    {
+                        StopCoroutine(_lerpRoutines[i]);
+                    }
+
+                    _lerpRoutines[i] = StartCoroutine(lerpValueOverTime(mat, GetCurrentPropertyValue(mat), currentValue, lerpTime, lerpEasing));
+                }
+                else
+                {
+                    SetPropertyValue(mat, currentValue);
+                }
+            }
+        }
+
+        private object GetCurrentPropertyValue(Material mat)
         {
             switch (_materialPropertyType)
             {
                 case MaterialPropertyType.Int:
-                    return _material.GetInt(_materialPropertyHash);
+                    return mat.GetInt(_materialPropertyHash);
                 case MaterialPropertyType.Float:
-                    return _material.GetFloat(_materialPropertyHash);
+                    return mat.GetFloat(_materialPropertyHash);
                 case MaterialPropertyType.Vector2:
-                    Vector4 vec = _material.GetVector(_materialPropertyHash);
+                    Vector4 vec = mat.GetVector(_materialPropertyHash);
                     return new Vector2(vec.x, vec.y);
                 case MaterialPropertyType.Vector3:
-                    vec = _material.GetVector(_materialPropertyHash);
+                    vec = mat.GetVector(_materialPropertyHash);
                     return new Vector3(vec.x, vec.y, vec.z);
                 case MaterialPropertyType.Colour:
-                    vec = _material.GetVector(_materialPropertyHash);
+                    vec = mat.GetVector(_materialPropertyHash);
                     return new Color(vec.x, vec.y, vec.z);
             }
             return null;
         }
 
-        private void SetPropertyValue(object newValue)
+        private void SetPropertyValue(Material mat, object newValue)
         {
             switch (_materialPropertyType)
             {
                 case MaterialPropertyType.Int:
-                    _material.SetInt(_materialPropertyHash,(int)newValue);
+                    mat.SetInt(_materialPropertyHash,(int)newValue);
                     break;
                 case MaterialPropertyType.Float:
-                    _material.SetFloat(_materialPropertyHash, (float)newValue);
+                    mat.SetFloat(_materialPropertyHash, (float)newValue);
                     break;
                 case MaterialPropertyType.Vector2:
-                    _material.SetVector(_materialPropertyHash, (Vector2)newValue);
+                    mat.SetVector(_materialPropertyHash, (Vector2)newValue);
                     break;
                 case MaterialPropertyType.Vector3:
-                    _material.SetVector(_materialPropertyHash, (Vector3)newValue);
+                    mat.SetVector(_materialPropertyHash, (Vector3)newValue);
                     break;
                 case MaterialPropertyType.Colour:
-                    _material.SetColor(_materialPropertyHash, (Color)newValue);
+                    mat.SetColor(_materialPropertyHash, (Color)newValue);
                     break;
             }
         }
@@ -144,11 +209,13 @@ namespace AmalgamGames.Effects
 
         #region Coroutines
 
-        private IEnumerator lerpValueOverTime(object startValue, object endValue, float duration)
+        private IEnumerator lerpValueOverTime(Material mat, object startValue, object endValue, float duration, EasingFunction.Ease easing)
         {
             float objLerp = 0;
 
             object newValue = null;
+
+            EasingFunction.Function func = EasingFunction.GetEasingFunction(easing);
 
             while(objLerp < duration)
             {
@@ -156,30 +223,30 @@ namespace AmalgamGames.Effects
                 switch(_materialPropertyType)
                 {
                     case MaterialPropertyType.Int:
-                        newValue = Mathf.Lerp((int)startValue, (int)endValue, lerpVal);
+                        newValue = func((int)startValue, (int)endValue, lerpVal);
                         break;
                     case MaterialPropertyType.Float:
-                        newValue = Mathf.Lerp((float)startValue, (float)endValue, lerpVal);
+                        newValue = func((float)startValue, (float)endValue, lerpVal);
                         break;
                     case MaterialPropertyType.Vector2:
-                        newValue = Vector2.Lerp((Vector2)startValue, (Vector2)endValue, lerpVal);
+                        newValue = Tools.LerpWithEasing((Vector2)startValue, (Vector2)endValue, lerpVal, func);
                         break;
                     case MaterialPropertyType.Vector3:
-                        newValue = Vector3.Lerp((Vector3)startValue, (Vector3)endValue, lerpVal);
+                        newValue = Tools.LerpWithEasing((Vector3)startValue, (Vector3)endValue, lerpVal, func);
                         break;
                     case MaterialPropertyType.Colour:
-                        newValue = Color.Lerp((Color)startValue, (Color)endValue, lerpVal);
+                        newValue = Tools.LerpWithEasing((Color)startValue, (Color)endValue, lerpVal, func);
                         break;
                 }
                 if (newValue != null)
                 {
-                    SetPropertyValue(newValue);
+                    SetPropertyValue(mat, newValue);
                 }
                 objLerp += Time.deltaTime;
                 yield return null;
             }
 
-            SetPropertyValue(endValue);
+            SetPropertyValue(mat, endValue);
         }
 
         #endregion
@@ -188,7 +255,7 @@ namespace AmalgamGames.Effects
 
         private void TriggerEvent(DynamicEventWithTransformations sourceEvent)
         {
-            ApplyTransformationToMaterialProperty(sourceEvent.Transformations, sourceEvent.LerpValueDuration);
+            ApplyTransformationToMaterialProperty(sourceEvent.Transformations, sourceEvent.LerpValueDuration, sourceEvent.LerpEasing);
         }
 
         private void TriggerEventWithParam(DynamicEventWithTransformations sourceTransformationEvent, DynamicEvent sourceEvent, object param)
@@ -199,7 +266,7 @@ namespace AmalgamGames.Effects
                 return;
             }
             
-            ApplyTransformationToMaterialProperty(sourceTransformationEvent.Transformations, sourceTransformationEvent.LerpValueDuration, sourceTransformationEvent.UseEventParameter ? param : null);
+            ApplyTransformationToMaterialProperty(sourceTransformationEvent.Transformations, sourceTransformationEvent.LerpValueDuration, sourceTransformationEvent.LerpEasing, sourceTransformationEvent.UseEventParameter ? param : null);
         }
 
         #endregion
@@ -250,6 +317,7 @@ namespace AmalgamGames.Effects
         public DynamicEvent[] DynamicEvents;
         public ConditionalTransformationGroup[] Transformations;
         public float LerpValueDuration = 0;
+        public EasingFunction.Ease LerpEasing = EasingFunction.Ease.Linear;
         public bool UseEventParameter = false;
     }
 }

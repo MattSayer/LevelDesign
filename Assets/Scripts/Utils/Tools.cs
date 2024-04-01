@@ -310,6 +310,60 @@ namespace AmalgamGames.Utils
 
         #endregion
 
+        #region Easing
+
+        /// <summary>
+        /// Lerps a Vector2 from the 'from' value to the 'to' value, using the provided easing function
+        /// </summary>
+        /// <param name="from">Initial value</param>
+        /// <param name="to">End value</param>
+        /// <param name="lerpVal">Time (0 - 1)</param>
+        /// <param name="easingFunction">Easing function</param>
+        /// <returns>The lerped Vector2</returns>
+        public static Vector2 LerpWithEasing(Vector2 from, Vector2 to, float lerpVal, EasingFunction.Function easingFunction)
+        {
+            Vector2 newVector = new Vector2();
+            newVector.x = easingFunction(from.x, to.x, lerpVal);
+            newVector.y = easingFunction(from.y, to.y, lerpVal);
+            return newVector;
+        }
+
+        /// <summary>
+        /// Lerps a Vector3 from the 'from' value to the 'to' value, using the provided easing function
+        /// </summary>
+        /// <param name="from">Initial value</param>
+        /// <param name="to">End value</param>
+        /// <param name="lerpVal">Time (0 - 1)</param>
+        /// <param name="easingFunction">Easing function</param>
+        /// <returns>The lerped Vector3</returns>
+        public static Vector3 LerpWithEasing(Vector3 from, Vector3 to, float lerpVal, EasingFunction.Function easingFunction)
+        {
+            Vector3 newVector = new Vector3();
+            newVector.x = easingFunction(from.x, to.x, lerpVal);
+            newVector.y = easingFunction(from.y, to.y, lerpVal);
+            newVector.z = easingFunction(from.z, to.z, lerpVal);
+            return newVector;
+        }
+
+        /// <summary>
+        /// Lerps a Color from the 'from' value to the 'to' value, using the provided easing function
+        /// </summary>
+        /// <param name="from">Initial value</param>
+        /// <param name="to">End value</param>
+        /// <param name="lerpVal">Time (0 - 1)</param>
+        /// <param name="easingFunction">Easing function</param>
+        /// <returns>The lerped Color</returns>
+        public static Color LerpWithEasing(Color from, Color to, float lerpVal, EasingFunction.Function easingFunction)
+        {
+            Color colour = new Color();
+            colour.r = easingFunction(from.r, to.r, lerpVal);
+            colour.g = easingFunction(from.g, to.g, lerpVal);
+            colour.b = easingFunction(from.b, to.b, lerpVal);
+            return colour;
+        }
+
+        #endregion
+
         #region Events
 
 

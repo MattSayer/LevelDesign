@@ -186,7 +186,7 @@ namespace AmalgamGames.Core
         {
             _isCharging = false;
             _chargeLevel = 0;
-            OnChargeLevelChanged?.Invoke(_chargeLevel);
+            TriggerChargeEvent();
         }
 
         private void DisableRocket()
@@ -269,7 +269,7 @@ namespace AmalgamGames.Core
             else if (_isCharging && _cachedChargeLevel > 0)
             {
                 _chargeLevel = _cachedChargeLevel;
-                OnChargeLevelChanged?.Invoke(_chargeLevel);
+                TriggerChargeEvent();
             }
             else if(_isCharging)
             {
@@ -315,8 +315,8 @@ namespace AmalgamGames.Core
                 else
                 {
                     _chargeLevel = chargeLevel;
+                    TriggerChargeEvent();
                 }
-                OnChargeLevelChanged?.Invoke(_chargeLevel);
             }
             else
             {
@@ -339,8 +339,6 @@ namespace AmalgamGames.Core
 
                 LaunchInfo launchInfo = new LaunchInfo(_chargeLevel, engineBurnTime);
 
-                TriggerLaunchEvent(launchInfo);
-
                 _targetOrienter?.ToggleMode(OrientMode.Velocity);
 
                 float launchStrength = _minChargeForce + (_chargeLevel * _playerChargeForce);
@@ -361,7 +359,11 @@ namespace AmalgamGames.Core
 
                 _isCharging = false;
                 _chargeLevel = 0;
-                OnChargeLevelChanged?.Invoke(_chargeLevel);
+                TriggerChargeEvent();
+
+                // Triggering launch event after charge event, in case something is
+                // listening to both
+                TriggerLaunchEvent(launchInfo);
             }
         }
 
@@ -383,6 +385,11 @@ namespace AmalgamGames.Core
         private void TriggerLaunchEvent(LaunchInfo launchInfo)
         {
             OnLaunch?.Invoke(launchInfo);
+        }
+
+        private void TriggerChargeEvent()
+        {
+            OnChargeLevelChanged?.Invoke(_chargeLevel);
         }
 
         #endregion
