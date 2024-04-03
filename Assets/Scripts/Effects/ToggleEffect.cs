@@ -4,10 +4,12 @@ using UnityEngine;
 using System.Collections.Generic;
 using AmalgamGames.Utils;
 using AmalgamGames.Conditionals;
+using Technie.PhysicsCreator;
+using AmalgamGames.Core;
 
 namespace AmalgamGames.Effects
 {
-    public abstract class ToggleEffect : MonoBehaviour
+    public abstract class ToggleEffect : MonoBehaviour, IRespawnable
     {
         [FoldoutGroup("Events")] [SerializeField] private DynamicEvent[] _activateEvents;
         [FoldoutGroup("Events")] [SerializeField] private DynamicEvent[] _deactivateEvents;
@@ -21,6 +23,9 @@ namespace AmalgamGames.Effects
 
         // STATE
         private bool _isSubscribedToEvents = false;
+
+        // Coroutines
+        private Coroutine _effectRoutine = null;
 
         private List<Delegate> _activateHandlers;
         private List<Delegate> _deactivateHandlers;
@@ -49,6 +54,29 @@ namespace AmalgamGames.Effects
 
         #endregion
 
+        #region Respawning
+
+        public virtual void OnRespawnEvent(RespawnEvent evt)
+        {
+            switch(evt)
+            {
+                case RespawnEvent.OnRespawnStart:
+                    KillAllCoroutines();
+                    break;
+            }
+        }
+
+        private void KillAllCoroutines()
+        {
+            if(_effectRoutine != null)
+            {
+                StopCoroutine(_effectRoutine);
+                _effectRoutine = null;
+            }
+        }
+
+        #endregion
+
         #region Effect
 
         protected abstract void ActivateEffect();
@@ -57,7 +85,23 @@ namespace AmalgamGames.Effects
 
         protected void DelayedActivateEffect()
         {
-            Invoke(nameof(ActivateEffect),_activationDelay);
+            if(_effectRoutine != null)
+            {
+                StopCoroutine(_effectRoutine);
+            }
+
+            if (_activationDelay > 0)
+            {
+                _effectRoutine = StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
+                {
+                    ActivateEffect();
+                    _effectRoutine = null;
+                }));
+            }
+            else
+            {
+                ActivateEffect();
+            }
         }
 
         protected void DelayedActivateEffectWithParam(DynamicEvent sourceEvent, object param)
@@ -72,7 +116,23 @@ namespace AmalgamGames.Effects
 
         protected void DelayedDeactivateEffect()
         {
-            Invoke(nameof(DeactivateEffect),_deactivationDelay);
+            if (_effectRoutine != null)
+            {
+                StopCoroutine(_effectRoutine);
+            }
+
+            if (_deactivationDelay > 0)
+            {
+                _effectRoutine = StartCoroutine(Tools.delayThenAction(_deactivationDelay, () =>
+                {
+                    DeactivateEffect();
+                    _effectRoutine = null;
+                }));
+            }
+            else
+            {
+                DeactivateEffect();
+            }
         }
 
         protected void DelayedDeactivateEffectWithParam(DynamicEvent sourceEvent, object param)

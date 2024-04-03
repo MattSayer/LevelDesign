@@ -60,6 +60,7 @@
     <Compile Include="Assets\Scripts\Transformations\AddVectorTransformation.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedBehaviour.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedLateBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Effects\ParticleSystemPropertyEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\ScreenShaker.cs" />
     <Compile Include="Assets\Scripts\Core\SharedIntValue.cs" />
     <Compile Include="Assets\Scripts\Core\Respawner.cs" />
@@ -78,7 +79,9 @@
     <Compile Include="Assets\Scripts\Control\TriggerZone.cs" />
     <Compile Include="Assets\Scripts\Transformations\Transformation.cs" />
     <Compile Include="Assets\Scripts\Scoring\ScoreTrigger.cs" />
+    <Compile Include="Assets\Scripts\Effects\TransformPositionEffect.cs" />
     <Compile Include="Assets\Scripts\Visualisation\BezierPathVisualisation.cs" />
+    <Compile Include="Assets\Scripts\ParticleSystemPropertyModifier\ParticleSystemPropertyModifier.cs" />
     <Compile Include="Assets\Scripts\Core\SharedFloatValue.cs" />
     <Compile Include="Assets\Scripts\Control\TargetOrienter.cs" />
     <Compile Include="Assets\Scripts\Abilities\Slowmo.cs" />
@@ -106,6 +109,7 @@
     <Compile Include="Assets\Scripts\Core\IValueProvider.cs" />
     <Compile Include="Assets\Scripts\Control\IPathFollower.cs" />
     <Compile Include="Assets\Scripts\Conditionals\Vector2Conditional.cs" />
+    <Compile Include="Assets\Scripts\ParticleSystemPropertyModifier\ParticleSystemStartSpeedModifier.cs" />
     <Compile Include="Assets\Scripts\Control\ConstantRotation.cs" />
     <Compile Include="Assets\Scripts\SceneManagement\PhysicsSimulation.cs" />
     <Compile Include="Assets\Scripts\Interactables\BouncePad.cs" />

@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Effects
 {
-    public class ScreenShakeEffect : ToggleEffect, IRespawnable
+    public class ScreenShakeEffect : ToggleEffect
     {
         [Title("Value providers")]
         [RequireInterface(typeof(IValueProvider))]
@@ -66,8 +66,10 @@ namespace AmalgamGames.Effects
 
         #region Respawning
 
-        public void OnRespawnEvent(RespawnEvent evt)
+        public override void OnRespawnEvent(RespawnEvent evt)
         {
+            base.OnRespawnEvent(evt);
+
             switch(evt)
             {
                 case RespawnEvent.OnCollision:

@@ -165,11 +165,6 @@ namespace AmalgamGames.Abilities
             EnableNudging();
         }
 
-        private void OnBurnComplete()
-        {
-            EnableNudging();
-        }
-
         #endregion
 
         #region Respawning/Restarting

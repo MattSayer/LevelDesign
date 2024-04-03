@@ -169,9 +169,14 @@ namespace AmalgamGames.Core
                 _engineBurnRoutine = null;
             }
 
-            OnBurnComplete?.Invoke();
+            //OnBurnComplete?.Invoke();
 
             _isBurning = false;
+        }
+
+        private void NotifyBurnComplete()
+        {
+            OnBurnComplete?.Invoke();
         }
 
         private void CacheChargeLevel()
@@ -231,6 +236,7 @@ namespace AmalgamGames.Core
             ResetChargeState();
 
             StopBurnRoutine();
+            NotifyBurnComplete();
 
             _canCharge = true;
             _canLaunch = false;

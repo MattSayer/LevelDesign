@@ -11,7 +11,7 @@ using System;
 
 namespace AmalgamGames.Effects
 {
-    public class VignetteEffect : ToggleEffect, IRespawnable, IRestartable
+    public class VignetteEffect : ToggleEffect, IRestartable
     {
         [Title("Postprocessing")]
         [SerializeField] private Volume _postProcessingVolume;
@@ -47,8 +47,10 @@ namespace AmalgamGames.Effects
             RemoveVignette();
         }
 
-        public void OnRespawnEvent(RespawnEvent evt)
+        public override void OnRespawnEvent(RespawnEvent evt)
         {
+            base.OnRespawnEvent(evt);
+
             switch(evt)
             {
                 case RespawnEvent.OnCollision:

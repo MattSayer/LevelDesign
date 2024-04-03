@@ -8,20 +8,38 @@ using UnityEngine.Rendering.Universal;
 
 namespace AmalgamGames.Effects
 {
-    public class ParticleEffect : ToggleEffect, IRespawnable
+    public class ParticleEffect : ToggleEffect
     {
         [Title("Components")]
         [SerializeField] private ParticleSystem _particleSystem;
 
+        private bool _isInitiallyActive;
+
+        #region Lifecyle
+
+        private void Awake()
+        {
+            _isInitiallyActive = _particleSystem.main.playOnAwake;
+        }
+
+        #endregion
+
         #region Respawning/restarting
 
-        public void OnRespawnEvent(RespawnEvent evt)
+        public override void OnRespawnEvent(RespawnEvent evt)
         {
+            base.OnRespawnEvent(evt);
+
             switch (evt)
             {
                 case RespawnEvent.OnCollision:
                 case RespawnEvent.OnRespawnStart:
                     StopParticleSystem();
+                    ClearParticleSystem();
+                    if(_isInitiallyActive)
+                    {
+                        StartParticleSystem();
+                    }
                     break;
             }
         }
@@ -29,6 +47,16 @@ namespace AmalgamGames.Effects
         private void StopParticleSystem()
         {
             _particleSystem.Stop();
+        }
+
+        private void ClearParticleSystem()
+        {
+            _particleSystem.Clear();
+        }
+
+        private void StartParticleSystem()
+        {
+            _particleSystem.Play();
         }
 
         #endregion
