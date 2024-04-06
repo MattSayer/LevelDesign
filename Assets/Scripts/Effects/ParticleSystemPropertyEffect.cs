@@ -6,60 +6,38 @@ using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 namespace AmalgamGames.Effects
 {
-    public class ParticleSystemPropertyEffect : MonoBehaviour
+    public class ParticleSystemPropertyEffect : DynamicEventsEffect
     {
         [FoldoutGroup("Events")]
-        [SerializeField] private DynamicEventWithTransformations[] _transformationEvents;
+        [SerializeField] private DynamicEventsWithTransformations[] _transformationEvents;
         [Space]
         [Title("Particle System settings")]
         [SerializeField] private ParticleSystemPropertyModifier _propertyModifier;
         [SerializeField] private ParticleSystem[] _particleSystems;
 
+        protected override DynamicEventsContainer[] DynamicEventsContainers => _transformationEvents;
+
         // Particle system
         private object _defaultPropertyValue;
 
         // Coroutines
-        private Coroutine[] _lerpRoutines = null;
-
-        // State
-        private bool _isSubscribedToEvents = false;
+        private Coroutine _lerpRoutine = null;
 
         #region Lifecycle
 
-        private void Awake()
+        protected override void Awake()
         {
-            // Initialise coroutine array
-            _lerpRoutines = new Coroutine[_particleSystems.Length];
-            for (int i = 0; i < _particleSystems.Length; i++)
-            {
-                _lerpRoutines[i] = null;
-            }
+            base.Awake();
 
             if(_particleSystems.Length > 0 )
             {
                 _defaultPropertyValue = _propertyModifier.GetPropertyValue(_particleSystems[0]);
             }
             
-
-            SubscribeToEvents();
-        }
-
-        private void OnEnable()
-        {
-            SubscribeToEvents();
-        }
-
-        private void OnDestroy()
-        {
-            UnsubscribeFromEvents();
-        }
-
-        private void OnDisable()
-        {
-            UnsubscribeFromEvents();
         }
 
         #endregion
@@ -87,12 +65,9 @@ namespace AmalgamGames.Effects
 
         private void KillAllCoroutines()
         {
-            foreach (Coroutine coroutine in _lerpRoutines)
+            if (_lerpRoutine != null)
             {
-                if (coroutine != null)
-                {
-                    StopCoroutine(coroutine);
-                }
+                StopCoroutine(_lerpRoutine);
             }
         }
 
@@ -102,34 +77,39 @@ namespace AmalgamGames.Effects
 
         private void ApplyTransformationToParticleSystemProperty(ConditionalTransformationGroup[] transformations, float lerpTime, EasingFunction.Ease lerpEasing, object paramValue = null)
         {
+            if(_particleSystems.Length == 0)
+            {
+                return;
+            }
+
             KillAllCoroutines();
 
-            for (int i = 0; i < _particleSystems.Length; i++)
+            // Get current property value for first particle system
+            object transformedValue = paramValue ?? GetCurrentPropertyValue(_particleSystems[0]);
+
+            // Apply transformations
+            for (int j = 0; j < transformations.Length; j++)
             {
-                ParticleSystem particles = _particleSystems[i];
-                // Get current material property value
-                object currentValue = paramValue ?? GetCurrentPropertyValue(particles);
+                ConditionalTransformationGroup t = transformations[j];
+                transformedValue = t.TransformObject(transformedValue);
+            }
 
-                // Apply transformations
-                for (int j = 0; j < transformations.Length; j++)
+            if (lerpTime > 0)
+            {
+                if (_lerpRoutine != null)
                 {
-                    ConditionalTransformationGroup t = transformations[j];
-                    currentValue = t.TransformObject(currentValue);
+                    StopCoroutine(_lerpRoutine);
                 }
 
-                // Set new material property value
-                if (lerpTime > 0)
+                _lerpRoutine = StartCoroutine(lerpValueOverTime(_particleSystems, transformedValue, lerpTime, lerpEasing));
+            }
+            else
+            {
+                for (int i = 0; i < _particleSystems.Length; i++)
                 {
-                    if (_lerpRoutines[i] != null)
-                    {
-                        StopCoroutine(_lerpRoutines[i]);
-                    }
-
-                    _lerpRoutines[i] = StartCoroutine(lerpValueOverTime(particles, GetCurrentPropertyValue(particles), currentValue, lerpTime, lerpEasing));
-                }
-                else
-                {
-                    SetPropertyValue(particles, currentValue);
+                    ParticleSystem particles = _particleSystems[i];
+                    // Set new material property value
+                    SetPropertyValue(particles, transformedValue);
                 }
             }
         }
@@ -148,13 +128,15 @@ namespace AmalgamGames.Effects
 
         #region Coroutines
 
-        private IEnumerator lerpValueOverTime(ParticleSystem particles, object startValue, object endValue, float duration, EasingFunction.Ease easing)
+        private IEnumerator lerpValueOverTime(ParticleSystem[] particles, object endValue, float duration, EasingFunction.Ease easing)
         {
             float objLerp = 0;
 
             object newValue = null;
 
             EasingFunction.Function func = EasingFunction.GetEasingFunction(easing);
+
+            object startValue = GetCurrentPropertyValue(particles[0]);
 
             while (objLerp < duration)
             {
@@ -179,63 +161,36 @@ namespace AmalgamGames.Effects
 
                 if (newValue != null)
                 {
-                    SetPropertyValue(particles, newValue);
+                    foreach(ParticleSystem p in particles)
+                    {
+                        SetPropertyValue(p, newValue);
+                    }
                 }
                 objLerp += Time.deltaTime;
                 yield return null;
             }
 
-            SetPropertyValue(particles, endValue);
+            foreach (ParticleSystem p in particles)
+            {
+                SetPropertyValue(p, endValue);
+            }
+            
         }
 
         #endregion
 
         #region Event callbacks
 
-        private void TriggerEvent(DynamicEventWithTransformations sourceEvent)
+        protected override void OnTriggerEvent(DynamicEventsContainer sourceEvent)
         {
-            ApplyTransformationToParticleSystemProperty(sourceEvent.Transformations, sourceEvent.LerpValueDuration, sourceEvent.LerpEasing);
+            DynamicEventsWithTransformations evt = (DynamicEventsWithTransformations)sourceEvent;
+            ApplyTransformationToParticleSystemProperty(evt.Transformations, evt.LerpValueDuration, evt.LerpEasing);
         }
 
-        private void TriggerEventWithParam(DynamicEventWithTransformations sourceTransformationEvent, DynamicEvent sourceEvent, object param)
+        protected override void OnTriggerEventWithParam(DynamicEventsContainer sourceTransformationEvent, DynamicEvent sourceEvent, object param)
         {
-            bool conditionalCheck = Tools.ApplyConditionals(param, sourceEvent.Conditionals);
-            if (!conditionalCheck)
-            {
-                return;
-            }
-
-            ApplyTransformationToParticleSystemProperty(sourceTransformationEvent.Transformations, sourceTransformationEvent.LerpValueDuration, sourceTransformationEvent.LerpEasing, sourceTransformationEvent.UseEventParameter ? param : null);
-        }
-
-        #endregion
-
-        #region Subscriptions
-
-        private void SubscribeToEvents()
-        {
-            if (!_isSubscribedToEvents)
-            {
-                foreach (DynamicEventWithTransformations evt in _transformationEvents)
-                {
-                    Tools.SubscribeToDynamicEvents(evt.DynamicEvents, () => TriggerEvent(evt), (DynamicEvent dynEvent, object param) => TriggerEventWithParam(evt, dynEvent, param));
-                }
-
-                _isSubscribedToEvents = true;
-            }
-        }
-
-        private void UnsubscribeFromEvents()
-        {
-            if (_isSubscribedToEvents)
-            {
-                foreach (DynamicEventWithTransformations evt in _transformationEvents)
-                {
-                    Tools.UnsubscribeFromDynamicEvents(evt.DynamicEvents);
-                }
-
-                _isSubscribedToEvents = false;
-            }
+            DynamicEventsWithTransformations evt = (DynamicEventsWithTransformations)sourceTransformationEvent;
+            ApplyTransformationToParticleSystemProperty(evt.Transformations, evt.LerpValueDuration, evt.LerpEasing, evt.UseEventParameter ? param : null);
         }
 
         #endregion

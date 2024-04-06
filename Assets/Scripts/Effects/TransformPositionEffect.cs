@@ -8,12 +8,14 @@ using UnityEngine;
 
 namespace AmalgamGames.Effects
 {
-    public class TransformPositionEffect : MonoBehaviour, IRespawnable
+    public class TransformPositionEffect : DynamicEventsEffect, IRespawnable
     {
         [FoldoutGroup("Events")][SerializeField] private TransformPositionEvent[] _events;
         [Space]
         [Title("Transform settings")]
         [SerializeField] private Transform _targetTransform;
+
+        protected override DynamicEventsContainer[] DynamicEventsContainers => _events;
 
         // Position
         private Vector3 _initialLocalPosition;
@@ -21,39 +23,18 @@ namespace AmalgamGames.Effects
         // Coroutines
         private Coroutine _moveRoutine = null;
 
-        // State
-        private bool _isSubscribedToEvents = false;
-
         #region Lifecycle
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
+
             if(_targetTransform == null)
             {
                 _targetTransform = transform;
             }
 
             _initialLocalPosition = _targetTransform.localPosition;
-        }
-
-        private void Start()
-        {
-            SubscribeToEvents();
-        }
-
-        private void OnEnable()
-        {
-            SubscribeToEvents();
-        }
-
-        private void OnDestroy()
-        {
-            UnsubscribeFromEvents();
-        }
-
-        private void OnDisable()
-        {
-            UnsubscribeFromEvents();
         }
 
         #endregion
@@ -89,13 +70,16 @@ namespace AmalgamGames.Effects
 
         #region Effects
 
-        private void TriggerEvent(TransformPositionEvent evt)
+        protected override void OnTriggerEvent(DynamicEventsContainer sourceEvent)
         {
+            TransformPositionEvent evt = (TransformPositionEvent)sourceEvent;
             MoveTransformToTarget(evt.TargetPosition, evt.TravelTime, evt.UseLocalPositions, evt.Easing);
         }
 
-        private void TriggerEventWithParam(TransformPositionEvent evt, DynamicEvent sourceEvent, object param)
+        protected override void OnTriggerEventWithParam(DynamicEventsContainer sourceEvt, DynamicEvent sourceEvent, object param)
         {
+            TransformPositionEvent evt = (TransformPositionEvent)sourceEvt;
+
             bool conditionalCheck = Tools.ApplyConditionals(param, sourceEvent.Conditionals);
             if (!conditionalCheck)
             {
@@ -104,7 +88,7 @@ namespace AmalgamGames.Effects
 
             if(!evt.UseEventParameter)
             {
-                TriggerEvent(evt);
+                OnTriggerEvent(evt);
             }
             else
             {
@@ -249,47 +233,14 @@ namespace AmalgamGames.Effects
 
         #endregion
 
-        #region Subscriptions
-
-        private void SubscribeToEvents()
-        {
-            if (!_isSubscribedToEvents)
-            {
-                foreach(TransformPositionEvent evt in _events)
-                {
-                    Tools.SubscribeToDynamicEvents(evt.DynamicEvents, () => TriggerEvent(evt), (DynamicEvent dynEvent, object param) => TriggerEventWithParam(evt, dynEvent, param));
-                }
-
-                _isSubscribedToEvents = true;
-            }
-        }
-
-        private void UnsubscribeFromEvents()
-        {
-            if (_isSubscribedToEvents)
-            {
-                foreach(TransformPositionEvent evt in _events)
-                {
-                    Tools.UnsubscribeFromDynamicEvents(evt.DynamicEvents);
-                }
-
-                _isSubscribedToEvents = false;
-            }
-        }
-
-        #endregion
-
-
     }
 
     [Serializable]
-    public class TransformPositionEvent
+    public class TransformPositionEvent : DynamicEventsContainer
     {
-        public DynamicEvent[] DynamicEvents;
         public Transform TargetPosition;
         public float TravelTime;
         public EasingFunction.Ease Easing = EasingFunction.Ease.Linear;
         public bool UseLocalPositions = false;
-        public bool UseEventParameter = false;
     }
 }

@@ -671,6 +671,13 @@ namespace AmalgamGames.Utils
     }
 
     [Serializable]
+    public abstract class DynamicEventsContainer
+    {
+        public DynamicEvent[] DynamicEvents;
+        public bool UseEventParameter = false;
+    }
+
+    [Serializable]
     public class EventHookup
     {
         public DynamicEvent SourceEvent;
