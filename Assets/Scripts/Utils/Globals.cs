@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using UnityEngine;
 
 namespace AmalgamGames.Utils
@@ -20,6 +21,9 @@ namespace AmalgamGames.Utils
         // Nudge events
         public const string NUDGE_DIRECTION_CHANGED_KEY = "nudge_direction";
 
+        // Countdown events
+        public const string COUNTDOWN_CHANGED_KEY = "countdown";
+
         #endregion
 
         #region Shaders
@@ -31,6 +35,19 @@ namespace AmalgamGames.Utils
 
         #endregion
 
+        #region PlayerPrefs
+
+        // Audio
+        public const string MASTER_VOLUME_KEY = "master_volume";
+        public const string EFFECTS_VOLUME_KEY = "effects_volume";
+        public const string UI_VOLUME_KEY = "ui_volume";
+        public const string MUSIC_VOLUME_KEY = "music_volume";
+
+        // Visuals
+        public const string SCREEN_SHAKE_AMOUNT_KEY = "screen_shake_amount";
+
+
+        #endregion
 
         #region Miscellaneous
 

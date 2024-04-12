@@ -71,6 +71,8 @@
     <Compile Include="Assets\Scripts\Core\RocketController.cs" />
     <Compile Include="Assets\Scripts\UI\DynamicText.cs" />
     <Compile Include="Assets\Scripts\Utils\Globals.cs" />
+    <Compile Include="Assets\Scripts\Effects\DynamicEventsEffect.cs" />
+    <Compile Include="Assets\Scripts\Audio\AudioDatabase.cs" />
     <Compile Include="Assets\Scripts\Abilities\Nudge.cs" />
     <Compile Include="Assets\Scripts\UI\DynamicFilledImage.cs" />
     <Compile Include="Assets\Scripts\Effects\RumbleController.cs" />
@@ -88,6 +90,7 @@
     <Compile Include="Assets\Scripts\Transformations\RaiseToPowerTransformation.cs" />
     <Compile Include="Assets\Scripts\Control\CameraController.cs" />
     <Compile Include="Assets\Scripts\Debug\JuiceRefiller.cs" />
+    <Compile Include="Assets\Scripts\Audio\ProxyAudioSource.cs" />
     <Compile Include="Assets\Scripts\Effects\MaterialPropertyEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\VignetteEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\ScreenShakeEffect.cs" />
@@ -96,12 +99,14 @@
     <Compile Include="Assets\Scripts\Visualisation\TransformPathVisualisation.cs" />
     <Compile Include="Assets\Scripts\CustomEditor\RequireInterfaceAttribute.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedUpdater.cs" />
+    <Compile Include="Assets\Scripts\Effects\AnimatorPropertyEffect.cs" />
     <Compile Include="Assets\Scripts\Control\PathObjectSpawner.cs" />
     <Compile Include="Assets\Scripts\Core\IRespawnable.cs" />
     <Compile Include="Assets\Scripts\Control\ObjectPositioner.cs" />
     <Compile Include="Assets\Scripts\Update\IPausable.cs" />
     <Compile Include="Assets\Scripts\Effects\NudgeRumble.cs" />
     <Compile Include="Assets\Scripts\Utils\FrameCounter.cs" />
+    <Compile Include="Assets\Scripts\Effects\AnimationStateEffect.cs" />
     <Compile Include="Assets\Scripts\Configuration\RocketConfig.cs" />
     <Compile Include="Assets\Scripts\Transformations\IsolateVectorComponentTransformation.cs" />
     <Compile Include="Assets\Scripts\Core\InputProcessor.cs" />
@@ -118,7 +123,9 @@
     <Compile Include="Assets\Scripts\Simulation\SimulatedRocketController.cs" />
     <Compile Include="Assets\Scripts\Update\IUpdateable.cs" />
     <Compile Include="Assets\Scripts\Conditionals\RespawnEventConditional.cs" />
+    <Compile Include="Assets\Scripts\Core\PlayerPrefsCache.cs" />
     <Compile Include="Assets\Scripts\Conditionals\ConditionalCheck.cs" />
+    <Compile Include="Assets\Scripts\Audio\AudioManager.cs" />
     <Compile Include="Assets\Scripts\Transformations\MultiplyTransformation.cs" />
     <Compile Include="Assets\Scripts\Control\AnimationController.cs" />
     <Compile Include="Assets\Scripts\Effects\MoveRBToTarget.cs" />
@@ -138,9 +145,9 @@
     <Compile Include="Assets\Scripts\Conditionals\FloatConditional.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Effects\AnimationStateEffect.cs" />
-    <Compile Include="Assets\Scripts\Effects\DynamicEventsEffect.cs" />
-    <Compile Include="Assets\Scripts\Effects\AnimatorPropertyEffect.cs" />
+    <Compile Include="Assets\Scripts\Effects\ObjectScaler.cs" />
+    <Compile Include="Assets\Scripts\Timing\Countdown.cs" />
+    <Compile Include="Assets\Scripts\UI\CountdownUI.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

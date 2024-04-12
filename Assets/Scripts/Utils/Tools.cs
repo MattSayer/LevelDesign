@@ -660,6 +660,13 @@ namespace AmalgamGames.Utils
         Z_neg
     }
 
+    public enum PrimitiveDataType
+    {
+        Int,
+        Float,
+        String
+    }
+
     [Serializable]
     public class DynamicEvent
     {

@@ -6,6 +6,7 @@ using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using UnityEditor;
 using UnityEngine;
 
@@ -18,13 +19,23 @@ namespace AmalgamGames.Effects
         [Space]
         [Title("Dependency Provider")]
         [SerializeField] private DependencyRequest _getScreenShake;
+        [Space]
+        [Title("Dependency requests")]
+        [SerializeField] private DependencyRequest _getPlayerPrefsCache;
 
         // STATE
         private bool _isSubscribedToDependencyRequests = false;
+        private bool _isSubscribedToPlayerPrefsCache = false;
         private bool _isActive = true;
 
         // Components
         private CinemachineBasicMultiChannelPerlin _screenShake;
+
+        // PlayerPrefs
+        private PlayerPrefsCache _playerPrefsCache;
+
+        // Player settings
+        private float _screenShakeMultiplier = 1;
 
         // Shake buffers
         private float _amplitudeBuffer;
@@ -38,24 +49,29 @@ namespace AmalgamGames.Effects
         {
             SubscribeToDependencyRequests();
             _screenShake = _playerCam?.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
+
+            _getPlayerPrefsCache.RequestDependency(ReceivePlayerPrefsCache);
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
             SubscribeToDependencyRequests();
+            SubscribeToPlayerPrefsCache();
         }
 
         protected override void OnDisable()
         {
             base.OnDisable();
             UnsubscribeFromDependencyRequests();
+            UnsubscribeFromPlayerPrefsCache();
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
             UnsubscribeFromDependencyRequests();
+            UnsubscribeFromPlayerPrefsCache();
         }
 
         public override void ManagedUpdate(float deltaTime)
@@ -63,8 +79,8 @@ namespace AmalgamGames.Effects
             if (_isActive)
             {
                 CalculateScreenShake();
-                _screenShake.m_AmplitudeGain = _amplitudeBuffer;
-                _screenShake.m_FrequencyGain = _frequencyBuffer;
+                _screenShake.m_AmplitudeGain = _amplitudeBuffer * _screenShakeMultiplier;
+                _screenShake.m_FrequencyGain = _frequencyBuffer * _screenShakeMultiplier;
                 ClearBuffers();
             }
         }
@@ -100,6 +116,18 @@ namespace AmalgamGames.Effects
                     ClearBuffers();
                     */
                     break;
+            }
+        }
+
+        #endregion
+
+        #region PlayerPrefs
+
+        private void OnScreenShakeAmountChanged(object value)
+        {
+            if(value.GetType() == typeof(float) || value.GetType() == typeof(int))
+            {
+                _screenShakeMultiplier = (float)value;
             }
         }
 
@@ -194,6 +222,29 @@ namespace AmalgamGames.Effects
             }
         }
 
+        private void ReceivePlayerPrefsCache(object rawObj)
+        {
+            _playerPrefsCache = rawObj as PlayerPrefsCache;
+            SubscribeToPlayerPrefsCache();
+        }
+
+        private void SubscribeToPlayerPrefsCache()
+        {
+            if (!_isSubscribedToPlayerPrefsCache && _playerPrefsCache != null)
+            {
+                _playerPrefsCache.SubscribeToValueChanged(this, Globals.SCREEN_SHAKE_AMOUNT_KEY, OnScreenShakeAmountChanged);
+                _isSubscribedToPlayerPrefsCache = true;
+            }
+        }
+
+        private void UnsubscribeFromPlayerPrefsCache()
+        {
+            if (_isSubscribedToPlayerPrefsCache && _playerPrefsCache != null)
+            {
+                _playerPrefsCache.UnsubscribeFromValueChanged(this, Globals.SCREEN_SHAKE_AMOUNT_KEY);
+                _isSubscribedToPlayerPrefsCache = false;
+            }
+        }
 
         #endregion
 
