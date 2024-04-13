@@ -26,6 +26,13 @@ namespace AmalgamGames.Utils
 
         #endregion
 
+        #region Timers
+
+        // Countdown timer
+        public const int COUNTDOWN_DURATION = 3;
+
+        #endregion
+
         #region Shaders
 
         // Shaders

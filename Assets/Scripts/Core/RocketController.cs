@@ -3,12 +3,10 @@ using AmalgamGames.Control;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using AmalgamGames.Utils;
 using AmalgamGames.UI;
 using AmalgamGames.Config;
-using System.Linq;
 
 namespace AmalgamGames.Core
 {
@@ -40,6 +38,7 @@ namespace AmalgamGames.Core
         
         // Launch
         private bool _canLaunch = true;
+        private float _canLaunchTimestamp = 0;
 
         // Charging
         private float _chargeLevel = 0;
@@ -50,6 +49,9 @@ namespace AmalgamGames.Core
         // Cached charging
         private float _cachedChargeLevel = 0;
         private bool _runDelayedChargeCheck = false;
+
+        // Buffered charging
+        private float[] _chargeBuffer = new float[CHARGE_BUFFER_SIZE];
 
         // Burning
         private bool _isBurning = false;
@@ -64,6 +66,8 @@ namespace AmalgamGames.Core
         private Rigidbody _rb;
 
         private const float METRES_SECOND_TO_KILOMETERS_HOUR = 3.6f;
+        private const int CHARGE_BUFFER_SIZE = 10;
+        private const float JUST_LAUNCHED_BUFFER_TIME = 0.1f;
 
         #region Lifecycle
 
@@ -119,6 +123,10 @@ namespace AmalgamGames.Core
         public void ToggleLaunchAbility(bool toEnable)
         {
             _canLaunch = toEnable;
+            if(_canLaunch)
+            {
+                _canLaunchTimestamp = Time.time;
+            }
         }
 
         #endregion
@@ -219,14 +227,14 @@ namespace AmalgamGames.Core
             SetVelocityToZero();
 
             _canCharge = true;
-            _canLaunch = false;
+            ToggleLaunchAbility(false);
 
             _runDelayedChargeCheck = true;
         }
 
         private void RestartRocket()
         {
-            _canLaunch = true;
+            ToggleLaunchAbility(true);
         }
 
         public void EnableImmediateLaunch()
@@ -239,10 +247,10 @@ namespace AmalgamGames.Core
             NotifyBurnComplete();
 
             _canCharge = true;
-            _canLaunch = false;
+            ToggleLaunchAbility(false);
 
             _runDelayedChargeCheck = true;
-            _canLaunch = true;
+            ToggleLaunchAbility(true);
         }
 
         #endregion
@@ -312,6 +320,16 @@ namespace AmalgamGames.Core
                 }
 
                 float delta = _chargeLevel - chargeLevel;
+                
+                // If launching was just enabled, consider buffered charging values when calculating delta
+                if(Time.time - _canLaunchTimestamp < JUST_LAUNCHED_BUFFER_TIME)
+                {
+                    float maxChargeBuffer = GetMaxChargeBufferValue();
+                    delta = Mathf.Max(delta, maxChargeBuffer - chargeLevel);
+                    // Also set charge level to the max buffered charge level
+                    _chargeLevel = maxChargeBuffer;
+                }
+
                 if (_canLaunch && (delta >= _chargeDeltaThreshold || (chargeLevel == 0 && _isCharging)))
                 {
                     Launch();
@@ -326,7 +344,38 @@ namespace AmalgamGames.Core
             {
                 _cachedChargeLevel = chargeLevel;
             }
+
+            AppendToChargeBuffer(chargeLevel);
         }
+
+        private void AppendToChargeBuffer(float chargeLevel)
+        {
+            for(int i = CHARGE_BUFFER_SIZE - 1; i > 0; i--)
+            {
+                _chargeBuffer[i] = _chargeBuffer[i - 1];
+            }
+            _chargeBuffer[0] = chargeLevel;
+        }
+
+        /// <summary>
+        /// Gets the max delta between the provided charge level and the cached charge levels
+        /// in the charging buffer. This accounts for when the player releases the trigger just 
+        /// before launching is enabled (i.e. during the launch countdown) so they still get a proper
+        /// launch
+        /// </summary>
+        /// <param name="chargeLevel"></param>
+        /// <returns></returns>
+        private float GetMaxChargeBufferValue()
+        {
+            float maxValue = 0;
+            for(int i = 0; i < CHARGE_BUFFER_SIZE; i++)
+            {
+                maxValue = Mathf.Max(maxValue, _chargeBuffer[i]);
+            }
+            return maxValue;
+        }
+
+
 
         public void Launch()
         {

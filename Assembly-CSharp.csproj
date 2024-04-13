@@ -82,6 +82,7 @@
     <Compile Include="Assets\Scripts\Transformations\Transformation.cs" />
     <Compile Include="Assets\Scripts\Scoring\ScoreTrigger.cs" />
     <Compile Include="Assets\Scripts\Effects\TransformPositionEffect.cs" />
+    <Compile Include="Assets\Scripts\Timing\Countdown.cs" />
     <Compile Include="Assets\Scripts\Visualisation\BezierPathVisualisation.cs" />
     <Compile Include="Assets\Scripts\ParticleSystemPropertyModifier\ParticleSystemPropertyModifier.cs" />
     <Compile Include="Assets\Scripts\Core\SharedFloatValue.cs" />
@@ -137,6 +138,7 @@
     <Compile Include="Assets\Scripts\Effects\RocketTrajectory.cs" />
     <Compile Include="Assets\Scripts\Interactables\Interactable.cs" />
     <Compile Include="Assets\Scripts\Control\TransformPathFollower.cs" />
+    <Compile Include="Assets\Scripts\Effects\ObjectScaler.cs" />
     <Compile Include="Assets\Scripts\Effects\ObjectToggler.cs" />
     <Compile Include="Assets\Scripts\Utils\Tools.cs" />
     <Compile Include="Assets\Scripts\Core\TriggerProxy.cs" />
@@ -145,9 +147,9 @@
     <Compile Include="Assets\Scripts\Conditionals\FloatConditional.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Effects\ObjectScaler.cs" />
-    <Compile Include="Assets\Scripts\Timing\Countdown.cs" />
-    <Compile Include="Assets\Scripts\UI\CountdownUI.cs" />
+    <Compile Include="Assets\Scripts\Timing\TimedFunction.cs" />
+    <Compile Include="Assets\Scripts\Timing\TimedFunctionTrigger.cs" />
+    <Compile Include="Assets\Scripts\Timing\FadeTextTimedFunction.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

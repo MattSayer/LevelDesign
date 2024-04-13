@@ -317,19 +317,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnLaunch
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnLaunch
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnBurnComplete
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnBurnComplete
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _particleSystem: {fileID: 21019053}
 --- !u!199 &21019052
 ParticleSystemRenderer:
@@ -5425,19 +5427,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnChargingStart
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnChargingStart
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnLaunch
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnLaunch
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   amplitudeValueProvider: {fileID: 1180817167}
   _amplitudeValueKey: charge_level
   _amplitudeTransformations: []
@@ -5690,6 +5694,49 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ac0b09e7857660247b1477e93731de29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &58992551 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 7259629881711443295, guid: b20738f79e91c554f9afe3456b66b4b7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1906659289}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &58992552 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1906659289}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &58992553
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 58992551}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 236d2d51b266f604eb94b3262d44bec2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _activateEvents:
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817169}
+      EventName: OnRespawnEvent
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 2d0509b39af36f343889b2b5b7f5f0a7, type: 2}
+            NegateCheck: 0
+    Delay: 0
+  _deactivateEvents: []
+  _particleSystem: {fileID: 58992555}
+--- !u!198 &58992555 stripped
+ParticleSystem:
+  m_CorrespondingSourceObject: {fileID: 7259629881711443292, guid: b20738f79e91c554f9afe3456b66b4b7,
+    type: 3}
+  m_PrefabInstance: {fileID: 1906659289}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &61274944
 GameObject:
   m_ObjectHideFlags: 0
@@ -6168,6 +6215,142 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 87551835}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &92547021
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 92547022}
+  - component: {fileID: 92547024}
+  - component: {fileID: 92547023}
+  m_Layer: 5
+  m_Name: GoText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &92547022
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92547021}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1365944989}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 400, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &92547023
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92547021}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: GO!
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 4ccb83e91aaef544f8d14df15f474a8b, type: 2}
+  m_sharedMaterial: {fileID: -2980882574225793393, guid: 4ccb83e91aaef544f8d14df15f474a8b,
+    type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 200
+  m_fontSizeBase: 200
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &92547024
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 92547021}
+  m_CullTransparentMesh: 1
 --- !u!1 &92723082
 GameObject:
   m_ObjectHideFlags: 0
@@ -6477,25 +6660,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: b133f473dce34dc489a2d428fcdb0831, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: b133f473dce34dc489a2d428fcdb0831, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: b133f473dce34dc489a2d428fcdb0831, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: b133f473dce34dc489a2d428fcdb0831, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 244178929}
@@ -6559,24 +6744,28 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnChargingStart
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnChargingStart
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnLaunch
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
-  - EventSource: {fileID: 1180817169}
-    EventName: OnRespawnEvent
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnLaunch
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817169}
+      EventName: OnRespawnEvent
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 1804757500}
@@ -7541,19 +7730,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnLaunch
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnLaunch
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnBurnComplete
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0.5
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnBurnComplete
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0.5
   _startDisabled: 1
   _targetObjects:
   - {fileID: 1117685843}
@@ -9199,19 +9390,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 302804404}
-    EventName: OnSlowmoStart
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 302804404}
+      EventName: OnSlowmoStart
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 302804404}
-    EventName: OnSlowmoEnd
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 302804404}
+      EventName: OnSlowmoEnd
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _postProcessingVolume: {fileID: 832575518}
   _vignetteIntensity: 0.5
 --- !u!114 &302804404
@@ -9544,19 +9737,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnLaunch
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnLaunch
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnBurnComplete
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnBurnComplete
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _particleSystem: {fileID: 332638959}
 --- !u!199 &332638958
 ParticleSystemRenderer:
@@ -14421,19 +14616,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnLaunch
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnLaunch
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnBurnComplete
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnBurnComplete
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _particleSystem: {fileID: 335593532}
 --- !u!199 &335593531
 ParticleSystemRenderer:
@@ -19457,25 +19654,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: d5b28ee1dee348c4c9cb284f0046205b, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: d5b28ee1dee348c4c9cb284f0046205b, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: d5b28ee1dee348c4c9cb284f0046205b, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: d5b28ee1dee348c4c9cb284f0046205b, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 615695002}
@@ -21476,19 +21675,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnLaunch
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnLaunch
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnChargingStart
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnChargingStart
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _particleSystem: {fileID: 469017797}
 --- !u!198 &469017797
 ParticleSystem:
@@ -34163,19 +34364,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnLaunch
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnLaunch
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnBurnComplete
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnBurnComplete
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _particleSystem: {fileID: 749147105}
 --- !u!199 &749147104
 ParticleSystemRenderer:
@@ -39458,6 +39661,7 @@ RectTransform:
   - {fileID: 135868780}
   - {fileID: 130109711}
   - {fileID: 69848102}
+  - {fileID: 1365944989}
   m_Father: {fileID: 191013809}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -39674,35 +39878,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 1892751125}
@@ -39747,8 +39953,6 @@ MonoBehaviour:
     DefaultValue: 1
   _getPlayerPrefsCache: {fileID: 11400000, guid: 61cbbefc8e6b3a648892d27742eb5901,
     type: 2}
-  _testKey: 
-  _testValue: 0
 --- !u!4 &782216964
 Transform:
   m_ObjectHideFlags: 0
@@ -40229,35 +40433,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 1623992787}
@@ -41870,35 +42076,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 806506742}
@@ -46142,19 +46350,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnLaunch
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnLaunch
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnBurnComplete
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnBurnComplete
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _particleSystem: {fileID: 931813841}
 --- !u!199 &931813840
 ParticleSystemRenderer:
@@ -55798,19 +56008,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnLaunch
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnLaunch
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnBurnComplete
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnBurnComplete
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _particleSystem: {fileID: 932045571}
 --- !u!114 &932045573
 MonoBehaviour:
@@ -56462,25 +56674,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: e1d26e3526fb2734d96822f7d85e89f6, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: e1d26e3526fb2734d96822f7d85e89f6, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: e1d26e3526fb2734d96822f7d85e89f6, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: e1d26e3526fb2734d96822f7d85e89f6, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 193330242}
@@ -61698,19 +61912,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeStart
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeStart
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeEnd
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeEnd
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _particleSystem: {fileID: 1006340156}
 --- !u!114 &1006340158
 MonoBehaviour:
@@ -62013,35 +62229,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 1391059861}
@@ -68655,6 +68873,51 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4e2ce35b546a6c449a843b1f39d5745b, type: 3}
+--- !u!1 &1143896360
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1143896361}
+  - component: {fileID: 1143896362}
+  m_Layer: 6
+  m_Name: Countdown
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1143896361
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143896360}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1180817154}
+  m_RootOrder: 17
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1143896362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1143896360}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2086e85b094cf0d488eb89bc3ed803a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _updateMode: 1
 --- !u!1 &1149695698
 GameObject:
   m_ObjectHideFlags: 0
@@ -69047,6 +69310,8 @@ Transform:
   - {fileID: 1652386194}
   - {fileID: 2044498366}
   - {fileID: 1741447289}
+  - {fileID: 58992552}
+  - {fileID: 1143896361}
   m_Father: {fileID: 2033990713}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -69256,6 +69521,7 @@ MonoBehaviour:
   _meshObject: {fileID: 2069753642}
   _rocketTransform: {fileID: 1180817154}
   _checkpointTrigger: {fileID: 2044498370}
+  _countdown: {fileID: 1143896362}
   _respawnPoint: {fileID: 896000956}
 --- !u!114 &1180817170
 MonoBehaviour:
@@ -73638,6 +73904,156 @@ MeshRenderer:
     type: 3}
   m_PrefabInstance: {fileID: 2009265962}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &1365944988
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1365944989}
+  - component: {fileID: 1365944991}
+  - component: {fileID: 1365944990}
+  - component: {fileID: 1365944992}
+  - component: {fileID: 1365944993}
+  m_Layer: 5
+  m_Name: CountdownTimer
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1365944989
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365944988}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children:
+  - {fileID: 1697005687}
+  - {fileID: 92547022}
+  m_Father: {fileID: 770268882}
+  m_RootOrder: 6
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 0}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1365944990
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365944988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea31a04bd14613a498081cea79548f73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _activateEvents:
+  - DynamicEvents:
+    - EventSource: {fileID: 1143896362}
+      EventName: OnCountdownStarted
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
+  _deactivateEvents:
+  - DynamicEvents:
+    - EventSource: {fileID: 1143896362}
+      EventName: OnCountdownFinished
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
+  _startDisabled: 1
+  _targetObjects:
+  - {fileID: 1697005686}
+--- !u!222 &1365944991
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365944988}
+  m_CullTransparentMesh: 1
+--- !u!114 &1365944992
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365944988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0bae2d991d87a5840bd794400e6e099a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _dynamicEvents:
+  - DynamicEvents:
+    - EventSource: {fileID: 1143896362}
+      EventName: OnCountdownUpdated
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    UseEventParameter: 0
+    TargetObject: {fileID: 1697005686}
+    Duration: 1
+    UndoOnComplete: 0
+    TimedFunctions:
+    - {fileID: 11400000, guid: b89f07b4abb705748b8480ae8b9366c5, type: 2}
+  - DynamicEvents:
+    - EventSource: {fileID: 1143896362}
+      EventName: OnCountdownFinished
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    UseEventParameter: 0
+    TargetObject: {fileID: 92547021}
+    Duration: 1
+    UndoOnComplete: 0
+    TimedFunctions:
+    - {fileID: 11400000, guid: b89f07b4abb705748b8480ae8b9366c5, type: 2}
+  _resetFunctions: []
+--- !u!114 &1365944993
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1365944988}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ea31a04bd14613a498081cea79548f73, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _activateEvents:
+  - DynamicEvents:
+    - EventSource: {fileID: 1143896362}
+      EventName: OnCountdownFinished
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
+  _deactivateEvents:
+  - DynamicEvents:
+    - EventSource: {fileID: 1143896362}
+      EventName: OnCountdownFinished
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 1
+  _startDisabled: 1
+  _targetObjects:
+  - {fileID: 92547021}
 --- !u!1 &1369102889
 GameObject:
   m_ObjectHideFlags: 0
@@ -73730,35 +74146,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: a06aff95a24ea1b4f9da76312e821eb0, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 1634144444}
@@ -74508,35 +74926,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 1262458969}
@@ -74791,25 +75211,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: b133f473dce34dc489a2d428fcdb0831, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: b133f473dce34dc489a2d428fcdb0831, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: b133f473dce34dc489a2d428fcdb0831, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: b133f473dce34dc489a2d428fcdb0831, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 1919386348}
@@ -78822,35 +79244,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 702814d9d1223d941aa7e852193e429e, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 1528010939}
@@ -79086,6 +79510,160 @@ Transform:
   m_Father: {fileID: 1529591844}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1697005686
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1697005687}
+  - component: {fileID: 1697005690}
+  - component: {fileID: 1697005689}
+  - component: {fileID: 1697005688}
+  m_Layer: 5
+  m_Name: CountdownText
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1697005687
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697005686}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1365944989}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 200, y: 50}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1697005688
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697005686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 02bf709c43aac07498e35d1754cc98fa, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  valueProvider: {fileID: 1143896362}
+  _valueKey: countdown
+  _convertTo: 2
+  _formatString: '{0:N0}'
+  _text: {fileID: 1697005689}
+--- !u!114 &1697005689
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697005686}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_text: 3
+  m_isRightToLeft: 0
+  m_fontAsset: {fileID: 11400000, guid: 4ccb83e91aaef544f8d14df15f474a8b, type: 2}
+  m_sharedMaterial: {fileID: -2980882574225793393, guid: 4ccb83e91aaef544f8d14df15f474a8b,
+    type: 2}
+  m_fontSharedMaterials: []
+  m_fontMaterial: {fileID: 0}
+  m_fontMaterials: []
+  m_fontColor32:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
+  m_enableVertexGradient: 0
+  m_colorMode: 3
+  m_fontColorGradient:
+    topLeft: {r: 1, g: 1, b: 1, a: 1}
+    topRight: {r: 1, g: 1, b: 1, a: 1}
+    bottomLeft: {r: 1, g: 1, b: 1, a: 1}
+    bottomRight: {r: 1, g: 1, b: 1, a: 1}
+  m_fontColorGradientPreset: {fileID: 0}
+  m_spriteAsset: {fileID: 0}
+  m_tintAllSprites: 0
+  m_StyleSheet: {fileID: 0}
+  m_TextStyleHashCode: -1183493901
+  m_overrideHtmlColors: 0
+  m_faceColor:
+    serializedVersion: 2
+    rgba: 4294967295
+  m_fontSize: 200
+  m_fontSizeBase: 200
+  m_fontWeight: 400
+  m_enableAutoSizing: 0
+  m_fontSizeMin: 18
+  m_fontSizeMax: 72
+  m_fontStyle: 0
+  m_HorizontalAlignment: 2
+  m_VerticalAlignment: 512
+  m_textAlignment: 65535
+  m_characterSpacing: 0
+  m_wordSpacing: 0
+  m_lineSpacing: 0
+  m_lineSpacingMax: 0
+  m_paragraphSpacing: 0
+  m_charWidthMaxAdj: 0
+  m_enableWordWrapping: 1
+  m_wordWrappingRatios: 0.4
+  m_overflowMode: 0
+  m_linkedTextComponent: {fileID: 0}
+  parentLinkedComponent: {fileID: 0}
+  m_enableKerning: 1
+  m_enableExtraPadding: 0
+  checkPaddingRequired: 0
+  m_isRichText: 1
+  m_parseCtrlCharacters: 1
+  m_isOrthographic: 1
+  m_isCullingEnabled: 0
+  m_horizontalMapping: 0
+  m_verticalMapping: 0
+  m_uvLineOffset: 0
+  m_geometrySortingOrder: 0
+  m_IsTextObjectScaleStatic: 0
+  m_VertexBufferAutoSizeReduction: 0
+  m_useMaxVisibleDescender: 1
+  m_pageToDisplay: 1
+  m_margin: {x: 0, y: 0, z: 0, w: 0}
+  m_isUsingLegacyAnimationComponent: 0
+  m_isVolumetricText: 0
+  m_hasFontAssetChanged: 0
+  m_baseMaterial: {fileID: 0}
+  m_maskOffset: {x: 0, y: 0, z: 0, w: 0}
+--- !u!222 &1697005690
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1697005686}
+  m_CullTransparentMesh: 1
 --- !u!1 &1697677464
 GameObject:
   m_ObjectHideFlags: 0
@@ -83893,49 +84471,12 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
---- !u!1 &1741447288 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 7259629881711443295, guid: b20738f79e91c554f9afe3456b66b4b7,
-    type: 3}
-  m_PrefabInstance: {fileID: 7259629883317607719}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1741447289 stripped
 Transform:
-  m_CorrespondingSourceObject: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+  m_CorrespondingSourceObject: {fileID: 7062216569314254340, guid: 2194d753fbbaadd46b389cfa43d524cb,
     type: 3}
-  m_PrefabInstance: {fileID: 7259629883317607719}
+  m_PrefabInstance: {fileID: 7062216567674044029}
   m_PrefabAsset: {fileID: 0}
---- !u!198 &1741447291 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 7259629881711443292, guid: b20738f79e91c554f9afe3456b66b4b7,
-    type: 3}
-  m_PrefabInstance: {fileID: 7259629883317607719}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1741447292
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1741447288}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 236d2d51b266f604eb94b3262d44bec2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  _activateEvents:
-  - EventSource: {fileID: 1180817169}
-    EventName: OnRespawnEvent
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 2d0509b39af36f343889b2b5b7f5f0a7, type: 2}
-          NegateCheck: 0
-  _deactivateEvents: []
-  _activationDelay: 0
-  _deactivationDelay: 0
-  _particleSystem: {fileID: 1741447291}
 --- !u!1 &1748170056
 GameObject:
   m_ObjectHideFlags: 0
@@ -84362,25 +84903,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: a0d8159b3b955c44890c8c29b63a7aab, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: a0d8159b3b955c44890c8c29b63a7aab, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: a0d8159b3b955c44890c8c29b63a7aab, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: a0d8159b3b955c44890c8c29b63a7aab, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 706833652}
@@ -85249,19 +85792,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnLaunch
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnLaunch
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnBurnComplete
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0.5
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnBurnComplete
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0.5
   _startDisabled: 1
   _targetObjects:
   - {fileID: 711111803}
@@ -85504,19 +86049,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeStart
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeStart
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeEnd
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeEnd
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _particleSystem: {fileID: 1865183738}
 --- !u!199 &1865183737
 ParticleSystemRenderer:
@@ -90728,6 +91275,95 @@ MonoBehaviour:
   _pathType: 0
   _pathParent: {fileID: 1800646604}
   _path: {fileID: 0}
+--- !u!1001 &1906659289
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    m_TransformParent: {fileID: 1180817154}
+    m_Modifications:
+    - target: {fileID: 7259629881711443292, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_RootOrder
+      value: 16
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443295, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_Name
+      value: ExplosionParticles (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629881711443295, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629882715560939, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7259629882981766201, guid: b20738f79e91c554f9afe3456b66b4b7,
+        type: 3}
+      propertyPath: playOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: b20738f79e91c554f9afe3456b66b4b7, type: 3}
 --- !u!1 &1908047365
 GameObject:
   m_ObjectHideFlags: 0
@@ -93013,19 +93649,21 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnLaunch
-    EventHasParam: 1
-    Conditionals:
-      OrChecks: []
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnLaunch
+      EventHasParam: 1
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 1180817167}
-    EventName: OnBurnComplete
-    EventHasParam: 0
-    Conditionals:
-      OrChecks: []
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 1180817167}
+      EventName: OnBurnComplete
+      EventHasParam: 0
+      Conditionals:
+        OrChecks: []
+    Delay: 0
   _particleSystem: {fileID: 1995620813}
 --- !u!199 &1995620812
 ParticleSystemRenderer:
@@ -98186,35 +98824,37 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
-          NegateCheck: 0
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
+            NegateCheck: 0
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
-          NegateCheck: 1
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 914aca725823b5243b687a4dd1284dcf, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: b2aa110d810cf0849baba0cc195a9c04, type: 2}
+            NegateCheck: 1
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: 61cdbee87d6bb614c8c2c2aa21397cb4, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 1959661188}
@@ -99956,17 +100596,12 @@ MonoBehaviour:
   _transformationEvents:
   - DynamicEvents:
     - EventSource: {fileID: 1180817167}
-      EventName: OnChargingStart
-      EventHasParam: 0
+      EventName: OnChargeLevelChanged
+      EventHasParam: 1
       Conditionals:
         OrChecks: []
-    UseEventParameter: 0
+    UseEventParameter: 1
     Transformations:
-    - _conditionalTransformations:
-      - _conditionals:
-          OrChecks: []
-        _transformation: {fileID: 11400000, guid: 3e81519b959813d45863bac2c8a4e2d7,
-          type: 2}
     - _conditionalTransformations:
       - _conditionals:
           OrChecks: []
@@ -104427,25 +105062,27 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _activateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: e1d26e3526fb2734d96822f7d85e89f6, type: 2}
-          NegateCheck: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: e1d26e3526fb2734d96822f7d85e89f6, type: 2}
+            NegateCheck: 0
+    Delay: 0
   _deactivateEvents:
-  - EventSource: {fileID: 648290587}
-    EventName: OnNudgeDirectionChanged
-    EventHasParam: 1
-    Conditionals:
-      OrChecks:
-      - AndChecks:
-        - Check: {fileID: 11400000, guid: e1d26e3526fb2734d96822f7d85e89f6, type: 2}
-          NegateCheck: 1
-  _activationDelay: 0
-  _deactivationDelay: 0
+  - DynamicEvents:
+    - EventSource: {fileID: 648290587}
+      EventName: OnNudgeDirectionChanged
+      EventHasParam: 1
+      Conditionals:
+        OrChecks:
+        - AndChecks:
+          - Check: {fileID: 11400000, guid: e1d26e3526fb2734d96822f7d85e89f6, type: 2}
+            NegateCheck: 1
+    Delay: 0
   _startDisabled: 1
   _targetObjects:
   - {fileID: 1989615616}
@@ -104771,95 +105408,80 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: dc7af8c92632d9e4e935dd4778dca640, type: 3}
---- !u!1001 &7259629883317607719
+--- !u!1001 &7062216567674044029
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
     m_TransformParent: {fileID: 1180817154}
     m_Modifications:
-    - target: {fileID: 7259629881711443292, guid: b20738f79e91c554f9afe3456b66b4b7,
+    - target: {fileID: 7062216569314254337, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
-      propertyPath: playOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+      propertyPath: _activateEvents.Array.data[0].DynamicEvents.Array.data[0].EventSource
+      value: 
+      objectReference: {fileID: 1180817169}
+    - target: {fileID: 7062216569314254340, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
       propertyPath: m_RootOrder
       value: 15
       objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+    - target: {fileID: 7062216569314254340, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+    - target: {fileID: 7062216569314254340, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
       propertyPath: m_LocalPosition.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+    - target: {fileID: 7062216569314254340, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+    - target: {fileID: 7062216569314254340, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
       propertyPath: m_LocalRotation.w
       value: 1
       objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+    - target: {fileID: 7062216569314254340, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
       propertyPath: m_LocalRotation.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+    - target: {fileID: 7062216569314254340, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
       propertyPath: m_LocalRotation.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+    - target: {fileID: 7062216569314254340, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
       propertyPath: m_LocalRotation.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+    - target: {fileID: 7062216569314254340, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+    - target: {fileID: 7062216569314254340, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.y
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443294, guid: b20738f79e91c554f9afe3456b66b4b7,
+    - target: {fileID: 7062216569314254340, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443295, guid: b20738f79e91c554f9afe3456b66b4b7,
+    - target: {fileID: 7062216569314254341, guid: 2194d753fbbaadd46b389cfa43d524cb,
         type: 3}
       propertyPath: m_Name
-      value: ExplosionParticles
-      objectReference: {fileID: 0}
-    - target: {fileID: 7259629881711443295, guid: b20738f79e91c554f9afe3456b66b4b7,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 7259629882715560939, guid: b20738f79e91c554f9afe3456b66b4b7,
-        type: 3}
-      propertyPath: playOnAwake
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 7259629882981766201, guid: b20738f79e91c554f9afe3456b66b4b7,
-        type: 3}
-      propertyPath: playOnAwake
-      value: 0
+      value: DigitalExplosion
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b20738f79e91c554f9afe3456b66b4b7, type: 3}
+  m_SourcePrefab: {fileID: 100100000, guid: 2194d753fbbaadd46b389cfa43d524cb, type: 3}
 --- !u!1001 &8663576528139059526
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -104942,6 +105564,41 @@ PrefabInstance:
       propertyPath: _deactivateEvents.Array.data[0].EventSource
       value: 
       objectReference: {fileID: 1180817167}
+    - target: {fileID: 8663576526833183068, guid: b9f36740acbe4ae49b4357b970b24234,
+        type: 3}
+      propertyPath: _activateEvents.Array.data[0].DynamicEvents.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8663576526833183068, guid: b9f36740acbe4ae49b4357b970b24234,
+        type: 3}
+      propertyPath: _deactivateEvents.Array.data[0].DynamicEvents.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8663576526833183068, guid: b9f36740acbe4ae49b4357b970b24234,
+        type: 3}
+      propertyPath: _activateEvents.Array.data[0].DynamicEvents.Array.data[0].EventName
+      value: OnLaunch
+      objectReference: {fileID: 0}
+    - target: {fileID: 8663576526833183068, guid: b9f36740acbe4ae49b4357b970b24234,
+        type: 3}
+      propertyPath: _activateEvents.Array.data[0].DynamicEvents.Array.data[0].EventSource
+      value: 
+      objectReference: {fileID: 1180817167}
+    - target: {fileID: 8663576526833183068, guid: b9f36740acbe4ae49b4357b970b24234,
+        type: 3}
+      propertyPath: _deactivateEvents.Array.data[0].DynamicEvents.Array.data[0].EventName
+      value: OnBurnComplete
+      objectReference: {fileID: 0}
+    - target: {fileID: 8663576526833183068, guid: b9f36740acbe4ae49b4357b970b24234,
+        type: 3}
+      propertyPath: _activateEvents.Array.data[0].DynamicEvents.Array.data[0].EventHasParam
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8663576526833183068, guid: b9f36740acbe4ae49b4357b970b24234,
+        type: 3}
+      propertyPath: _deactivateEvents.Array.data[0].DynamicEvents.Array.data[0].EventSource
+      value: 
+      objectReference: {fileID: 1180817167}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: b9f36740acbe4ae49b4357b970b24234, type: 3}
 --- !u!1001 &8904627029224415402
@@ -104969,6 +105626,41 @@ PrefabInstance:
     - target: {fileID: 8904627028935112533, guid: 55c85d5a2884fbd43a7c56841045e7d2,
         type: 3}
       propertyPath: _deactivateEvents.Array.data[0].EventSource
+      value: 
+      objectReference: {fileID: 1180817167}
+    - target: {fileID: 8904627028935112533, guid: 55c85d5a2884fbd43a7c56841045e7d2,
+        type: 3}
+      propertyPath: _activateEvents.Array.data[0].DynamicEvents.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8904627028935112533, guid: 55c85d5a2884fbd43a7c56841045e7d2,
+        type: 3}
+      propertyPath: _deactivateEvents.Array.data[0].DynamicEvents.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8904627028935112533, guid: 55c85d5a2884fbd43a7c56841045e7d2,
+        type: 3}
+      propertyPath: _activateEvents.Array.data[0].DynamicEvents.Array.data[0].EventName
+      value: OnLaunch
+      objectReference: {fileID: 0}
+    - target: {fileID: 8904627028935112533, guid: 55c85d5a2884fbd43a7c56841045e7d2,
+        type: 3}
+      propertyPath: _activateEvents.Array.data[0].DynamicEvents.Array.data[0].EventSource
+      value: 
+      objectReference: {fileID: 1180817167}
+    - target: {fileID: 8904627028935112533, guid: 55c85d5a2884fbd43a7c56841045e7d2,
+        type: 3}
+      propertyPath: _deactivateEvents.Array.data[0].DynamicEvents.Array.data[0].EventName
+      value: OnBurnComplete
+      objectReference: {fileID: 0}
+    - target: {fileID: 8904627028935112533, guid: 55c85d5a2884fbd43a7c56841045e7d2,
+        type: 3}
+      propertyPath: _activateEvents.Array.data[0].DynamicEvents.Array.data[0].EventHasParam
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 8904627028935112533, guid: 55c85d5a2884fbd43a7c56841045e7d2,
+        type: 3}
+      propertyPath: _deactivateEvents.Array.data[0].DynamicEvents.Array.data[0].EventSource
       value: 
       objectReference: {fileID: 1180817167}
     - target: {fileID: 8904627028935112534, guid: 55c85d5a2884fbd43a7c56841045e7d2,

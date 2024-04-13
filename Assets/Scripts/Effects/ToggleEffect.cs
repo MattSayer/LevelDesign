@@ -11,24 +11,14 @@ namespace AmalgamGames.Effects
 {
     public abstract class ToggleEffect : MonoBehaviour, IRespawnable
     {
-        [FoldoutGroup("Events")] [SerializeField] private DynamicEvent[] _activateEvents;
-        [FoldoutGroup("Events")] [SerializeField] private DynamicEvent[] _deactivateEvents;
-        [Space]
-        [FoldoutGroup("Settings")]
-        [Tooltip("Delay activation of this effect after the target event fires")]
-        [SerializeField] private float _activationDelay = 0;
-        [FoldoutGroup("Settings")]
-        [Tooltip("Delay deactivation of this effect after the target event fires")]
-        [SerializeField] private float _deactivationDelay = 0;
+        [FoldoutGroup("Events")] [SerializeField] private DynamicEventsWithDelay[] _activateEvents;
+        [FoldoutGroup("Events")] [SerializeField] private DynamicEventsWithDelay[] _deactivateEvents;
 
         // STATE
         private bool _isSubscribedToEvents = false;
 
         // Coroutines
         private Coroutine _effectRoutine = null;
-
-        private List<Delegate> _activateHandlers;
-        private List<Delegate> _deactivateHandlers;
 
         #region Lifecycle
 
@@ -83,16 +73,16 @@ namespace AmalgamGames.Effects
 
         protected abstract void DeactivateEffect();
 
-        protected void DelayedActivateEffect()
+        protected void DelayedActivateEffect(float delay)
         {
             if(_effectRoutine != null)
             {
                 StopCoroutine(_effectRoutine);
             }
 
-            if (_activationDelay > 0)
+            if (delay > 0)
             {
-                _effectRoutine = StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
+                _effectRoutine = StartCoroutine(Tools.delayThenAction(delay, () =>
                 {
                     ActivateEffect();
                     _effectRoutine = null;
@@ -104,26 +94,26 @@ namespace AmalgamGames.Effects
             }
         }
 
-        protected void DelayedActivateEffectWithParam(DynamicEvent sourceEvent, object param)
+        protected void DelayedActivateEffectWithParam(DynamicEvent sourceEvent, object param, float delay)
         {
             bool conditionalCheck = Tools.ApplyConditionals(param, sourceEvent.Conditionals);
             if(!conditionalCheck)
             {
                 return;
             }
-            DelayedActivateEffect();
+            DelayedActivateEffect(delay);
         }
 
-        protected void DelayedDeactivateEffect()
+        protected void DelayedDeactivateEffect(float delay)
         {
             if (_effectRoutine != null)
             {
                 StopCoroutine(_effectRoutine);
             }
 
-            if (_deactivationDelay > 0)
+            if (delay > 0)
             {
-                _effectRoutine = StartCoroutine(Tools.delayThenAction(_deactivationDelay, () =>
+                _effectRoutine = StartCoroutine(Tools.delayThenAction(delay, () =>
                 {
                     DeactivateEffect();
                     _effectRoutine = null;
@@ -135,14 +125,14 @@ namespace AmalgamGames.Effects
             }
         }
 
-        protected void DelayedDeactivateEffectWithParam(DynamicEvent sourceEvent, object param)
+        protected void DelayedDeactivateEffectWithParam(DynamicEvent sourceEvent, object param, float delay)
         {
             bool conditionalCheck = Tools.ApplyConditionals(param, sourceEvent.Conditionals);
             if(!conditionalCheck)
             {
                 return;
             }
-            DelayedDeactivateEffect();
+            DelayedDeactivateEffect(delay);
         }
 
         #endregion
@@ -153,9 +143,15 @@ namespace AmalgamGames.Effects
         {
             if (!_isSubscribedToEvents)
             {
-                Tools.SubscribeToDynamicEvents(_activateEvents, DelayedActivateEffect, DelayedActivateEffectWithParam);
-
-                Tools.SubscribeToDynamicEvents(_deactivateEvents, DelayedDeactivateEffect, DelayedDeactivateEffectWithParam);
+                foreach(DynamicEventsWithDelay evt in _activateEvents)
+                {
+                    Tools.SubscribeToDynamicEvents(evt.DynamicEvents, () => { DelayedActivateEffect(evt.Delay); }, (dynEvent, param) => { DelayedActivateEffectWithParam(dynEvent, param, evt.Delay); });
+                }
+                
+                foreach(DynamicEventsWithDelay evt in _deactivateEvents)
+                {
+                    Tools.SubscribeToDynamicEvents(evt.DynamicEvents, () => { DelayedDeactivateEffect(evt.Delay); }, (dynEvent, param) => { DelayedDeactivateEffectWithParam(dynEvent, param, evt.Delay); });
+                }
 
                 _isSubscribedToEvents = true;
             }
@@ -165,14 +161,27 @@ namespace AmalgamGames.Effects
         {
             if (_isSubscribedToEvents)
             {
-                Tools.UnsubscribeFromDynamicEvents(_activateEvents);
+                foreach (DynamicEventsWithDelay evt in _activateEvents)
+                {
+                    Tools.UnsubscribeFromDynamicEvents(evt.DynamicEvents);
+                }
 
-                Tools.UnsubscribeFromDynamicEvents(_deactivateEvents);
+                foreach (DynamicEventsWithDelay evt in _deactivateEvents)
+                {
+                    Tools.UnsubscribeFromDynamicEvents(evt.DynamicEvents);
+                }
 
                 _isSubscribedToEvents = false;
             }
         }
 
         #endregion
+    }
+
+    [Serializable]
+    public class DynamicEventsWithDelay
+    {
+        public DynamicEvent[] DynamicEvents;
+        public float Delay = 0;
     }
 }

@@ -6,6 +6,7 @@ using AmalgamGames.Effects;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using System;
+using AmalgamGames.Timing;
 
 namespace AmalgamGames.Core
 {
@@ -20,6 +21,7 @@ namespace AmalgamGames.Core
         [SerializeField] private GameObject _meshObject;
         [SerializeField] private Transform _rocketTransform;
         [SerializeField] private TriggerProxy _checkpointTrigger;
+        [SerializeField] private Countdown _countdown;
         [Space]
         [Title("DEBUG")]
         [SerializeField] private Transform _respawnPoint;
@@ -120,13 +122,20 @@ namespace AmalgamGames.Core
 
             // Countdown
 
+            _countdown.OnCountdownFinished += OnCountdownFinished;
+            _countdown.StartCountdown(Globals.COUNTDOWN_DURATION);
+        }
+
+        private void OnCountdownFinished()
+        {
+            _countdown.OnCountdownFinished -= OnCountdownFinished;
+            
             foreach (IRespawnable respawnable in _respawnables)
             {
                 respawnable.OnRespawnEvent(RespawnEvent.OnRespawnEnd);
             }
 
             OnRespawnEvent?.Invoke(new RespawnEventInfo(RespawnEvent.OnRespawnEnd));
-
         }
 
         #endregion

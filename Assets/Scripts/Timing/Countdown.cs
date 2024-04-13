@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Timing
 {
-    public class Countdown : MonoBehaviour, IPausable, IRespawnable
+    public class Countdown : MonoBehaviour, IValueProvider, IPausable, IRespawnable
     {
         [Title("Settings")]
         [SerializeField] private ValueUpdateMode _updateMode;
@@ -18,7 +18,7 @@ namespace AmalgamGames.Timing
         public event Action OnCountdownStarted;
         public event Action OnCountdownFinished;
         public event Action OnCountdownCanceled;
-        public event Action<float> OnCountdownUpdated;
+        public event Action<object> OnCountdownUpdated;
 
         // State
         private bool _isPaused = false;
@@ -36,9 +36,9 @@ namespace AmalgamGames.Timing
                 return;
             }
 
-            _countdownRoutine = StartCoroutine(countdownTimer(duration));
-
             OnCountdownStarted?.Invoke();
+
+            _countdownRoutine = StartCoroutine(countdownTimer(duration));
         }
 
         public void CancelTimer()
@@ -46,6 +46,7 @@ namespace AmalgamGames.Timing
             if(_countdownRoutine != null)
             {
                 StopCoroutine(_countdownRoutine);
+                _countdownRoutine = null;
                 OnCountdownCanceled?.Invoke();
             }
         }
@@ -122,15 +123,45 @@ namespace AmalgamGames.Timing
                 {
                     countdownLerp += Time.deltaTime;
                 }
+
+                if(duration - countdownLerp < 0.1f)
+                {
+                    OnCountdownFinished?.Invoke();
+                }
                 yield return null;
             }
 
-            OnCountdownUpdated?.Invoke(0);
+            OnCountdownUpdated?.Invoke(0.0f);
 
-            OnCountdownFinished?.Invoke();
+            //OnCountdownFinished?.Invoke();
 
             _countdownRoutine = null;
         }
+
+        #endregion
+
+        #region Value Provider
+        public void SubscribeToValue(string valueName, Action<object> callback)
+        {
+            switch(valueName)
+            {
+                case Globals.COUNTDOWN_CHANGED_KEY:
+                    OnCountdownUpdated += callback;
+                    break;
+            }
+        }
+
+        public void UnsubscribeFromValue(string valueName, Action<object> callback)
+        {
+            switch (valueName)
+            {
+                case Globals.COUNTDOWN_CHANGED_KEY:
+                    OnCountdownUpdated -= callback;
+                    break;
+            }
+        }
+
+
 
         #endregion
 
