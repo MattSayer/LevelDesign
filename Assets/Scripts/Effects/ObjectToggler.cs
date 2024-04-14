@@ -18,25 +18,22 @@ namespace AmalgamGames.Effects
 
         #region Lifecycle
 
-        private void Awake()
+        protected override void Awake()
         {
-            if(_targetObjects != null && _targetObjects.Length > 0)
+            if (_targetObjects != null && _targetObjects.Length > 0)
             {
                 _initiallyActive = _targetObjects[0].activeSelf;
             }
-        }
-
-        protected override void Start()
-        {
-            base.Start();
 
             if (_startDisabled)
             {
-                foreach(GameObject obj in _targetObjects)
+                foreach (GameObject obj in _targetObjects)
                 {
                     obj.SetActive(false);
                 }
             }
+
+            base.Awake();
 
         }
 

@@ -17,8 +17,9 @@ namespace AmalgamGames.Effects
 
         #region Lifecyle
 
-        private void Awake()
+        protected override void Awake()
         {
+            base.Awake();
             _isInitiallyActive = _particleSystem.main.playOnAwake;
         }
 

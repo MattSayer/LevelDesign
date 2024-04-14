@@ -1,6 +1,5 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Diagnostics.Contracts;
 using UnityEngine;
 
 namespace AmalgamGames.Utils
@@ -23,6 +22,13 @@ namespace AmalgamGames.Utils
 
         // Countdown events
         public const string COUNTDOWN_CHANGED_KEY = "countdown";
+
+        #endregion
+
+        #region Respawning
+
+        public const string NUM_RESPAWNS_KEY = "num_respawns";
+        public const string NUM_LAUNCHES_KEY = "num_launches";
 
         #endregion
 

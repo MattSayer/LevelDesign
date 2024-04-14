@@ -11,7 +11,7 @@ using AmalgamGames.Timing;
 namespace AmalgamGames.Core
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Respawner : MonoBehaviour
+    public class Respawner : MonoBehaviour, IValueProvider
     {
 
         [Title("Respawning")]
@@ -23,23 +23,29 @@ namespace AmalgamGames.Core
         [SerializeField] private TriggerProxy _checkpointTrigger;
         [SerializeField] private Countdown _countdown;
         [Space]
-        [Title("DEBUG")]
-        [SerializeField] private Transform _respawnPoint;
+        [Title("Spawning")]
+        [SerializeField] private Transform _initialSpawnPoint;
 
         // EVENTS
         public event Action<RespawnEventInfo> OnRespawnEvent;
+        private event Action<object> OnNumRespawnsChanged;
         
         // COMPONENTS
         private IInputProcessor _inputProcessor;
         
         private List<IRespawnable> _respawnables;
 
-        // STATE
+        // Subscriptions
         private bool _isSubscribedToInput = false;
         private bool _isSubscribedToTrigger = false;
+
+        // State
         private bool _canCollide = true;
-        private Transform _lastCheckpoint;
         private bool _isRespawning = false;
+
+        // Tracking
+        private Transform _lastCheckpoint;
+        private int _numRespawns = 0;
 
         // COROUTINES
         private Coroutine _explodeRoutine = null;
@@ -52,7 +58,7 @@ namespace AmalgamGames.Core
             SubscribeToInput();
 
             SubscribeToTrigger();
-            _lastCheckpoint = _respawnPoint;
+            _lastCheckpoint = _initialSpawnPoint;
 
             // Get all respawnables in the level
             _respawnables = new List<IRespawnable>();
@@ -62,7 +68,7 @@ namespace AmalgamGames.Core
                 _respawnables.Add(respawnable);
             }
 
-            Respawn();
+            Respawn(true);
         }
 
         private void OnEnable()
@@ -96,8 +102,16 @@ namespace AmalgamGames.Core
             }
         }
 
-        private void Respawn()
+        private void Respawn(bool isFirstRespawn = false)
         {
+            _isRespawning = true;
+
+            if (!isFirstRespawn)
+            {
+                _numRespawns++;
+                OnNumRespawnsChanged?.Invoke(_numRespawns);
+            }
+
             foreach (IRespawnable respawnable in _respawnables)
             {
                 respawnable.OnRespawnEvent(RespawnEvent.BeforeRespawn);
@@ -120,22 +134,36 @@ namespace AmalgamGames.Core
 
             // Fade screen back up
 
-            // Countdown
+            if(isFirstRespawn)
+            {
+                // Countdown
 
-            _countdown.OnCountdownFinished += OnCountdownFinished;
-            _countdown.StartCountdown(Globals.COUNTDOWN_DURATION);
+                _countdown.OnCountdownFinished += OnCountdownFinished;
+                _countdown.StartCountdown(Globals.COUNTDOWN_DURATION);
+            }
+            else
+            {
+                FinishRespawning();
+            }
         }
 
         private void OnCountdownFinished()
         {
             _countdown.OnCountdownFinished -= OnCountdownFinished;
-            
+
+            FinishRespawning();
+        }
+
+        private void FinishRespawning()
+        {
             foreach (IRespawnable respawnable in _respawnables)
             {
                 respawnable.OnRespawnEvent(RespawnEvent.OnRespawnEnd);
             }
 
             OnRespawnEvent?.Invoke(new RespawnEventInfo(RespawnEvent.OnRespawnEnd));
+
+            _isRespawning = false;
         }
 
         #endregion
@@ -248,12 +276,31 @@ namespace AmalgamGames.Core
             // Hide rocket mesh object
             _meshObject.SetActive(false);
 
-            // Play explosion vfx
-
-            //Debug.Log("Boom!");
-
-
             _canCollide = false;
+        }
+
+        #endregion
+
+        #region Value Provider
+
+        public void SubscribeToValue(string valueName, Action<object> callback)
+        {
+            switch(valueName)
+            {
+                case Globals.NUM_RESPAWNS_KEY:
+                    OnNumRespawnsChanged += callback;
+                    break;
+            }
+        }
+
+        public void UnsubscribeFromValue(string valueName, Action<object> callback)
+        {
+            switch (valueName)
+            {
+                case Globals.NUM_RESPAWNS_KEY:
+                    OnNumRespawnsChanged -= callback;
+                    break;
+            }
         }
 
         #endregion
@@ -280,8 +327,8 @@ namespace AmalgamGames.Core
             Respawn();
 
             _explodeRoutine = null;
-            _isRespawning = false;
         }
+
 
         #endregion
     }

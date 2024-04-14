@@ -7,13 +7,14 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Audio;
 
 namespace AmalgamGames.Audio
 {
 
-    public class AudioManager : ManagedBehaviour, IAudioManager, IPausable
+    public class AudioManager : ManagedBehaviour, IAudioManager, IPausable, IRespawnable
     {
         [Title("Dependency Provider")]
         [SerializeField] private DependencyRequest _getAudioManager;
@@ -299,6 +300,42 @@ namespace AmalgamGames.Audio
 
         #endregion
 
+        #region Respawning
+
+        public void OnRespawnEvent(RespawnEvent evt)
+        {
+            switch(evt)
+            {
+                case RespawnEvent.OnRespawnStart:
+                    StopAllActiveAudio();
+                    break;
+            }
+        }
+
+        private void StopAllActiveAudio()
+        {
+            // Stop and reclaim all active spatial audio sources
+            foreach (AudioSource audioSource in _activeSpatialAudioSources.ToList())
+            {
+                StopActiveAudioSource(audioSource, AudioType.Spatial);
+            }
+
+            // Stop and reclaim all active UI audio sources
+            foreach (AudioSource audioSource in _activeUIAudioSources.ToList())
+            {
+                StopActiveAudioSource(audioSource, AudioType.UI);
+            }
+
+            // Just stop all active proxy audio sources
+            // Don't reclaim, as owners are still using them
+            foreach (AudioSource audioSource in _activeProxyAudioSources)
+            {
+                audioSource.Stop();
+            }
+        }
+
+        #endregion
+
         #region Pausing
 
         public void Pause()
@@ -430,6 +467,11 @@ namespace AmalgamGames.Audio
         {
             AudioSource audioSource = _audioProxies[proxy];
 
+            if(audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+
             _activeProxyAudioSources.Remove(audioSource);
             _proxyAudioSourcePool.Enqueue(audioSource);
             _audioProxies.Remove(proxy);
@@ -495,20 +537,7 @@ namespace AmalgamGames.Audio
 
                 foreach (AudioSource audioSource in toDelete)
                 {
-                    _activeSpatialAudioSources.Remove(audioSource);
-                    _spatialAudioSourcePool.Enqueue(audioSource);
-                    _sourceGOs[audioSource].SetActive(false);
-
-                    // Kill the parenting coroutine if this audio source had one
-                    if (_sourceCoroutines.ContainsKey(audioSource))
-                    {
-                        StopCoroutine(_sourceCoroutines[audioSource]);
-                        _sourceCoroutines.Remove(audioSource);
-                    }
-
-                    // Revert to default settings
-                    CopyAudioSettings(_spatialTemplateSource, audioSource);
-
+                    StopActiveAudioSource(audioSource, AudioType.Spatial);
                 }
 
                 toDelete.Clear();
@@ -524,11 +553,51 @@ namespace AmalgamGames.Audio
 
             foreach (AudioSource audioSource in toDelete)
             {
-                _activeUIAudioSources.Remove(audioSource);
-                _uiAudioSourcePool.Enqueue(audioSource);
-                _sourceGOs[audioSource].SetActive(false);
+                StopActiveAudioSource(audioSource, AudioType.UI);
             }
 
+        }
+
+        private void StopActiveAudioSource(AudioSource audioSource, AudioType audioType)
+        {
+            if (audioSource.isPlaying)
+            {
+                audioSource.Stop();
+            }
+
+            switch(audioType)
+            {
+                case AudioType.Flat:
+                case AudioType.Spatial:
+                    _activeSpatialAudioSources.Remove(audioSource);
+                    _spatialAudioSourcePool.Enqueue(audioSource);
+                    break;
+                case AudioType.UI:
+                    _activeUIAudioSources.Remove(audioSource);
+                    _uiAudioSourcePool.Enqueue(audioSource);
+                    break;
+            }
+            
+            _sourceGOs[audioSource].SetActive(false);
+
+            // Kill the parenting coroutine if this audio source had one
+            if (_sourceCoroutines.ContainsKey(audioSource))
+            {
+                StopCoroutine(_sourceCoroutines[audioSource]);
+                _sourceCoroutines.Remove(audioSource);
+            }
+
+            // Revert to default settings
+            switch(audioType)
+            {
+                case AudioType.Flat:
+                case AudioType.Spatial:
+                    CopyAudioSettings(_spatialTemplateSource, audioSource);
+                    break;
+                case AudioType.UI:
+                    CopyAudioSettings(_uiTemplateSource, audioSource);
+                    break;
+            }
         }
 
         private void CopyAudioSettings(AudioSource source, AudioSource destination)
@@ -637,7 +706,6 @@ namespace AmalgamGames.Audio
 
                 // Set audio source to 2D
                 audioSource.spatialBlend = 0;
-
 
                 _sourceGOs[audioSource].SetActive(true);
 
@@ -896,6 +964,14 @@ namespace AmalgamGames.Audio
             UpdateVolumeSettings();
         }
 
+        private void GetCurrentVolumeFromPlayerPrefs()
+        {
+            _playerMusicVolume = (float)_playerPrefsCache.GetValue(Globals.MUSIC_VOLUME_KEY);
+            _playerMasterVolume = (float)_playerPrefsCache.GetValue(Globals.MASTER_VOLUME_KEY);
+            _playerEffectsVolume = (float)_playerPrefsCache.GetValue(Globals.EFFECTS_VOLUME_KEY);
+            _playerUIVolume = (float)_playerPrefsCache.GetValue(Globals.UI_VOLUME_KEY);
+        }
+
         #endregion
 
         #region Dependency Requests
@@ -927,6 +1003,7 @@ namespace AmalgamGames.Audio
         {
             _playerPrefsCache = rawObj as PlayerPrefsCache;
             SubscribeToPlayerPrefsCache();
+            GetCurrentVolumeFromPlayerPrefs();
         }
 
         private void SubscribeToPlayerPrefsCache()
@@ -934,6 +1011,10 @@ namespace AmalgamGames.Audio
             if (!_isSubscribedToPlayerPrefsCache && _playerPrefsCache != null)
             {
                 _playerPrefsCache.SubscribeToValueChanged(this, Globals.MUSIC_VOLUME_KEY, (rawObj) => { OnVolumeChanged(VolumeType.Music, (float)rawObj); });
+                _playerPrefsCache.SubscribeToValueChanged(this, Globals.MASTER_VOLUME_KEY, (rawObj) => { OnVolumeChanged(VolumeType.Master, (float)rawObj); });
+                _playerPrefsCache.SubscribeToValueChanged(this, Globals.EFFECTS_VOLUME_KEY, (rawObj) => { OnVolumeChanged(VolumeType.Effects, (float)rawObj); });
+                _playerPrefsCache.SubscribeToValueChanged(this, Globals.UI_VOLUME_KEY, (rawObj) => { OnVolumeChanged(VolumeType.UI, (float)rawObj); });
+
                 _isSubscribedToPlayerPrefsCache = true;
             }
         }
@@ -943,6 +1024,9 @@ namespace AmalgamGames.Audio
             if(_isSubscribedToPlayerPrefsCache && _playerPrefsCache != null)
             {
                 _playerPrefsCache.UnsubscribeFromValueChanged(this, Globals.MUSIC_VOLUME_KEY);
+                _playerPrefsCache.UnsubscribeFromValueChanged(this, Globals.EFFECTS_VOLUME_KEY);
+                _playerPrefsCache.UnsubscribeFromValueChanged(this, Globals.MASTER_VOLUME_KEY);
+                _playerPrefsCache.UnsubscribeFromValueChanged(this, Globals.UI_VOLUME_KEY);
                 _isSubscribedToPlayerPrefsCache = false;
             }
         }

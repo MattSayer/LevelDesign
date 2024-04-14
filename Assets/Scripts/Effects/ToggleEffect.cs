@@ -22,9 +22,14 @@ namespace AmalgamGames.Effects
 
         #region Lifecycle
 
-        protected virtual void Start()
+        protected virtual void Awake()
         {
             SubscribeToEvents();
+        }
+
+        protected virtual void Start()
+        {
+            
         }
 
         protected virtual void OnEnable()

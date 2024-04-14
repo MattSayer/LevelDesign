@@ -7,7 +7,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Scoring
 {
-    public class ScoreTracker : MonoBehaviour, IRespawnable
+    public class ScoreTracker : MonoBehaviour, IScoreTracker, IRespawnable
     {
         [Title("Components")]
         [SerializeField] private SharedIntValue _scoreValue;
@@ -49,17 +49,9 @@ namespace AmalgamGames.Scoring
             _currentScore = newScore;
         }
 
-        #endregion
-
-        #region Triggers
-
-        private void OnTriggerEnter(Collider other)
+        public void AddScore(int scoreToAdd)
         {
-            // Check for score triggers
-            if(other.TryGetComponent(out IScoreTrigger scoreTrigger))
-            {
-                _scoreValue.AddValue(scoreTrigger.TakeScore());
-            }
+            _scoreValue.AddValue(scoreToAdd);
         }
 
         #endregion
@@ -102,5 +94,10 @@ namespace AmalgamGames.Scoring
         }
 
         #endregion
+    }
+
+    public interface IScoreTracker
+    {
+        public void AddScore(int scoreToAdd);
     }
 }

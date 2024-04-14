@@ -15,10 +15,24 @@ namespace AmalgamGames.Interactables
 
         [Title("Settings")]
         [SerializeField] private bool _canOnlyInteractOnce = false;
-        [SerializeField] private bool _deactivateOnInteract = false;
+        [SerializeField] protected bool _deactivateOnInteract = false;
+        [SerializeField] private GameObject _targetForActivation;
 
         // State
-        private bool _hasBeenInteracted = false;
+        protected bool _hasBeenInteracted = false;
+        protected bool _bankedHasBeenInteracted = false;
+
+        #region Lifecycle
+
+        protected virtual void Awake()
+        {
+            if(_targetForActivation == null)
+            {
+                _targetForActivation = gameObject;
+            }
+        }
+
+        #endregion
 
         #region Respawning
 
@@ -27,8 +41,18 @@ namespace AmalgamGames.Interactables
             switch(evt)
             {
                 case RespawnEvent.OnRespawnStart:
-                    _hasBeenInteracted = false;
-                    gameObject.SetActive(true);
+                    _hasBeenInteracted = _bankedHasBeenInteracted;
+                    if (_hasBeenInteracted && _deactivateOnInteract)
+                    {
+                        _targetForActivation.SetActive(false);
+                    }
+                    else
+                    {
+                        _targetForActivation.SetActive(true);
+                    }
+                    break;
+                case RespawnEvent.OnCheckpoint:
+                    _bankedHasBeenInteracted = _hasBeenInteracted;
                     break;
             }
         }
@@ -55,7 +79,7 @@ namespace AmalgamGames.Interactables
                     OnInteract(rb.gameObject);
                     if (_deactivateOnInteract)
                     {
-                        gameObject.SetActive(false);
+                        _targetForActivation.SetActive(false);
                     }
                 }
             }

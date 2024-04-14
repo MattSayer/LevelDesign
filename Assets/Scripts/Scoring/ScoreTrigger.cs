@@ -1,52 +1,32 @@
 using AmalgamGames.Core;
+using AmalgamGames.Scoring;
+using AmalgamGames.Utils;
+using Sirenix.OdinInspector;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace AmalgamGames.Scoring
+namespace AmalgamGames.Interactables
 {
-    public class ScoreTrigger : MonoBehaviour, IScoreTrigger, IRespawnable
+    public class ScoreTrigger : Interactable, IRespawnable
     {
+        [Title("Score")]
         [SerializeField] private int _scoreValue;
 
-        private bool _hasTriggered = false;
-        private bool _bankedHasTriggered = false;
+        #region Interacting
 
-        #region Scoring
-
-        public int TakeScore()
+        protected override void OnInteract(GameObject other)
         {
-            if (_hasTriggered)
+            IScoreTracker scoreTracker = Tools.GetFirstComponentInHierarchy<IScoreTracker>(other.transform);
+            
+            if(scoreTracker != default(IScoreTracker))
             {
-                return 0;
-            }
-
-            _hasTriggered = true;
-            return _scoreValue;
-        }
-
-        #endregion
-
-        #region Respawning
-
-        public void OnRespawnEvent(RespawnEvent evt)
-        {
-            switch(evt)
-            {
-                case RespawnEvent.OnRespawnStart:
-                    _hasTriggered = _bankedHasTriggered;
-                    break;
-                case RespawnEvent.OnCheckpoint:
-                    _bankedHasTriggered = _hasTriggered;
-                    break;
+                scoreTracker.AddScore(_scoreValue);
             }
         }
 
         #endregion
-    }
 
-    public interface IScoreTrigger
-    {
-        public int TakeScore();
+        
     }
 }

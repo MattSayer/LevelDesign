@@ -22,6 +22,7 @@ namespace AmalgamGames.Core
         public event Action OnBurnComplete;
         public event Action<object> OnVelocityChanged;
         public event Action<object> OnChargeLevelChanged;
+        public event Action<object> OnNumLaunchesChanged;
 
         // Config
         private float _chargeDeltaThreshold = 0.1f;
@@ -39,6 +40,7 @@ namespace AmalgamGames.Core
         // Launch
         private bool _canLaunch = true;
         private float _canLaunchTimestamp = 0;
+        private int _numLaunches = 0;
 
         // Charging
         private float _chargeLevel = 0;
@@ -65,6 +67,7 @@ namespace AmalgamGames.Core
         private ITargetOrienter _targetOrienter;
         private Rigidbody _rb;
 
+        // CONSTANTS
         private const float METRES_SECOND_TO_KILOMETERS_HOUR = 3.6f;
         private const int CHARGE_BUFFER_SIZE = 10;
         private const float JUST_LAUNCHED_BUFFER_TIME = 0.1f;
@@ -413,6 +416,9 @@ namespace AmalgamGames.Core
                 // Triggering launch event after charge event, in case something is
                 // listening to both
                 TriggerLaunchEvent(launchInfo);
+
+                _numLaunches++;
+                OnNumLaunchesChanged?.Invoke(_numLaunches);
             }
         }
 
@@ -480,6 +486,9 @@ namespace AmalgamGames.Core
                 case Globals.CHARGE_LEVEL_CHANGED_KEY:
                     OnChargeLevelChanged += callback;
                     break;
+                case Globals.NUM_LAUNCHES_KEY:
+                    OnNumLaunchesChanged += callback;
+                    break;
             }
         }
 
@@ -491,7 +500,10 @@ namespace AmalgamGames.Core
                     OnVelocityChanged -= callback;
                     break;
                 case Globals.CHARGE_LEVEL_CHANGED_KEY:
-                    OnChargeLevelChanged += callback;
+                    OnChargeLevelChanged -= callback;
+                    break;
+                case Globals.NUM_LAUNCHES_KEY:
+                    OnNumLaunchesChanged -= callback;
                     break;
             }
         }
