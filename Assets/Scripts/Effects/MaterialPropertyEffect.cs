@@ -107,6 +107,11 @@ namespace AmalgamGames.Effects
         {
             KillAllCoroutines();
 
+            if(_materials.Length == 0)
+            {
+                return;
+            }
+
             // Get current material property value for first material
             object transformedValue = paramValue ?? GetCurrentPropertyValue(_materials[0]);
 
@@ -150,8 +155,7 @@ namespace AmalgamGames.Effects
                     vec = mat.GetVector(_materialPropertyHash);
                     return new Vector3(vec.x, vec.y, vec.z);
                 case MaterialPropertyType.Colour:
-                    vec = mat.GetVector(_materialPropertyHash);
-                    return new Color(vec.x, vec.y, vec.z);
+                    return mat.GetColor(_materialPropertyHash);
             }
             return null;
         }

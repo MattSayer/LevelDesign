@@ -80,23 +80,22 @@ private bool _scaleOutlineWithScreenSize = false;
   [SerializeField, HideInInspector]
   private List<ListVector3> bakeValues = new List<ListVector3>();
 
-  private Renderer[] renderers;
+  private List<Renderer> renderers;
+    private List<SkinnedMeshRenderer> skinnedRenderers;
+  private List<MeshFilter> meshFilters;
   private Material outlineMaskMaterial;
   private Material outlineFillMaterial;
+
+    private bool _areRenderersCached = false;
 
   private bool needsUpdate;
 
   void Awake() {
 
         // Cache renderers
-        if (_includeChildRenderers)
+        if (!_areRenderersCached)
         {
-            renderers = GetComponentsInChildren<Renderer>();
-        }
-        else
-        {
-            renderers = new Renderer[1];
-            renderers[0] = GetComponent<Renderer>();
+            CacheRenderers();
         }
 
 
@@ -113,6 +112,38 @@ private bool _scaleOutlineWithScreenSize = false;
     // Apply material properties immediately
     needsUpdate = true;
   }
+
+    void CacheRenderers()
+    {
+        if (_includeChildRenderers)
+        {
+            renderers = GetComponentsInChildren<Renderer>().ToList();
+            meshFilters = GetComponentsInChildren<MeshFilter>().ToList();
+            skinnedRenderers = GetComponentsInChildren<SkinnedMeshRenderer>().ToList();
+        }
+        else
+        {
+            renderers = new List<Renderer>();
+            Renderer renderer = GetComponent<Renderer>();
+            if(renderer != null)
+            {
+                renderers.Add(renderer);
+            }
+            meshFilters = new List<MeshFilter>();
+            MeshFilter filter = GetComponent<MeshFilter>();
+            if(filter != null)
+            {
+                meshFilters.Add(filter);
+            }
+            skinnedRenderers = new List<SkinnedMeshRenderer>();
+            SkinnedMeshRenderer skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
+            if(skinnedMeshRenderer != null)
+            {
+                skinnedRenderers.Add(skinnedMeshRenderer);
+            }
+        }
+        _areRenderersCached = true;
+    }
 
   void OnEnable() {
     foreach (var renderer in renderers) {
@@ -174,10 +205,15 @@ private bool _scaleOutlineWithScreenSize = false;
 
   void Bake() {
 
+        if(!_areRenderersCached)
+        {
+            CacheRenderers();
+        }
+
     // Generate smooth normals for each mesh
     var bakedMeshes = new HashSet<Mesh>();
 
-    foreach (var meshFilter in GetComponentsInChildren<MeshFilter>()) {
+    foreach (var meshFilter in meshFilters) {
 
       // Skip duplicates
       if (!bakedMeshes.Add(meshFilter.sharedMesh)) {
@@ -195,7 +231,7 @@ private bool _scaleOutlineWithScreenSize = false;
   void LoadSmoothNormals() {
 
     // Retrieve or generate smooth normals
-    foreach (var meshFilter in GetComponentsInChildren<MeshFilter>()) {
+    foreach (var meshFilter in meshFilters) {
 
       // Skip if smooth normals have already been adopted
       if (!registeredMeshes.Add(meshFilter.sharedMesh)) {
@@ -218,7 +254,7 @@ private bool _scaleOutlineWithScreenSize = false;
     }
 
     // Clear UV3 on skinned mesh renderers
-    foreach (var skinnedMeshRenderer in GetComponentsInChildren<SkinnedMeshRenderer>()) {
+    foreach (var skinnedMeshRenderer in skinnedRenderers) {
 
       // Skip if UV3 has already been reset
       if (!registeredMeshes.Add(skinnedMeshRenderer.sharedMesh)) {

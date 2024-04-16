@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Effects
 {
-    public class ScreenShakeEffect : ToggleEffect
+    public class ContinuousScreenShakeEffect: ToggleEffect
     {
         [Title("Value providers")]
         [RequireInterface(typeof(IValueProvider))]

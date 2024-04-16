@@ -270,7 +270,7 @@ namespace AmalgamGames.Control
         private void OnLaunch(LaunchInfo launchInfo)
         {
             // screen shake
-            _screenShaker?.ScreenShakeBurst(new ScreenShakeIntensity(_launchShakeAmplitude, _launchShakeFrequency), launchInfo.BurnDuration, _launchShakeEasing);
+            //_screenShaker?.ScreenShakeBurst(new ScreenShakeIntensity(_launchShakeAmplitude, _launchShakeFrequency), launchInfo.BurnDuration, _launchShakeEasing);
 
             ChangeDamping(_launchDamping, 0, launchInfo.BurnDuration);
 

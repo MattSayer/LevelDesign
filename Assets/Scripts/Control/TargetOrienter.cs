@@ -77,7 +77,7 @@ namespace AmalgamGames.Control
         {
             switch(evt)
             {
-                case RespawnEvent.OnRespawnEnd:
+                case RespawnEvent.OnRespawnStart:
                     ResetSourceToTargetRotation();
                     break;
             }

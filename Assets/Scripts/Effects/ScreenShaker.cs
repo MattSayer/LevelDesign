@@ -257,6 +257,7 @@ namespace AmalgamGames.Effects
         public void StopContinuousScreenShake(MonoBehaviour instigator);
     }
 
+    [Serializable]
     public struct ScreenShakeIntensity
     {
         public float Amplitude;
