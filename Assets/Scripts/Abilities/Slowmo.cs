@@ -5,6 +5,7 @@ using System.Reflection;
 using AmalgamGames.Conditionals;
 using AmalgamGames.Core;
 using AmalgamGames.Effects;
+using AmalgamGames.Timing;
 using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
@@ -12,6 +13,7 @@ using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
+using static UnityEngine.Rendering.DebugUI;
 
 namespace AmalgamGames.Abilities
 {
@@ -28,6 +30,9 @@ namespace AmalgamGames.Abilities
         [Title("Components")]
         [SerializeField] private Transform _rocketObject;
         [SerializeField] private SharedFloatValue _juice;
+        [Space]
+        [Title("Dependencies")]
+        [SerializeField] private DependencyRequest _getTimeScaler;
 
         // CONSTANTS
         private float PHYSICS_TIMESTEP;
@@ -56,6 +61,7 @@ namespace AmalgamGames.Abilities
 
         // COMPONENTS
         private IInputProcessor _inputProcessor;
+        private ITimeScaler _timeScaler;
 
         #region Lifecycle
 
@@ -109,6 +115,8 @@ namespace AmalgamGames.Abilities
             SubscribeToEvents();
 
             PHYSICS_TIMESTEP = Time.fixedDeltaTime;
+
+            _getTimeScaler.RequestDependency(ReceiveTimeScaler);
 
             /*
             LevelConfig testLevel = new LevelConfig() { LevelID = "1", LevelName = "Test" , MaxJuice = 100, StarPointThresholds = new int[] { 1000,2000,3000 }, ThresholdLaunches = 5, ThresholdRespawns = 5, ThresholdTime = 90 };
@@ -191,6 +199,7 @@ namespace AmalgamGames.Abilities
             _ignoreInput = ignoreInput;
         }
 
+        // DO NOT REMOVE - is being called dynamically as an event trigger
         private void OnLaunch(LaunchInfo launchInfo)
         {
             EndSlowmo();
@@ -266,13 +275,11 @@ namespace AmalgamGames.Abilities
                 _lerpTimescaleRoutine = StartCoroutine(Tools.lerpFloatOverTimeUnscaled(Time.timeScale, _slowMoTimeScale, _timeScaleTransitionTime * timeScaleDiff,
                         (value) => 
                         {
-                            Time.timeScale = value;
-                            Time.fixedDeltaTime = PHYSICS_TIMESTEP * value;
+                            _timeScaler.SetTimeScale(value);
                         },
                         () =>
                         {
-                            Time.timeScale = _slowMoTimeScale;
-                            Time.fixedDeltaTime = PHYSICS_TIMESTEP * _slowMoTimeScale;
+                            _timeScaler.SetTimeScale(_slowMoTimeScale);
                             _lerpTimescaleRoutine = null;
                         }
                     ));
@@ -292,13 +299,11 @@ namespace AmalgamGames.Abilities
             _lerpTimescaleRoutine = StartCoroutine(Tools.lerpFloatOverTimeUnscaled(Time.timeScale, _slowMoTimeScale, _timeScaleTransitionTime * timeScaleDiff,
                     (value) =>
                     {
-                        Time.timeScale = value;
-                        Time.fixedDeltaTime = PHYSICS_TIMESTEP * value;
+                        _timeScaler.SetTimeScale(value);
                     },
-                    () =>
-                    {
-                        Time.timeScale = _slowMoTimeScale;
-                        Time.fixedDeltaTime = PHYSICS_TIMESTEP * _slowMoTimeScale;
+            () =>
+            {
+                        _timeScaler.SetTimeScale(_slowMoTimeScale);
                         _lerpTimescaleRoutine = null;
                     }
                 ));
@@ -315,13 +320,11 @@ namespace AmalgamGames.Abilities
                 _lerpTimescaleRoutine = StartCoroutine(Tools.lerpFloatOverTimeUnscaled(Time.timeScale, 1, _timeScaleTransitionTime * timeScaleDiff,
                         (value) =>
                         {
-                            Time.timeScale = value;
-                            Time.fixedDeltaTime = value * PHYSICS_TIMESTEP;
+                            _timeScaler.SetTimeScale(value);
                         },
                         () =>
                         {
-                            Time.timeScale = 1;
-                            Time.fixedDeltaTime = PHYSICS_TIMESTEP;
+                            _timeScaler.SetTimeScale(1);
                             _lerpTimescaleRoutine = null;
                         }
                     ));
@@ -359,8 +362,7 @@ namespace AmalgamGames.Abilities
             {
                 StopAllCoroutines();
 
-                Time.fixedDeltaTime = PHYSICS_TIMESTEP;
-                Time.timeScale = 1;
+                _timeScaler.SetTimeScale(1);
 
                 OnSlowmoEnd?.Invoke();
                 _isActive = false;
@@ -405,6 +407,15 @@ namespace AmalgamGames.Abilities
             }
             _drainRoutine = null;
             EndSlowmo();
+        }
+
+        #endregion
+
+        #region Dependencies
+
+        private void ReceiveTimeScaler(object rawObj)
+        {
+            _timeScaler = rawObj as ITimeScaler;
         }
 
         #endregion

@@ -5,6 +5,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
 using System.Reflection.Emit;
+using UnityEditor.Experimental.GraphView;
 using UnityEngine;
 
 namespace AmalgamGames.Utils
@@ -186,6 +187,38 @@ namespace AmalgamGames.Utils
             }
 
             return default(T);
+        }
+
+        /// <summary>
+        /// Gets a list of all components of the specified type contained within children of this
+        /// GameObject. This includes all nested children.
+        /// </summary>
+        /// <param name="root">The GameObject to search</param>
+        /// <param name="type">The Component type to search for</param>
+        /// <returns></returns>
+        public static List<Component> GetComponentsInChildrenRecursive(this GameObject root, Type type)
+        {
+            return GetComponentsInChildrenRecursive(root.transform, type);
+        }
+
+        private static List<Component> GetComponentsInChildrenRecursive(Transform root, Type type, List<Component> list = null)
+        {
+            if (list == null)
+            {
+                list = new List<Component>();
+            }
+
+            foreach (Transform child in root)
+            {
+                Component childComponent = child.GetComponent(type);
+                if (childComponent != null)
+                {
+                    list.Add(childComponent);
+                }
+                list = GetComponentsInChildrenRecursive(child, type, list);
+            }
+
+            return list;
         }
 
         #endregion

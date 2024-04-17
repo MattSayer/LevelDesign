@@ -1,16 +1,19 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 namespace AmalgamGames.Audio
 {
-    public class ProxyAudioSource
+    public class ProxyAudioSource : IProxyAudioSource
     {
+        // Volume settings
         private float _playerMultiplier = 1;
         private float _globalMultiplier = 1;
         private float _internalVolume = 1;
 
+        // Components
         private AudioManager _audioManager;
         private AudioSource _audioSource;
         private Transform _targetParent;
@@ -18,7 +21,10 @@ namespace AmalgamGames.Audio
 
         private AudioType _audioType;
 
+        // State
         private bool _isActive = false;
+
+        private Dictionary<ProxyAudioProperty, bool> _propertyLocks;
 
         #region Initialisation
 
@@ -38,6 +44,13 @@ namespace AmalgamGames.Audio
                 _globalMultiplier = globalMultiplier;
                 _sourceTransform = audioSource.transform;
                 UpdateVolume();
+
+                // Initialise all property locks, with no lock as default
+                _propertyLocks = new Dictionary<ProxyAudioProperty, bool>();
+                foreach(int i in Enum.GetValues(typeof(ProxyAudioProperty)))
+                {
+                    _propertyLocks[(ProxyAudioProperty)i] = false;
+                }
             }
         }
 
@@ -83,7 +96,7 @@ namespace AmalgamGames.Audio
 
         #endregion
 
-        #region Public methods
+        #region Updating settings
 
         public void UpdateAudioSettings()
         {
@@ -92,6 +105,10 @@ namespace AmalgamGames.Audio
 
             UpdateVolume();
         }
+
+        #endregion
+
+        #region Activation/deactivation
 
         public void Activate()
         {
@@ -112,9 +129,13 @@ namespace AmalgamGames.Audio
             _audioManager.FadeOut(this, false);
         }
 
+        #endregion
+
+        #region Audio
+
         public void Play()
         {
-            if (_isActive && _audioSource.enabled)
+            if (_isActive && _audioSource.enabled && !_propertyLocks[ProxyAudioProperty.Play])
             {
                 _audioManager.FadeIn(this);
             }
@@ -122,19 +143,25 @@ namespace AmalgamGames.Audio
 
         public void SetAudioClip(AudioClip clip)
         {
-            bool wasPlaying = _audioSource.isPlaying;
-            _audioSource.clip = clip;
-            UpdateVolume();
-            if (wasPlaying && _audioSource.enabled)
+            if (!_propertyLocks[ProxyAudioProperty.Clip])
             {
-                _audioSource.Play();
+                bool wasPlaying = _audioSource.isPlaying;
+                _audioSource.clip = clip;
+                UpdateVolume();
+                if (wasPlaying && _audioSource.enabled)
+                {
+                    _audioSource.Play();
+                }
             }
         }
 
         public void SetVolume(float volume)
         {
-            _internalVolume = Mathf.Clamp01(volume);
-            UpdateVolume();
+            if (!_propertyLocks[ProxyAudioProperty.Volume])
+            {
+                _internalVolume = Mathf.Clamp01(volume);
+                UpdateVolume();
+            }
         }
 
         public void Pause()
@@ -152,8 +179,11 @@ namespace AmalgamGames.Audio
 
         public void ChangeAudibleRadius(float minDist, float maxDist)
         {
-            _audioSource.minDistance = minDist;
-            _audioSource.maxDistance = maxDist;
+            if (!_propertyLocks[ProxyAudioProperty.AudibleRadius])
+            {
+                _audioSource.minDistance = minDist;
+                _audioSource.maxDistance = maxDist;
+            }
         }
 
         public void Stop()
@@ -163,8 +193,15 @@ namespace AmalgamGames.Audio
 
         public void SetPitch(float pitch)
         {
-            _audioSource.pitch = pitch;
+            if (!_propertyLocks[ProxyAudioProperty.Pitch])
+            {
+                _audioSource.pitch = pitch;
+            }
         }
+
+        #endregion
+
+        #region Proxy management
 
         public void DeleteProxy()
         {
@@ -172,5 +209,44 @@ namespace AmalgamGames.Audio
         }
 
         #endregion
+
+        #region Property locking
+
+        public void LockProperty(ProxyAudioProperty property)
+        {
+            _propertyLocks[property] = true;
+        }
+
+        public void UnlockProperty(ProxyAudioProperty property)
+        {
+            _propertyLocks[property] = false;
+        }
+
+        #endregion
     }
+
+    public interface IProxyAudioSource
+    {
+        public void Pause();
+        public void Unpause();
+        public void ChangeAudibleRadius(float minDist, float maxDist);
+        public void Stop();
+        public void SetPitch(float pitch);
+        public void SetVolume(float volume);
+        public void DeleteProxy();
+        public void SetAudioClip(AudioClip audioClip);
+        public void Play();
+        public void Activate();
+        public void Deactivate();
+    }
+
+    public enum ProxyAudioProperty
+    {
+        Volume,
+        Pitch,
+        AudibleRadius,
+        Clip,
+        Play
+    }
+
 }

@@ -1,3 +1,4 @@
+using AmalgamGames.Audio;
 using AmalgamGames.Control;
 using AmalgamGames.Core;
 using AmalgamGames.Utils;
@@ -12,11 +13,17 @@ namespace AmalgamGames.Interactables
     {
         [Title("Audio")]
         [SerializeField] private AudioClip _interactSound;
-
+        [Space]
+        [Title("Dependencies")]
+        [SerializeField] private DependencyRequest _getAudioManager;
+        [Space]
         [Title("Settings")]
         [SerializeField] private bool _canOnlyInteractOnce = false;
         [SerializeField] protected bool _deactivateOnInteract = false;
         [SerializeField] private GameObject _targetForActivation;
+
+        // Components
+        private IAudioManager _audioManager;
 
         // State
         protected bool _hasBeenInteracted = false;
@@ -30,6 +37,11 @@ namespace AmalgamGames.Interactables
             {
                 _targetForActivation = gameObject;
             }
+        }
+
+        private void Start()
+        {
+            _getAudioManager?.RequestDependency(ReceiveAudioManager);
         }
 
         #endregion
@@ -76,6 +88,11 @@ namespace AmalgamGames.Interactables
                 if(rb != default(Rigidbody))
                 {
                     _hasBeenInteracted = true;
+
+                    AudioPlayRequest audioRequest = new AudioPlayRequest { audioType = Audio.AudioType.Flat, clip = _interactSound };
+
+                    _audioManager?.PlayAudioClip(audioRequest);
+
                     OnInteract(rb.gameObject);
                     if (_deactivateOnInteract)
                     {
@@ -83,6 +100,15 @@ namespace AmalgamGames.Interactables
                     }
                 }
             }
+        }
+
+        #endregion
+
+        #region Dependency requests
+
+        private void ReceiveAudioManager(object rawObj)
+        {
+            _audioManager = rawObj as AudioManager;
         }
 
         #endregion

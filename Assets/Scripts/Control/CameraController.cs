@@ -35,18 +35,10 @@ namespace AmalgamGames.Control
         [Title("Damping")]
         [SerializeField] private float _launchDamping = 3;
         [Space]
-        [Title("Screen shake")]
-        [SerializeField] private float _launchShakeAmplitude = 10f;
-        [SerializeField] private float _launchShakeFrequency = 1;
-        [SerializeField] private EasingFunction.Ease _launchShakeEasing = EasingFunction.Ease.Linear;
-        [Space]
         [Title("Components")]
         [SerializeField] private Transform _followTarget;
         [SerializeField] private CinemachineVirtualCamera _playerCam;
         [SerializeField] private GameObject _rocketObject;
-        [Space]
-        [Title("Dependencies")]
-        [SerializeField] private DependencyRequest _getScreenShaker;
         [Space]
         [FoldoutGroup("Dynamic Events")][SerializeField] private EventHookup[] _hookupEvents;
 
@@ -87,7 +79,6 @@ namespace AmalgamGames.Control
         
         private IInputProcessor _inputProcessor;
         private CinemachineTransposer _bodyTransposer;
-        private IScreenShaker _screenShaker;
 
         #region Lifecycle
 
@@ -95,8 +86,6 @@ namespace AmalgamGames.Control
         {
             _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketObject.transform);
             _bodyTransposer = _playerCam?.GetCinemachineComponent<CinemachineTransposer>();
-
-            _getScreenShaker.RequestDependency(ReceiveScreenShaker);
 
             SubscribeToInput();
             HookUpEvents();
@@ -269,9 +258,6 @@ namespace AmalgamGames.Control
 
         private void OnLaunch(LaunchInfo launchInfo)
         {
-            // screen shake
-            //_screenShaker?.ScreenShakeBurst(new ScreenShakeIntensity(_launchShakeAmplitude, _launchShakeFrequency), launchInfo.BurnDuration, _launchShakeEasing);
-
             ChangeDamping(_launchDamping, 0, launchInfo.BurnDuration);
 
             OffsetPosition(Vector3.zero, _offsetLerpTime);
@@ -326,11 +312,6 @@ namespace AmalgamGames.Control
                 _inputProcessor.OnCameraInputChange += OnCameraInput;
                 _isSubscribedToInput = true;
             }
-        }
-
-        private void ReceiveScreenShaker(object rawObj)
-        {
-            _screenShaker = rawObj as IScreenShaker;
         }
 
         private void HookUpEvents()

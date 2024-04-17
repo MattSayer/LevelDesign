@@ -1,5 +1,6 @@
 using AmalgamGames.Core;
 using AmalgamGames.Effects;
+using AmalgamGames.Timing;
 using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
@@ -60,6 +61,9 @@ namespace AmalgamGames.Audio
         [Space]
         [Title("Failsafes")]
         [SerializeField] private float _playClipBuffer = 0.1f;
+        [Space]
+        [Title("Dependencies")]
+        [SerializeField] private DependencyRequest _getTimeScaler;
 
         public float PlayerEffectsVolume { get { return _playerMasterVolume * _playerEffectsVolume; } }
         public float GlobalEffectsVolume { get { return _effectsMultiplier; } }
@@ -86,7 +90,8 @@ namespace AmalgamGames.Audio
         private List<AudioSource> _allProxyAudioSources;
         private Queue<AudioSource> _proxyAudioSourcePool;
         private List<AudioSource> _activeProxyAudioSources;
-        private Dictionary<ProxyAudioSource, AudioSource> _audioProxies;
+        private Dictionary<ProxyAudioSource, AudioSource> _proxyAudioLookup;
+        private Dictionary<AudioSource, ProxyAudioSource> _audioProxyLookup;
 
         // Music
         private AudioClip _currentMusicClip;
@@ -129,6 +134,9 @@ namespace AmalgamGames.Audio
         private bool _isPaused = false;
         private List<AudioSource> _pausedAudioSources;
 
+        // Time scaling
+        private ITimeScaler _timeScaler;
+
         #region Lifecycle
 
         private void Awake()
@@ -146,12 +154,14 @@ namespace AmalgamGames.Audio
             SubscribeToDependencyRequests();
 
             InitialiseAudioSources();
+
         }
 
         
         private void Start()
         {
             _getPlayerPrefsCache.RequestDependency(ReceivePlayerPrefsCache);
+            _getTimeScaler.RequestDependency(ReceiveTimeScaler);
         }
 
         protected override void OnEnable()
@@ -177,7 +187,7 @@ namespace AmalgamGames.Audio
 
         public override void ManagedUpdate(float deltaTime)
         {
-            foreach (ProxyAudioSource proxy in _audioProxies.Keys.ToList())
+            foreach (ProxyAudioSource proxy in _proxyAudioLookup.Keys.ToList())
             {
                 proxy.Update();
             }
@@ -237,7 +247,8 @@ namespace AmalgamGames.Audio
             _allProxyAudioSources = new List<AudioSource>();
             _proxyAudioSourcePool = new Queue<AudioSource>();
             _activeProxyAudioSources = new List<AudioSource>();
-            _audioProxies = new Dictionary<ProxyAudioSource, AudioSource>();
+            _audioProxyLookup = new Dictionary<AudioSource, ProxyAudioSource>();
+            _proxyAudioLookup = new Dictionary<ProxyAudioSource, AudioSource>();
 
             _proxyTemplateSource = _proxyTemplate.GetComponent<AudioSource>();
 
@@ -373,6 +384,9 @@ namespace AmalgamGames.Audio
                     // Pause all active proxy audio sources
                     foreach (AudioSource audioSource in _activeProxyAudioSources)
                     {
+                        // Lock proxy audio source from playing
+                        _audioProxyLookup[audioSource].LockProperty(ProxyAudioProperty.Play);
+
                         if (audioSource.isPlaying)
                         {
                             //FadeOut(audioSource, true);
@@ -386,6 +400,12 @@ namespace AmalgamGames.Audio
                     // Resume all active audio sources
                     foreach (AudioSource audioSource in _pausedAudioSources)
                     {
+                        // Unlock play capability on any paused proxy audio sources
+                        if(_audioProxyLookup.ContainsKey(audioSource))
+                        {
+                            _audioProxyLookup[audioSource].UnlockProperty(ProxyAudioProperty.Play);
+                        }
+
                         audioSource.enabled = true;
                         FadeIn(audioSource);
                     }
@@ -405,7 +425,7 @@ namespace AmalgamGames.Audio
         /// <param name="evt">The calling GameEvent</param>
         /// <param name="rawRequest">The AudioProxyRequest detailing the desired audio settings</param>
         /// <param name="callback">Callback function to return the proxy audio source, or null if failed</param>
-        public ProxyAudioSource GetProxyAudioSource(AudioProxyRequest request)
+        public IProxyAudioSource GetProxyAudioSource(AudioProxyRequest request)
         {
             if (_proxyAudioSourcePool.Count > 0 && request.parent != null)
             {
@@ -422,9 +442,10 @@ namespace AmalgamGames.Audio
 
                 // Create new proxy audio source and return it
                 ProxyAudioSource proxy = new ProxyAudioSource(this, audioSource, request.audioType, request.parent, _playerEffectsVolume, _effectsMultiplier);
-                _audioProxies.Add(proxy, audioSource);
+                _proxyAudioLookup.Add(proxy, audioSource);
+                _audioProxyLookup.Add(audioSource, proxy);
 
-                return proxy;
+                return (IProxyAudioSource)proxy;
             }
             else
             {
@@ -436,12 +457,12 @@ namespace AmalgamGames.Audio
 
         public bool IsProxyFading(ProxyAudioSource proxy)
         {
-            return _fadeRoutines.ContainsKey(_audioProxies[proxy]);
+            return _fadeRoutines.ContainsKey(_proxyAudioLookup[proxy]);
         }
 
         public void FadeOut(ProxyAudioSource proxy, bool toPause)
         {
-            AudioSource audioSource = _audioProxies[proxy];
+            AudioSource audioSource = _proxyAudioLookup[proxy];
 
             // If audio is paused and a proxy fade out request comes in, remove it from paused audio sources to prevent it being resumed afterwards
             if (_isPaused)
@@ -456,7 +477,7 @@ namespace AmalgamGames.Audio
 
         public void FadeIn(ProxyAudioSource proxy)
         {
-            FadeIn(_audioProxies[proxy]);
+            FadeIn(_proxyAudioLookup[proxy]);
         }
 
         /// <summary>
@@ -465,7 +486,7 @@ namespace AmalgamGames.Audio
         /// <param name="proxy">The proxy audio source to release</param>
         public void ReleaseProxy(ProxyAudioSource proxy)
         {
-            AudioSource audioSource = _audioProxies[proxy];
+            AudioSource audioSource = _proxyAudioLookup[proxy];
 
             if(audioSource.isPlaying)
             {
@@ -474,7 +495,8 @@ namespace AmalgamGames.Audio
 
             _activeProxyAudioSources.Remove(audioSource);
             _proxyAudioSourcePool.Enqueue(audioSource);
-            _audioProxies.Remove(proxy);
+            _proxyAudioLookup.Remove(proxy);
+            _audioProxyLookup.Remove(audioSource);
 
             _sourceGOs[audioSource].SetActive(false);
 
@@ -633,7 +655,7 @@ namespace AmalgamGames.Audio
                 audioSource.volume = _playerMasterVolume * _playerUIVolume * _uiMultiplier * _database.GetAudioClipVolume(audioSource.clip);
             }
 
-            foreach (ProxyAudioSource proxy in _audioProxies.Keys.ToList())
+            foreach (ProxyAudioSource proxy in _proxyAudioLookup.Keys.ToList())
             {
                 proxy.UpdateAudioSettings();
             }
@@ -974,6 +996,46 @@ namespace AmalgamGames.Audio
 
         #endregion
 
+        #region Time scaling
+
+        private void ChangeAudioTimeScale(float timeScale)
+        {
+            // Timescale should only be set to 0 when the game is paused, or the momentary TimeStopper is active
+            // In the former case, pausing audio sources is being handled with the IPausable interface
+            // In the latter case, we don't want to stop or slow audio, so we should ignore it
+            if(timeScale == 0)
+            {
+                return;
+            }
+
+            foreach(AudioSource audioSource in _activeProxyAudioSources)
+            {
+                ProxyAudioSource proxy = _audioProxyLookup[audioSource];
+                // Unlock pitch control once time is set back to 1
+                if(timeScale == 1)
+                {
+                    proxy.UnlockProperty(ProxyAudioProperty.Pitch);
+                }
+                else
+                {
+                    proxy.LockProperty(ProxyAudioProperty.Pitch);
+                }
+                audioSource.pitch = timeScale;
+            }
+
+            foreach(AudioSource audioSource in _activeSpatialAudioSources)
+            {
+                audioSource.pitch = timeScale;
+            }
+
+            foreach (AudioSource audioSource in _activeUIAudioSources)
+            {
+                audioSource.pitch = timeScale;
+            }
+        }
+
+        #endregion
+
         #region Dependency Requests
 
         private void ProvideDependency(Action<object> callback)
@@ -1034,6 +1096,16 @@ namespace AmalgamGames.Audio
         #endregion
 
 
+        #region Dependencies
+
+        private void ReceiveTimeScaler(object rawObj)
+        {
+            _timeScaler = rawObj as ITimeScaler;
+            _timeScaler.OnTimeScaleChanged += ChangeAudioTimeScale;
+        }
+
+        #endregion
+
         private enum VolumeType
         {
             Master,
@@ -1047,7 +1119,7 @@ namespace AmalgamGames.Audio
     {
         public void ToggleMenuMusic(bool toActivate);
         public void ChangeMusic(AudioClip clip);
-        public ProxyAudioSource GetProxyAudioSource(AudioProxyRequest request);
+        public IProxyAudioSource GetProxyAudioSource(AudioProxyRequest request);
         public bool PlayAudioClip(AudioPlayRequest request);
     }
 
