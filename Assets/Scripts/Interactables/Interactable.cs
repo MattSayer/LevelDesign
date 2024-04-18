@@ -12,7 +12,7 @@ namespace AmalgamGames.Interactables
     public abstract class Interactable : MonoBehaviour, IRespawnable
     {
         [Title("Audio")]
-        [SerializeField] private AudioClip _interactSound;
+        [SerializeField] private string _interactAudioClipID;
         [Space]
         [Title("Dependencies")]
         [SerializeField] private DependencyRequest _getAudioManager;
@@ -89,9 +89,11 @@ namespace AmalgamGames.Interactables
                 {
                     _hasBeenInteracted = true;
 
-                    AudioPlayRequest audioRequest = new AudioPlayRequest { audioType = Audio.AudioType.Flat, clip = _interactSound };
-
-                    _audioManager?.PlayAudioClip(audioRequest);
+                    if (!string.IsNullOrEmpty(_interactAudioClipID))
+                    {
+                        AudioPlayRequest audioRequest = new AudioPlayRequest { audioType = Audio.AudioType.Flat, audioClipID = _interactAudioClipID };
+                        _audioManager?.PlayAudioClip(audioRequest);
+                    }
 
                     OnInteract(rb.gameObject);
                     if (_deactivateOnInteract)

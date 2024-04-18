@@ -1,3 +1,4 @@
+using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -8,28 +9,19 @@ namespace AmalgamGames.Audio
     [CreateAssetMenu(menuName = "Audio/AudioDatabase", fileName = "AudioDatabase")]
     public class AudioDatabase : ScriptableObject
     {
-        [SerializeField] private List<AudioClipVolume> _audioClips;
-
-        public float GetAudioClipVolume(AudioClip clip)
-        {
-            foreach (AudioClipVolume acv in _audioClips)
-            {
-                if (acv.clip == clip)
-                {
-                    return acv.volume;
-                }
-            }
-            // Default volume to 1 if clip not found
-            return 1;
-        }
+        [Searchable]
+        [SerializeField] private List<AudioDatabaseEntry> _entries;
+        
+        public List<AudioDatabaseEntry> Entries { get { return _entries;  } }
 
     }
 
     [Serializable]
-    public class AudioClipVolume
+    public class AudioDatabaseEntry
     {
+        public string audioClipID;
         public AudioClip clip;
         [Range(0, 1)]
-        public float volume;
+        public float volume = 1;
     }
 }

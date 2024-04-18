@@ -1,7 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
+using AmalgamGames.Audio;
 using AmalgamGames.Conditionals;
 using AmalgamGames.Core;
 using AmalgamGames.Effects;
@@ -9,11 +9,9 @@ using AmalgamGames.Timing;
 using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UIElements;
-using static UnityEngine.Rendering.DebugUI;
 
 namespace AmalgamGames.Abilities
 {
@@ -31,11 +29,13 @@ namespace AmalgamGames.Abilities
         [SerializeField] private Transform _rocketObject;
         [SerializeField] private SharedFloatValue _juice;
         [Space]
+        [Title("Audio")]
+        [SerializeField] private string _slowmoActivateClipID;
+        [SerializeField] private string _slowmoDeactivateClipID;
+        [Space]
         [Title("Dependencies")]
         [SerializeField] private DependencyRequest _getTimeScaler;
-
-        // CONSTANTS
-        private float PHYSICS_TIMESTEP;
+        [SerializeField] private DependencyRequest _getAudioManager;
 
         // EVENTS
         public event Action OnSlowmoStart;
@@ -62,8 +62,7 @@ namespace AmalgamGames.Abilities
         // COMPONENTS
         private IInputProcessor _inputProcessor;
         private ITimeScaler _timeScaler;
-
-        #region Lifecycle
+        private IAudioManager _audioManager;
 
         // TODO: move to proper classes
         class LevelConfig
@@ -107,6 +106,8 @@ namespace AmalgamGames.Abilities
             AllRounder
         }
 
+        #region Lifecycle
+
         private void Start()
         {
             _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketObject);
@@ -114,9 +115,8 @@ namespace AmalgamGames.Abilities
             SubscribeToInput();
             SubscribeToEvents();
 
-            PHYSICS_TIMESTEP = Time.fixedDeltaTime;
-
             _getTimeScaler.RequestDependency(ReceiveTimeScaler);
+            _getAudioManager.RequestDependency(ReceiveAudioManager);
 
             /*
             LevelConfig testLevel = new LevelConfig() { LevelID = "1", LevelName = "Test" , MaxJuice = 100, StarPointThresholds = new int[] { 1000,2000,3000 }, ThresholdLaunches = 5, ThresholdRespawns = 5, ThresholdTime = 90 };
@@ -245,6 +245,20 @@ namespace AmalgamGames.Abilities
 
         #endregion
 
+        #region Audio
+
+        private void PlayActivateSound()
+        {
+            _audioManager.PlayAudioClip(new AudioPlayRequest { audioClipID = _slowmoActivateClipID, audioType = Audio.AudioType.Flat });
+        }
+
+        private void PlayDeactivateSound()
+        {
+            _audioManager.PlayAudioClip(new AudioPlayRequest { audioClipID = _slowmoDeactivateClipID, audioType = Audio.AudioType.Flat });
+        }
+
+        #endregion
+
         #region Slow-mo
 
         private void ApplyCachedSlowmo()
@@ -263,6 +277,8 @@ namespace AmalgamGames.Abilities
         {
             if(!_isActive && _canActivate && HasJuice() && !_isLocked)
             {
+                PlayActivateSound();
+
                 _isActive = true;
 
                 StopAllCoroutines();
@@ -270,7 +286,7 @@ namespace AmalgamGames.Abilities
                 _drainRoutine = StartCoroutine(drainSlowMo());
                 OnSlowmoStart?.Invoke();
 
-                float timeScaleDiff = (Time.timeScale - _slowMoTimeScale) / (1 - _slowMoTimeScale);
+                float timeScaleDiff = (Time.timeScale - _slowMoTimeScale);
 
                 _lerpTimescaleRoutine = StartCoroutine(Tools.lerpFloatOverTimeUnscaled(Time.timeScale, _slowMoTimeScale, _timeScaleTransitionTime * timeScaleDiff,
                         (value) => 
@@ -286,17 +302,24 @@ namespace AmalgamGames.Abilities
             }
         }
 
-        public void ForceActivateSlowmo()
+        public void ForceActivateSlowmo(float transitionTime = 0)
         {
+            if(transitionTime <= 0)
+            {
+                transitionTime = _timeScaleTransitionTime;
+            }
+
             _isActive = true;
+
+            PlayActivateSound();
 
             StopAllCoroutines();
 
             OnSlowmoStart?.Invoke();
 
-            float timeScaleDiff = (Time.timeScale - _slowMoTimeScale) / (1 - _slowMoTimeScale);
+            float timeScaleDiff = (Time.timeScale - _slowMoTimeScale);
 
-            _lerpTimescaleRoutine = StartCoroutine(Tools.lerpFloatOverTimeUnscaled(Time.timeScale, _slowMoTimeScale, _timeScaleTransitionTime * timeScaleDiff,
+            _lerpTimescaleRoutine = StartCoroutine(Tools.lerpFloatOverTimeUnscaled(Time.timeScale, _slowMoTimeScale, transitionTime * timeScaleDiff,
                     (value) =>
                     {
                         _timeScaler.SetTimeScale(value);
@@ -306,16 +329,18 @@ namespace AmalgamGames.Abilities
                         _timeScaler.SetTimeScale(_slowMoTimeScale);
                         _lerpTimescaleRoutine = null;
                     }
-                ));
+            ));
         }
 
         public void EndSlowmo()
         {
             if (_isActive)
             {
+                PlayDeactivateSound();
+
                 StopAllCoroutines();
 
-                float timeScaleDiff = (1 - Time.timeScale) / (1 - _slowMoTimeScale);
+                float timeScaleDiff = (1 - Time.timeScale);
 
                 _lerpTimescaleRoutine = StartCoroutine(Tools.lerpFloatOverTimeUnscaled(Time.timeScale, 1, _timeScaleTransitionTime * timeScaleDiff,
                         (value) =>
@@ -361,6 +386,8 @@ namespace AmalgamGames.Abilities
             if(_isActive)
             {
                 StopAllCoroutines();
+
+                PlayDeactivateSound();
 
                 _timeScaler.SetTimeScale(1);
 
@@ -418,6 +445,11 @@ namespace AmalgamGames.Abilities
             _timeScaler = rawObj as ITimeScaler;
         }
 
+        private void ReceiveAudioManager(object rawObj)
+        {
+            _audioManager = rawObj as IAudioManager;
+        }
+
         #endregion
 
         #region Subscriptions
@@ -470,7 +502,7 @@ namespace AmalgamGames.Abilities
 
     public interface ISlowmo
     {
-        public void ForceActivateSlowmo();
+        public void ForceActivateSlowmo(float transitionTime = 0);
         public void EndSlowmo();
         public void CancelSlowmo();
         public void IgnoreInput(bool ignoreInput);

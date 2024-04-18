@@ -32,6 +32,20 @@ namespace AmalgamGames.Utils
 
         #endregion
 
+        #region Audio
+
+        // Volume multipliers
+        public const float MUSIC_MULTIPLIER = 1;
+        public const float UI_MULTIPLIER = 1;
+        public const float EFFECTS_MULTIPLIER = 1;
+
+        // Slowmo
+        public const float SLOWMO_AUDIO_SCALE = 0.75f;
+        public const float SLOWMO_MUSIC_VOLUME = 0.5f;
+        public const float PAUSED_MUSIC_VOLUME = 0.5f;
+
+        #endregion
+
         #region Timers
 
         // Countdown timer

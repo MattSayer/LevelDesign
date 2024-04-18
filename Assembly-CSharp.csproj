@@ -66,6 +66,7 @@
     <Compile Include="Assets\Scripts\Effects\ScreenShake\ScreenShaker.cs" />
     <Compile Include="Assets\Scripts\Core\SharedIntValue.cs" />
     <Compile Include="Assets\Scripts\Core\Respawner.cs" />
+    <Compile Include="Assets\Scripts\Timing\TimeScaler.cs" />
     <Compile Include="Assets\Scripts\Interactables\LaunchPickup.cs" />
     <Compile Include="Assets\Scripts\Transformations\Extractors\ExtractLaunchInfoComponentTransformation.cs" />
     <Compile Include="Assets\Scripts\Transformations\Vectors\NormalizeTransformation.cs" />
@@ -142,6 +143,7 @@
     <Compile Include="Assets\Scripts\Control\AnimationController.cs" />
     <Compile Include="Assets\Scripts\Effects\Physics\MoveRBToTarget.cs" />
     <Compile Include="Assets\Scripts\Effects\Particles\ParticleEffect.cs" />
+    <Compile Include="Assets\Scripts\Audio\BGMPlayer.cs" />
     <Compile Include="Assets\Scripts\Conditionals\VectorMagnitudeConditional.cs" />
     <Compile Include="Assets\Scripts\Timing\TimedFunction.cs" />
     <Compile Include="Assets\Scripts\Utils\Easing.cs" />
@@ -161,7 +163,6 @@
     <Compile Include="Assets\Scripts\Conditionals\FloatConditional.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\Rumble\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Timing\TimeScaler.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

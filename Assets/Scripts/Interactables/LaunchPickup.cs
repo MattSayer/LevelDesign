@@ -26,6 +26,9 @@ namespace AmalgamGames.Interactables
         private IRocketController _rocketController;
         private ICameraController _cameraController;
         private Rigidbody _rb;
+
+        // Constants
+        private const float _slowmoTransitionTime = 0.1f;
         
         #region Pickup
 
@@ -75,7 +78,7 @@ namespace AmalgamGames.Interactables
             if (_slowmo != default(Slowmo))
             {
                 _slowmo.IgnoreInput(true);
-                _slowmo.ForceActivateSlowmo();
+                _slowmo.ForceActivateSlowmo(_slowmoTransitionTime);
             }
         }
 
