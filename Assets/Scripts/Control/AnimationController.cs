@@ -50,23 +50,26 @@ namespace AmalgamGames.Control
 
         private void StartAnimating()
         {
-            if (_startRoutine == null)
+            if (_isPlaying)
             {
-                if (_startDelay > 0)
+                if (_startRoutine == null)
                 {
-                    _startRoutine = StartCoroutine(Tools.delayThenAction(_startDelay, () =>
+                    if (_startDelay > 0)
+                    {
+                        _startRoutine = StartCoroutine(Tools.delayThenAction(_startDelay, () =>
+                        {
+                            _isPlaying = true;
+                            _animator?.ResetTrigger(STOP_TRIGGER_HASH);
+                            _animator?.SetTrigger(START_TRIGGER_HASH);
+                            _startRoutine = null;
+                        }));
+                    }
+                    else
                     {
                         _isPlaying = true;
                         _animator?.ResetTrigger(STOP_TRIGGER_HASH);
                         _animator?.SetTrigger(START_TRIGGER_HASH);
-                        _startRoutine = null;
-                    }));
-                }
-                else
-                {
-                    _isPlaying = true;
-                    _animator?.ResetTrigger(STOP_TRIGGER_HASH);
-                    _animator?.SetTrigger(START_TRIGGER_HASH);
+                    }
                 }
             }
         }
@@ -88,12 +91,15 @@ namespace AmalgamGames.Control
 
         #region Triggers
 
-        public void Trigger()
+        public void Trigger(string triggerKey)
         {
-            if(!_isPlaying)
+            switch(triggerKey)
             {
-                StartAnimating();
+                case Globals.TRIGGER_ANIMATION:
+                    StartAnimating();
+                    break;
             }
+            
         }
 
         #endregion

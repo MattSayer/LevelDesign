@@ -165,9 +165,21 @@ namespace AmalgamGames.Control
 
         #region Triggers
 
-        public void Trigger()
+        public void Trigger(string triggerKey)
         {
-            if(_spawnRoutine == null && _activationRoutine == null)
+            switch(triggerKey)
+            {
+                case Globals.TRIGGER_SPAWNING:
+                    StartSpawning();
+                    break;
+            }
+
+            
+        }
+
+        private void StartSpawning()
+        {
+            if (_spawnRoutine == null && _activationRoutine == null)
             {
                 _activationRoutine = StartCoroutine(Tools.delayThenAction(_spawnDelay, () =>
                 {

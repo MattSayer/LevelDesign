@@ -207,7 +207,17 @@ namespace AmalgamGames.Control
 
         #region Triggers
 
-        public void Trigger()
+        public void Trigger(string triggerKey)
+        {
+            switch(triggerKey)
+            {
+                case Globals.TRIGGER_MOVING:
+                    TriggerMoving();
+                    break;
+            }
+        }
+
+        private void TriggerMoving()
         {
             if (!_isMoving && !_isActive && _pathInitialised && _activationRoutine == null)
             {

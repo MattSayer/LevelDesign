@@ -55,6 +55,9 @@ namespace AmalgamGames.Abilities
 
         private bool _cachedIsActive = false;
 
+        // Audio requests
+        private string _lastAudioRequestID;
+
         // COROUTINES
         private Coroutine _drainRoutine = null;
         private Coroutine _lerpTimescaleRoutine = null;
@@ -249,12 +252,24 @@ namespace AmalgamGames.Abilities
 
         private void PlayActivateSound()
         {
-            _audioManager.PlayAudioClip(new AudioPlayRequest { audioClipID = _slowmoActivateClipID, audioType = Audio.AudioType.Flat });
+            // Stop previous audio request
+            if(!string.IsNullOrEmpty(_lastAudioRequestID))
+            {
+                _audioManager.StopAudioClip(_lastAudioRequestID);
+            }
+
+            _lastAudioRequestID = _audioManager.PlayAudioClip(new AudioPlayRequest { audioClipID = _slowmoActivateClipID, audioType = Audio.AudioType.Flat });
         }
 
         private void PlayDeactivateSound()
         {
-            _audioManager.PlayAudioClip(new AudioPlayRequest { audioClipID = _slowmoDeactivateClipID, audioType = Audio.AudioType.Flat });
+            // Stop previous audio request
+            if (!string.IsNullOrEmpty(_lastAudioRequestID))
+            {
+                _audioManager.StopAudioClip(_lastAudioRequestID);
+            }
+
+            _lastAudioRequestID = _audioManager.PlayAudioClip(new AudioPlayRequest { audioClipID = _slowmoDeactivateClipID, audioType = Audio.AudioType.Flat });
         }
 
         #endregion

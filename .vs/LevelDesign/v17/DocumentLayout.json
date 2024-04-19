@@ -3,28 +3,64 @@
   "WorkspaceRootPath": "C:\\Users\\macka\\LevelDesign\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\audio\\audiomanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\audio\\audiomanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\levelmanagement\\levelcompletion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:assets\\scripts\\levelmanagement\\levelcompletion.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\audio\\audiodatabase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\audio\\audiodatabase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\control\\triggerzone.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\control\\triggerzone.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\effects\\levelstate\\broadcastlevelstatefunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\effects\\levelstate\\broadcastlevelstatefunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\effects\\triggerfunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\effects\\triggerfunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\interactables\\launchpickup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\interactables\\launchpickup.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|c:\\users\\macka\\leveldesign\\assets\\scripts\\interactables\\interactable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\core\\ilevelstatelistener.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\core\\ilevelstatelistener.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\transformations\\hierarchy\\getclosestrigidbodytransformation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\transformations\\hierarchy\\getclosestrigidbodytransformation.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\core\\triggerproxy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\core\\triggerproxy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\core\\respawner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\core\\respawner.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\timing\\timedfunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\timing\\timedfunction.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\interactables\\interactable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\interactables\\interactable.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|c:\\users\\macka\\leveldesign\\assets\\scripts\\effects\\rumble\\rumblecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\effects\\rumble\\rumblecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\audio\\audiomanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\audio\\audiomanager.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\abilities\\slowmo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\abilities\\slowmo.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\audio\\audiodatabase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\audio\\audiodatabase.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\effects\\rumble\\rumblecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|solutionrelative:assets\\scripts\\effects\\rumble\\rumblecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{6F4463E7-3050-4780-D9CE-1B33995EB729}|Assembly-CSharp.csproj|C:\\Users\\macka\\LevelDesign\\assets\\scripts\\audio\\bgmplayer.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -62,7 +98,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 9,
+          "SelectedChildIndex": 8,
           "Children": [
             {
               "$type": "Bookmark",
@@ -74,7 +110,104 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 7,
+              "Title": "TriggerProxy.cs",
+              "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Core\\TriggerProxy.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\TriggerProxy.cs",
+              "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Core\\TriggerProxy.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Core\\TriggerProxy.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAoAAAA5AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-18T22:12:23.859Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "Respawner.cs",
+              "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Core\\Respawner.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\Respawner.cs",
+              "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Core\\Respawner.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Core\\Respawner.cs",
+              "ViewState": "AQIAAB4AAAAAAAAAAAAAAEQAAAANAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-18T22:06:18.684Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "BroadcastLevelStateFunction.cs",
+              "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Effects\\LevelState\\BroadcastLevelStateFunction.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Effects\\LevelState\\BroadcastLevelStateFunction.cs",
+              "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Effects\\LevelState\\BroadcastLevelStateFunction.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Effects\\LevelState\\BroadcastLevelStateFunction.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAACIAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-18T21:58:26.649Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "TriggerFunction.cs",
+              "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Effects\\TriggerFunction.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Effects\\TriggerFunction.cs",
+              "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Effects\\TriggerFunction.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Effects\\TriggerFunction.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAsAAAAFAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-18T21:48:04.166Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "TimedFunction.cs",
+              "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Timing\\TimedFunction.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Timing\\TimedFunction.cs",
+              "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Timing\\TimedFunction.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Timing\\TimedFunction.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-18T21:46:40.07Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "TriggerZone.cs",
+              "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Control\\TriggerZone.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Control\\TriggerZone.cs",
+              "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Control\\TriggerZone.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Control\\TriggerZone.cs",
+              "ViewState": "AQIAAFwAAAAAAAAAAAAwwI8AAAAHAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-18T21:39:29.35Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "LevelCompletion.cs",
+              "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\LevelManagement\\LevelCompletion.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\LevelManagement\\LevelCompletion.cs",
+              "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\LevelManagement\\LevelCompletion.cs",
+              "RelativeToolTip": "Assets\\Scripts\\LevelManagement\\LevelCompletion.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABAAAAABAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-18T21:32:19.987Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ILevelStateListener.cs",
+              "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Core\\ILevelStateListener.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Core\\ILevelStateListener.cs",
+              "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Core\\ILevelStateListener.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Core\\ILevelStateListener.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAAkAAAA9AAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-18T21:27:17.365Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
               "Title": "RumbleController.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Effects\\Rumble\\RumbleController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Effects\\Rumble\\RumbleController.cs",
@@ -82,25 +215,23 @@
               "RelativeToolTip": "Assets\\Scripts\\Effects\\Rumble\\RumbleController.cs",
               "ViewState": "AQIAACcAAAAAAAAAAAAowAAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-18T07:41:49.988Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-18T07:41:49.988Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
+              "DocumentIndex": 10,
               "Title": "Interactable.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Interactables\\Interactable.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Interactables\\Interactable.cs",
               "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Interactables\\Interactable.cs",
               "RelativeToolTip": "Assets\\Scripts\\Interactables\\Interactable.cs",
-              "ViewState": "AQIAAEEAAAAAAAAAAAAwwGAAAAAAAAAA",
+              "ViewState": "AQIAAC8AAAAAAAAAAAAqwGAAAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-18T07:01:07.096Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-18T07:01:07.096Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 13,
               "Title": "AudioDatabase.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Audio\\AudioDatabase.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Audio\\AudioDatabase.cs",
@@ -108,12 +239,11 @@
               "RelativeToolTip": "Assets\\Scripts\\Audio\\AudioDatabase.cs",
               "ViewState": "AQIAAAAAAAAAAAAAAAAAABgAAAAfAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-18T06:12:40.999Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-18T06:12:40.999Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 7,
+              "DocumentIndex": 16,
               "Title": "Globals.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Utils\\Globals.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Utils\\Globals.cs",
@@ -125,7 +255,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 15,
               "Title": "BGMPlayer.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Audio\\BGMPlayer.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Audio\\BGMPlayer.cs",
@@ -137,20 +267,31 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 4,
               "Title": "LaunchPickup.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Interactables\\LaunchPickup.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Interactables\\LaunchPickup.cs",
               "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Interactables\\LaunchPickup.cs",
               "RelativeToolTip": "Assets\\Scripts\\Interactables\\LaunchPickup.cs",
-              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA0AAAAjAAAA",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAABMAAAAnAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-17T20:44:36.22Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-17T20:44:36.22Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 10,
+              "DocumentIndex": 6,
+              "Title": "GetClosestRigidbodyTransformation.cs",
+              "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Transformations\\Hierarchy\\GetClosestRigidbodyTransformation.cs",
+              "RelativeDocumentMoniker": "Assets\\Scripts\\Transformations\\Hierarchy\\GetClosestRigidbodyTransformation.cs",
+              "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Transformations\\Hierarchy\\GetClosestRigidbodyTransformation.cs",
+              "RelativeToolTip": "Assets\\Scripts\\Transformations\\Hierarchy\\GetClosestRigidbodyTransformation.cs",
+              "ViewState": "AQIAAAAAAAAAAAAAAAAAAA4AAAAnAAAA",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2024-04-18T22:35:44.779Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
               "Title": "ProxyAudioSource.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Audio\\ProxyAudioSource.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Audio\\ProxyAudioSource.cs",
@@ -162,20 +303,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 11,
               "Title": "AudioManager.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Audio\\AudioManager.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Audio\\AudioManager.cs",
               "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Audio\\AudioManager.cs",
               "RelativeToolTip": "Assets\\Scripts\\Audio\\AudioManager.cs",
-              "ViewState": "AQIAAJoEAAAAAAAAAAAiwK8EAAAVAAAA",
+              "ViewState": "AQIAAH0EAAAAAAAAAAAnwK4EAAAMAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-17T06:33:30.96Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-17T06:33:30.96Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
+              "DocumentIndex": 17,
               "Title": "CameraController.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Control\\CameraController.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Control\\CameraController.cs",
@@ -187,20 +327,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
+              "DocumentIndex": 12,
               "Title": "Slowmo.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Abilities\\Slowmo.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Abilities\\Slowmo.cs",
               "ToolTip": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Abilities\\Slowmo.cs",
               "RelativeToolTip": "Assets\\Scripts\\Abilities\\Slowmo.cs",
-              "ViewState": "AQIAAKEBAAAAAAAAAAAowIUBAAAmAAAA",
+              "ViewState": "AQIAAOAAAAAAAAAAAAAewAEBAABBAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2024-04-17T06:14:25.993Z",
-              "EditorCaption": ""
+              "WhenOpened": "2024-04-17T06:14:25.993Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 9,
+              "DocumentIndex": 18,
               "Title": "TimeScaler.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Timing\\TimeScaler.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Timing\\TimeScaler.cs",
@@ -212,7 +351,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 21,
               "Title": "TimedFunctionTrigger.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Timing\\TimedFunctionTrigger.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Timing\\TimedFunctionTrigger.cs",
@@ -224,7 +363,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 11,
+              "DocumentIndex": 20,
               "Title": "TimeStopper.cs",
               "DocumentMoniker": "C:\\Users\\macka\\LevelDesign\\Assets\\Scripts\\Timing\\TimeStopper.cs",
               "RelativeDocumentMoniker": "Assets\\Scripts\\Timing\\TimeStopper.cs",

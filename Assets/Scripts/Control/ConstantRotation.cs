@@ -66,13 +66,17 @@ namespace AmalgamGames.Control
 
         #region Triggers
 
-        public void Trigger()
+        public void Trigger(string triggerKey)
         {
-            if(!_isRotating)
+            switch(triggerKey)
             {
-                StartRotating();
+                case Globals.TRIGGER_ROTATION:
+                    StartRotating();
+                    break;
             }
+            
         }
+
 
         #endregion
 
@@ -106,17 +110,20 @@ namespace AmalgamGames.Control
 
         private void StartRotating()
         {
-            if (_startDelay > 0)
+            if (!_isRotating)
             {
-                _startRoutine = StartCoroutine(Tools.delayThenAction(_startDelay, () =>
+                if (_startDelay > 0)
+                {
+                    _startRoutine = StartCoroutine(Tools.delayThenAction(_startDelay, () =>
+                    {
+                        _isRotating = true;
+                        _startRoutine = null;
+                    }));
+                }
+                else
                 {
                     _isRotating = true;
-                    _startRoutine = null;
-                }));
-            }
-            else
-            {
-                _isRotating = true;
+                }
             }
         }
 

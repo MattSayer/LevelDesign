@@ -76,6 +76,15 @@ namespace AmalgamGames.Utils
 
         #endregion
 
+        #region Triggerables
+
+        public const string TRIGGER_ANIMATION = "trigger_animation";
+        public const string TRIGGER_ROTATION = "trigger_rotation";
+        public const string TRIGGER_SPAWNING = "trigger_spawning";
+        public const string TRIGGER_MOVING = "trigger_moving";
+
+        #endregion
+
         #region Miscellaneous
 
         // FPS

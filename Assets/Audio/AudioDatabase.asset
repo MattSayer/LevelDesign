@@ -24,7 +24,7 @@ MonoBehaviour:
     volume: 1
   - audioClipID: slow-time
     clip: {fileID: 8300000, guid: 0f461e885994dc54dbf28b9c30c2c5ce, type: 3}
-    volume: 1
+    volume: 0.5
   - audioClipID: slow-time-reverse
     clip: {fileID: 8300000, guid: fea32ca187b87e545b9034efa921b829, type: 3}
-    volume: 1
+    volume: 0.5

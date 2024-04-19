@@ -60,11 +60,13 @@
     <Compile Include="Assets\QuickOutline\Scripts\Outline.cs" />
     <Compile Include="Assets\Scripts\Transformations\Vectors\AddVectorTransformation.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedBehaviour.cs" />
+    <Compile Include="Assets\Scripts\Core\ILevelStateListener.cs" />
     <Compile Include="Assets\Scripts\Transformations\Combiners\ScreenShakeBurstRequestCombinerTransformation.cs" />
     <Compile Include="Assets\Scripts\Update\ManagedLateBehaviour.cs" />
     <Compile Include="Assets\Scripts\Effects\Particles\ParticleSystemPropertyEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\ScreenShake\ScreenShaker.cs" />
     <Compile Include="Assets\Scripts\Core\SharedIntValue.cs" />
+    <Compile Include="Assets\Scripts\Transformations\Hierarchy\GetClosestRigidbodyTransformation.cs" />
     <Compile Include="Assets\Scripts\Core\Respawner.cs" />
     <Compile Include="Assets\Scripts\Timing\TimeScaler.cs" />
     <Compile Include="Assets\Scripts\Interactables\LaunchPickup.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="Assets\Scripts\Control\CameraController.cs" />
     <Compile Include="Assets\Scripts\Debug\JuiceRefiller.cs" />
     <Compile Include="Assets\Scripts\Audio\ProxyAudioSource.cs" />
+    <Compile Include="Assets\Scripts\Effects\LevelState\BroadcastLevelStateFunction.cs" />
     <Compile Include="Assets\Scripts\Effects\Materials\MaterialPropertyEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\PostProcessing\VignetteEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\ScreenShake\ContinuousScreenShakeEffect.cs" />
@@ -150,6 +153,7 @@
     <Compile Include="Assets\Scripts\Effects\ScreenShake\BurstScreenShakeEffect.cs" />
     <Compile Include="Assets\TutorialInfo\Scripts\Readme.cs" />
     <Compile Include="Assets\Scripts\Scoring\ScoreTracker.cs" />
+    <Compile Include="Assets\Scripts\Effects\TriggerFunction.cs" />
     <Compile Include="Assets\Scripts\Effects\RocketTrajectory.cs" />
     <Compile Include="Assets\Scripts\Interactables\Interactable.cs" />
     <Compile Include="Assets\Scripts\Control\TransformPathFollower.cs" />
@@ -163,6 +167,7 @@
     <Compile Include="Assets\Scripts\Conditionals\FloatConditional.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\Rumble\RocketRumble.cs" />
+    <Compile Include="Assets\Scripts\Effects\LevelState\LevelStateTrigger.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

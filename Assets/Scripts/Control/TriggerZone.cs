@@ -1,6 +1,11 @@
+using AmalgamGames.Conditionals;
 using AmalgamGames.Core;
 using AmalgamGames.Editor;
+using AmalgamGames.Effects;
+using AmalgamGames.Transformation;
+using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -10,36 +15,23 @@ namespace AmalgamGames.Control
     [RequireComponent(typeof(Collider))]
     public class TriggerZone : MonoBehaviour, IRespawnable
     {
-        [Title("Trigger")]
-        [RequireInterface(typeof(ITriggerable))]
-        [SerializeField] private UnityEngine.Object[] _triggerObjects;
+        [Title("Transformations on triggering object")]
+        [SerializeField] private Transformation.Transformation[] _triggerTransformations;
+        [Space]
+        [Title("Conditional trigger functions")]
+        [SerializeField] private ConditionalTriggerFunctions[] _triggerFunctions;
+        [Space]
+        [Title("Conditional triggerables")]
+        [SerializeField] private ConditionalTriggerables[] _triggerables;
         [Space]
         [Title("Settings")]
         [SerializeField] private bool _onlyTriggerOnce = true;
-        [SerializeField] private bool _checkTag = false;
-        [ShowIf("@this._checkTag == true")]
-        [SerializeField] private string _tagToCheck = "";
-        [SerializeField] private float _transformCacheTime = 0.2f;
+        [SerializeField] private float _triggerCacheTime = 0.2f;
         [SerializeField] private bool _resetOnRespawn = true;
-
-        private ITriggerable[] _triggers;
 
         // STATE
         private bool _hasTriggered = false;
-        private List<Transform> _cachedTriggerParents = new List<Transform>();
-
-        #region Lifecycle
-
-        private void Start()
-        {
-            _triggers = new ITriggerable[_triggerObjects.Length];
-            for(int i = 0; i < _triggerObjects.Length; i++)
-            {
-                _triggers[i] = _triggerObjects[i] as ITriggerable;
-            }
-        }
-
-        #endregion
+        private List<object> _cachedTriggerObjects = new List<object>();
 
         #region Respawning
 
@@ -61,7 +53,7 @@ namespace AmalgamGames.Control
             }
 
             StopAllCoroutines();
-            _cachedTriggerParents.Clear();
+            _cachedTriggerObjects.Clear();
         }
 
         #endregion
@@ -72,37 +64,59 @@ namespace AmalgamGames.Control
         {
             bool toTrigger = true;
             
-            if(_checkTag)
+            object targetObject = other.gameObject;
+
+            // Apply transformations
+            foreach(Transformation.Transformation transformation in _triggerTransformations)
             {
-                if(!other.CompareTag(_tagToCheck))
-                {
-                    toTrigger = false;
-                }
+                targetObject = transformation.TransformInput(targetObject);
             }
 
+            // Check whether we've triggered already
             if(_hasTriggered && _onlyTriggerOnce)
             {
                 toTrigger = false;
             }
 
-            Transform colliderParent = other.transform.parent;
-
-            if(_cachedTriggerParents.Contains(colliderParent))
+            if(_cachedTriggerObjects.Contains(targetObject))
             {
                 toTrigger = false;
             }
 
             if (toTrigger)
             {
-                
-                foreach(ITriggerable trigger in _triggers)
+                // Trigger functions
+                foreach(ConditionalTriggerFunctions ctf in _triggerFunctions)
                 {
-                    trigger.Trigger();
+                    bool conditionCheck = Tools.ApplyConditionals(targetObject, ctf.Conditions);
+                    
+                    if(conditionCheck)
+                    {
+                        foreach(TriggerFunction func in ctf.TriggerFunctions)
+                        {
+                            func.RunTriggerFunction(targetObject);
+                        }
+                    }
                 }
+
+                // Triggerables
+                foreach(ConditionalTriggerables ct in _triggerables)
+                {
+                    bool conditionCheck = Tools.ApplyConditionals(targetObject, ct.Conditions);
+
+                    if(conditionCheck)
+                    {
+                        foreach(Triggerable triggerable in ct.Triggerables)
+                        {
+                            triggerable.TriggerObject.Trigger(triggerable.TriggerKey);
+                        }
+                    }
+                }
+
                 _hasTriggered = true;
                 
-                _cachedTriggerParents.Add(colliderParent);
-                StartCoroutine(removeParentFromCache(colliderParent));
+                _cachedTriggerObjects.Add(targetObject);
+                StartCoroutine(removeParentFromCache(targetObject));
             }
         }
 
@@ -110,12 +124,12 @@ namespace AmalgamGames.Control
 
         #region Coroutines
 
-        private IEnumerator removeParentFromCache(Transform parent)
+        private IEnumerator removeParentFromCache(object targetObject)
         {
-            yield return new WaitForSeconds(_transformCacheTime);
-            if(_cachedTriggerParents.Contains(parent))
+            yield return new WaitForSeconds(_triggerCacheTime);
+            if(_cachedTriggerObjects.Contains(targetObject))
             {
-                _cachedTriggerParents.Remove(parent);
+                _cachedTriggerObjects.Remove(targetObject);
             }
         }
 
@@ -123,10 +137,42 @@ namespace AmalgamGames.Control
 
     }
 
+    [Serializable]
+    public class ConditionalTriggerFunctions
+    {
+        [SerializeField] private ConditionalGroup _conditions;
+        [Space]
+        [SerializeField] private TriggerFunction[] _triggerFunctions;
+        
+        public ConditionalGroup Conditions { get { return _conditions; } }    
+        public TriggerFunction[] TriggerFunctions { get { return _triggerFunctions; } } 
+    }
 
+    [Serializable]
+    public class ConditionalTriggerables
+    {
+        [SerializeField] private ConditionalGroup _conditions;
+        [Space]
+        [SerializeField] private Triggerable[] _triggerables;
+        public Triggerable[] Triggerables { get { return _triggerables; } }
+        public ConditionalGroup Conditions { get { return _conditions; } }
+
+    }
+
+    [Serializable]
+    public class Triggerable
+    {
+        [RequireInterface(typeof(ITriggerable))]
+        [SerializeField] private UnityEngine.Object _triggerObject;
+        [Space]
+        [SerializeField] private string _triggerKey;
+
+        public ITriggerable TriggerObject => _triggerObject as ITriggerable;
+        public string TriggerKey => _triggerKey;
+    }
 
     public interface ITriggerable
     {
-        public void Trigger();
+        public void Trigger(string triggerKey);
     }
 }

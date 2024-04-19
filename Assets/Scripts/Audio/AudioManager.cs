@@ -72,6 +72,9 @@ namespace AmalgamGames.Audio
         private bool _isSubscribedToDependencyRequests = false;
         private bool _isSubscribedToPlayerPrefsCache = false;
 
+        // Lookups
+        private Dictionary<string, AudioSource> _activeAudioLookup;
+
         // Spatial audio
         private List<AudioSource> _allSpatialAudioSources;
         private Queue<AudioSource> _spatialAudioSourcePool;
@@ -106,6 +109,11 @@ namespace AmalgamGames.Audio
 
         // Failsafes
         private Dictionary<AudioClip, float> _clipLastPlayed;
+
+        // Constants
+        private const string UI_PREFIX = "ui";
+        private const string SPATIAL_PREFIX = "spatial";
+        private const string MUSIC_PREFIX = "music";
 
         // Audio settings
 
@@ -327,6 +335,9 @@ namespace AmalgamGames.Audio
 
             // Disable the template once it's no longer needed
             _uiTemplate.SetActive(false);
+
+            // Initialise audio request lookup
+            _activeAudioLookup = new Dictionary<string, AudioSource>();
 
         }
 
@@ -566,6 +577,42 @@ namespace AmalgamGames.Audio
 
         #region Utility
 
+        private string GenerateUniqueRequestID(AudioType audioType)
+        {
+            string uniqueID = System.Guid.NewGuid().ToString();
+            string prefix = "";
+            switch(audioType)
+            {
+                case AudioType.Spatial:
+                case AudioType.Flat:
+                    prefix = SPATIAL_PREFIX;
+                    break;
+                case AudioType.UI:
+                    prefix = UI_PREFIX;
+                    break;
+                case AudioType.Music:
+                    prefix = MUSIC_PREFIX;
+                    break;
+            }
+
+            uniqueID = prefix + uniqueID;
+
+            int failsafe = 0;
+            while(_activeAudioLookup.ContainsKey(uniqueID))
+            {
+                uniqueID = prefix + System.Guid.NewGuid().ToString();
+                failsafe++;
+
+                if(failsafe > 10)
+                {
+                    Debug.LogError("Error generating unique audio request ID");
+                    return uniqueID + UnityEngine.Random.Range(0,1000);
+                }
+            }
+
+            return uniqueID;
+        }
+
         public float GetAudioClipVolume(AudioClip clip)
         {
             if(_clipLookup.ContainsKey(clip))
@@ -657,6 +704,18 @@ namespace AmalgamGames.Audio
                     CopyAudioSettings(_uiTemplateSource, audioSource);
                     break;
             }
+
+            // Remove request ID from lookup
+
+            foreach(string id in _activeAudioLookup.Keys)
+            {
+                if (_activeAudioLookup[id] == audioSource)
+                {
+                    _activeAudioLookup.Remove(id);
+                    break;
+                }
+            }
+
         }
 
         private void CopyAudioSettings(AudioSource source, AudioSource destination)
@@ -738,7 +797,7 @@ namespace AmalgamGames.Audio
             if (_spatialAudioSourcePool.Count > 0)
             {
                 // Generate a unique reference ID
-                string uniqueID = System.Guid.NewGuid().ToString();
+                string uniqueID = GenerateUniqueRequestID(AudioType.Spatial);
 
                 // Get audio source from pool
                 AudioSource audioSource = _spatialAudioSourcePool.Dequeue();
@@ -769,7 +828,9 @@ namespace AmalgamGames.Audio
                 audioSource.Play();
 
                 _activeSpatialAudioSources.Add(audioSource);
-                
+
+                _activeAudioLookup[uniqueID] = audioSource;
+
                 return uniqueID;
             }
             else
@@ -783,7 +844,7 @@ namespace AmalgamGames.Audio
             if (_spatialAudioSourcePool.Count > 0)
             {
                 // Generate a unique reference ID
-                string uniqueID = System.Guid.NewGuid().ToString();
+                string uniqueID = GenerateUniqueRequestID(AudioType.Flat);
 
                 // Get audio source from pool
                 AudioSource audioSource = _spatialAudioSourcePool.Dequeue();
@@ -800,6 +861,9 @@ namespace AmalgamGames.Audio
                 audioSource.Play();
 
                 _activeSpatialAudioSources.Add(audioSource);
+
+                _activeAudioLookup[uniqueID] = audioSource;
+
                 return uniqueID;
             }
             else
@@ -814,7 +878,7 @@ namespace AmalgamGames.Audio
             if (_uiAudioSourcePool.Count > 0)
             {
                 // Generate a unique reference ID
-                string uniqueID = System.Guid.NewGuid().ToString();
+                string uniqueID = GenerateUniqueRequestID(AudioType.UI);
 
                 // Get audio source from pool
                 AudioSource audioSource = _uiAudioSourcePool.Dequeue();
@@ -828,6 +892,9 @@ namespace AmalgamGames.Audio
                 audioSource.Play();
 
                 _activeUIAudioSources.Add(audioSource);
+
+                _activeAudioLookup[uniqueID] = audioSource;
+
                 return uniqueID;
             }
             else
@@ -849,7 +916,6 @@ namespace AmalgamGames.Audio
             {
                 return string.Empty;
             }
-
             
             AudioDatabaseEntry entry = _audioDictionary[request.audioClipID];
 
@@ -884,6 +950,28 @@ namespace AmalgamGames.Audio
             }
 
             return string.Empty;
+        }
+
+        public void StopAudioClip(string requestID)
+        {
+            if(_activeAudioLookup.ContainsKey(requestID))
+            {
+                string prefix = requestID.Split('-')[0];
+                AudioType audioType = AudioType.Spatial;
+                switch(prefix)
+                {
+                    case UI_PREFIX:
+                        audioType = AudioType.UI;
+                        break;
+                    case SPATIAL_PREFIX:
+                        audioType = AudioType.Spatial;
+                        break;
+                    case MUSIC_PREFIX:
+                        audioType = AudioType.Music;
+                        break;
+                }
+                StopActiveAudioSource(_activeAudioLookup[requestID], audioType);
+            }
         }
 
         #endregion
@@ -1106,7 +1194,7 @@ namespace AmalgamGames.Audio
 
             // Reduce music volume when time scale is less than 1
             //_musicMultiplier = timeScale == 1 ? 1 : Globals.SLOWMO_MUSIC_VOLUME;
-            //UpdateVolumeSettings();
+            //_musicAudioSource.volume = CalculateVolumeForAudioClip(_musicAudioSource.clip, AudioType.Music);
 
             _musicAudioSource.pitch = timeScale;
 
@@ -1198,6 +1286,7 @@ namespace AmalgamGames.Audio
         public void PlayMusic(string audioClipID);
         public IProxyAudioSource GetProxyAudioSource(AudioProxyRequest request);
         public string PlayAudioClip(AudioPlayRequest request);
+        public void StopAudioClip(string requestID);
     }
 
     [Serializable]
