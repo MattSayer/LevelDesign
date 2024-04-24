@@ -10,12 +10,10 @@ using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.UIElements;
 
 namespace AmalgamGames.Abilities
 {
-    public class Slowmo : MonoBehaviour, IRestartable, IRespawnable, IPausable, ISlowmo
+    public class Slowmo : MonoBehaviour, IRestartable, IRespawnable, IPausable, ISlowmo, ILevelStateListener
     {
         [Title("Events")]
         [FoldoutGroup("Events")][SerializeField] private DynamicEvent[] _cancelEvents;
@@ -26,7 +24,6 @@ namespace AmalgamGames.Abilities
         [SerializeField] private float _timeScaleTransitionTime = 0.5f;
         [Space]
         [Title("Components")]
-        [SerializeField] private Transform _rocketObject;
         [SerializeField] private SharedFloatValue _juice;
         [Space]
         [Title("Audio")]
@@ -36,6 +33,7 @@ namespace AmalgamGames.Abilities
         [Title("Dependencies")]
         [SerializeField] private DependencyRequest _getTimeScaler;
         [SerializeField] private DependencyRequest _getAudioManager;
+        [SerializeField] private DependencyRequest _getInputProcessor;
 
         // EVENTS
         public event Action OnSlowmoStart;
@@ -44,6 +42,8 @@ namespace AmalgamGames.Abilities
         // STATE
         private bool _isSubscribedToEvents = false;
         private bool _isSubscribedToInput = false;
+        
+        private bool _hasLevelStarted = false;
 
         private bool _isActive = false;
         private bool _canActivate = false;
@@ -67,60 +67,10 @@ namespace AmalgamGames.Abilities
         private ITimeScaler _timeScaler;
         private IAudioManager _audioManager;
 
-        // TODO: move to proper classes
-        class LevelConfig
-        {
-            public string LevelID { get; set; }
-            public string LevelName { get; set; }
-            public Image Thumbnail { get; set; }    
-            public int[] StarPointThresholds { get; set; }
-            public float ThresholdTime {  get; set; }
-            public int ThresholdRespawns { get; set; }
-            public int ThresholdLaunches { get; set; }
-            public int MaxJuice {  get; set; }
-            public Scene SceneFile { get; set; }
-
-        }
-
-        class LevelSaveData
-        {
-            public string LevelID { get; set; }
-            public bool HasBeenCompleted { get; set; }
-            public int NumAttempts { get; set; }
-            public LevelCompletionStats LevelCompletionStats { get; set; }
-        }
-
-        class LevelCompletionStats
-        {
-            public int StarCount {  get; set; }
-            public int Score {  get; set; }
-            public float TimeTaken { get; set; }
-            public int BonusPoints { get; set; }
-            public int NumRespawns { get; set; }
-            public int NumLaunches { get; set; }
-            public float JuiceRemaining {  get; set; }
-            public RocketCharacter Character { get; set; }
-        }
-
-        enum RocketCharacter
-        {
-            Heavy,
-            Technical,
-            AllRounder
-        }
-
         #region Lifecycle
 
         private void Start()
         {
-            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketObject);
-            
-            SubscribeToInput();
-            SubscribeToEvents();
-
-            _getTimeScaler.RequestDependency(ReceiveTimeScaler);
-            _getAudioManager.RequestDependency(ReceiveAudioManager);
-
             /*
             LevelConfig testLevel = new LevelConfig() { LevelID = "1", LevelName = "Test" , MaxJuice = 100, StarPointThresholds = new int[] { 1000,2000,3000 }, ThresholdLaunches = 5, ThresholdRespawns = 5, ThresholdTime = 90 };
 
@@ -141,8 +91,11 @@ namespace AmalgamGames.Abilities
        
         private void OnEnable()
         {
-            SubscribeToInput();
-            SubscribeToEvents();
+            if(_hasLevelStarted)
+            {
+                SubscribeToInput();
+                SubscribeToEvents();
+            }
         }
 
         private void OnDisable()
@@ -157,6 +110,31 @@ namespace AmalgamGames.Abilities
             UnsubscribeFromEvents();
         }
 
+        #endregion
+
+        #region Level State
+        
+        public void OnLevelStateChanged(LevelState levelState)
+        {
+            switch(levelState)
+            {
+                case LevelState.Started:
+                    StartLevel();
+                    break;
+            }
+        }
+        
+        private void StartLevel()
+        {
+            SubscribeToEvents();
+
+            _getTimeScaler.RequestDependency(ReceiveTimeScaler);
+            _getAudioManager.RequestDependency(ReceiveAudioManager);
+            _getInputProcessor.RequestDependency(ReceiveInputProcessor);
+            
+            _hasLevelStarted = true;
+        }
+        
         #endregion
 
         #region Respawning/restarting
@@ -437,6 +415,20 @@ namespace AmalgamGames.Abilities
         }
 
         #endregion
+        
+        #region Config
+        
+        public void SetJuiceDrainPerSecond(float newDrain)
+        {
+            _juiceDrainRatePerSecond = newDrain;
+        }
+        
+        public void SetTimeScale(float newTimeScale)
+        {
+            _slowMoTimeScale = newTimeScale;
+        }
+        
+        #endregion
 
         #region Coroutines
 
@@ -463,6 +455,12 @@ namespace AmalgamGames.Abilities
         private void ReceiveAudioManager(object rawObj)
         {
             _audioManager = rawObj as IAudioManager;
+        }
+
+        private void ReceiveInputProcessor(object rawObj)
+        {
+            _inputProcessor = rawObj as IInputProcessor;
+            SubscribeToInput();
         }
 
         #endregion
@@ -521,5 +519,7 @@ namespace AmalgamGames.Abilities
         public void EndSlowmo();
         public void CancelSlowmo();
         public void IgnoreInput(bool ignoreInput);
+        public void SetTimeScale(float newTimeScale);
+        public void SetJuiceDrainPerSecond(float newDrain);
     }
 }

@@ -11,11 +11,14 @@ using AmalgamGames.Config;
 namespace AmalgamGames.Core
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class RocketController : ManagedFixedBehaviour, IRocketController, IPausable, IValueProvider, IRespawnable
+    public class RocketController : ManagedFixedBehaviour, IRocketController, IPausable, IValueProvider, IRespawnable, ILevelStateListener
     {
         [Title("Config")]
         [SerializeField] private RocketConfig _config;
-        
+        [Space]
+        [Title("Dependencies")]
+        [SerializeField] private DependencyRequest _getInputProcessor;
+
         // EVENTS
         public event Action OnChargingStart;
         public event Action<LaunchInfo> OnLaunch;
@@ -36,6 +39,9 @@ namespace AmalgamGames.Core
 
         // Subscriptions
         private bool _isSubscribedToInput = false;
+        
+        // Level state
+        private bool _hasLevelStarted = false;
         
         // Launch
         private bool _canLaunch = true;
@@ -77,11 +83,8 @@ namespace AmalgamGames.Core
         
         private void Start()
         {
-            LoadConfig();
-
-            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(transform.parent);
             _targetOrienter = Tools.GetFirstComponentInHierarchy<ITargetOrienter>(transform.parent);
-            SubscribeToInput();
+            
             _rb = GetComponent<Rigidbody>();
 
             // No gravity on level start, will reactivate on launch
@@ -97,7 +100,10 @@ namespace AmalgamGames.Core
         protected override void OnEnable()
         {
             base.OnEnable();
-            SubscribeToInput();
+            if(_hasLevelStarted)
+            {
+                SubscribeToInput();
+            }
         }
 
         protected override void OnDestroy()
@@ -108,28 +114,45 @@ namespace AmalgamGames.Core
 
         public override void ManagedFixedUpdate(float deltaTime)
         {
-            if(_isBurning)
+            if(_hasLevelStarted)
             {
-                _rb.AddForce(transform.forward * _burnForce * deltaTime, ForceMode.Force);
-            }
+                if(_isBurning)
+                {
+                    _rb.AddForce(transform.forward * _burnForce * deltaTime, ForceMode.Force);
+                }
 
-            // TODO Normalize value based on max velocity
-            OnVelocityChanged?.Invoke(_rb.velocity.magnitude*METRES_SECOND_TO_KILOMETERS_HOUR);
+                // TODO Normalize value based on max velocity
+                OnVelocityChanged?.Invoke(_rb.velocity.magnitude*METRES_SECOND_TO_KILOMETERS_HOUR);
 
-            if(_runDelayedChargeCheck)
-            {
-                _runDelayedChargeCheck = false;
-                CheckDelayedChargeForce();
+                if(_runDelayedChargeCheck)
+                {
+                    _runDelayedChargeCheck = false;
+                    CheckDelayedChargeForce();
+                }
             }
         }
 
-        public void ToggleLaunchAbility(bool toEnable)
+        #endregion
+
+        #region Level state
+
+        public void OnLevelStateChanged(LevelState levelState)
         {
-            _canLaunch = toEnable;
-            if(_canLaunch)
+            switch(levelState)
             {
-                _canLaunchTimestamp = Time.time;
+                case LevelState.Started:
+                    StartLevel();
+                    break;
             }
+        }
+
+        private void StartLevel()
+        {
+            LoadConfig();
+
+            _getInputProcessor.RequestDependency(ReceiveInputProcessor);
+            
+            _hasLevelStarted = true;
         }
 
         #endregion
@@ -144,6 +167,12 @@ namespace AmalgamGames.Core
             _minEngineBurnTime = _config.MinEngineBurnTime;
             _engineBurnTime = _config.EngineBurnTime;
             _engineBurnForce = _config.EngineBurnForce;
+        }
+        
+        public void SetConfig(RocketConfig config)
+        {
+            _config = config;
+            LoadConfig();
         }
 
         #endregion
@@ -447,6 +476,19 @@ namespace AmalgamGames.Core
 
         #endregion
 
+        #region Launching
+
+        public void ToggleLaunchAbility(bool toEnable)
+        {
+            _canLaunch = toEnable;
+            if(_canLaunch)
+            {
+                _canLaunchTimestamp = Time.time;
+            }
+        }
+
+        #endregion
+
         #region Coroutines
 
         /// <summary>
@@ -510,6 +552,16 @@ namespace AmalgamGames.Core
 
         #endregion
 
+        #region Dependencies
+
+        private void ReceiveInputProcessor(object rawObj)
+        {
+            _inputProcessor = rawObj as IInputProcessor;
+            SubscribeToInput();
+        }
+
+        #endregion
+
         #region Input
 
         private void UnsubscribeFromInput()
@@ -568,5 +620,6 @@ namespace AmalgamGames.Core
         public event Action OnBurnComplete;
 
         public void EnableImmediateLaunch();
+        public void SetConfig(RocketConfig config);
     }
 }

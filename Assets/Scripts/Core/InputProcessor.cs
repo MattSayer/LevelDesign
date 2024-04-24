@@ -1,4 +1,6 @@
 using AmalgamGames.Core;
+using AmalgamGames.Timing;
+using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using System;
 using System.Collections;
@@ -10,16 +12,46 @@ namespace AmalgamGames.Core
 {
     public class InputProcessor : MonoBehaviour, IInputProcessor
     {
+        [Title("Dependency provider")]
+        [SerializeField] private DependencyRequest _getInputProcessor;
+
+        // State
+        private bool _isSubscribedToDependencyRequests = false;
+
         #region Public interface
 
         public event Action<Vector2> OnCameraInputChange;
         public event Action<Vector2> OnNudgeInputChange;
         public event Action<float> OnChargeInputChange;
         public event Action<float> OnSlowmoInputChange;
+        public event Action OnConfirm;
         public event Action OnRespawn;
         public event Action OnRestart;
         public event Action OnRefillJuice;
 
+        #endregion
+
+        #region Lifecycle
+
+        private void Awake()
+        {
+            SubscribeToDependencyRequests();
+        }
+
+        private void OnEnable()
+        {
+            SubscribeToDependencyRequests();
+        }
+
+        private void OnDisable()
+        {
+            UnsubscribeFromDependencyRequests();
+        }
+
+        private void OnDestroy()
+        {
+            UnsubscribeFromDependencyRequests();
+        }
 
         #endregion
 
@@ -70,6 +102,41 @@ namespace AmalgamGames.Core
             if(context.phase == InputActionPhase.Started)
             {
                 OnRefillJuice?.Invoke();
+            }
+        }
+
+        public void OnConfirmInput(InputAction.CallbackContext context)
+        {
+            if(context.phase == InputActionPhase.Started)
+            {
+                OnConfirm?.Invoke();
+            }
+        }
+
+        #endregion
+
+        #region Dependency requests
+
+        private void ProvideDependency(Action<object> callback)
+        {
+            callback?.Invoke((IInputProcessor)this);
+        }
+
+        private void SubscribeToDependencyRequests()
+        {
+            if (!_isSubscribedToDependencyRequests)
+            {
+                _getInputProcessor.OnDependencyRequest += ProvideDependency;
+                _isSubscribedToDependencyRequests = true;
+            }
+        }
+
+        private void UnsubscribeFromDependencyRequests()
+        {
+            if (_isSubscribedToDependencyRequests)
+            {
+                _getInputProcessor.OnDependencyRequest -= ProvideDependency;
+                _isSubscribedToDependencyRequests = false;
             }
         }
 

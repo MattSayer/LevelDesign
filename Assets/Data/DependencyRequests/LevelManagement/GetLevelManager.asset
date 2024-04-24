@@ -9,12 +9,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 998630291a6a1f44dab88602b8efb425, type: 3}
-  m_Name: RocketConfig
+  m_Script: {fileID: 11500000, guid: 04c5e0ecb6578894886cdc806c16cade, type: 3}
+  m_Name: GetLevelManager
   m_EditorClassIdentifier: 
-  _chargeDeltaThreshold: 0.1
-  _playerChargeForce: 80
-  _minChargeForce: 70
-  _engineBurnTime: 1.5
-  _minEngineBurnTime: 1
-  _engineBurnForce: 100

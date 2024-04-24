@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Abilities
 {
-    public class Nudge : ManagedFixedBehaviour, IRespawnable, IPausable, INudger, IValueProvider
+    public class Nudge : ManagedFixedBehaviour, IRespawnable, IPausable, INudger, IValueProvider, ILevelStateListener
     {
 
         [Title("Settings")]
@@ -16,12 +16,13 @@ namespace AmalgamGames.Abilities
         [SerializeField] private float _juiceDrainPerSecond = 10f;
         [Space]
         [Title("Components")]
-        [SerializeField] private Transform _rocketTransform;
         [SerializeField] private SharedFloatValue _juice;
         [SerializeField] private Rigidbody _rb;
         [Space]
         [FoldoutGroup("Dynamic Events")][SerializeField] private EventHookup[] _hookupEvents;
-
+        [Space]
+        [Title("Dependencies")]
+        [SerializeField] private DependencyRequest _getInputProcessor;
 
         // Events
         public event Action<object> OnNudgeDirectionChanged;
@@ -33,6 +34,9 @@ namespace AmalgamGames.Abilities
         // Subscriptions
         private bool _isSubscribedToInput = false;
         private bool _isSubscribedToEvents = false;
+
+        // Level state
+        private bool _hasLevelStarted = false;
 
         // Nudging
         private bool _canNudge = false;
@@ -48,19 +52,14 @@ namespace AmalgamGames.Abilities
 
         #region Lifecycle
 
-        private void Start()
-        {
-            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketTransform);
-
-            SubscribeToInput();
-            HookUpEvents();
-        }
-
         protected override void OnEnable()
         {
             base.OnEnable();
-            SubscribeToInput();
-            HookUpEvents();
+            if(_hasLevelStarted)
+            {
+                SubscribeToInput();
+                HookUpEvents();
+            }
         }
 
         protected override void OnDisable()
@@ -92,7 +91,7 @@ namespace AmalgamGames.Abilities
                 OnNudgeDirectionChanged?.Invoke(_nudgeDirection);
 
                 _isNudging = true;
-                Vector3 nudgeForce = (_nudgeDirection.x * _rocketTransform.right) + (_nudgeDirection.y * Vector3.up);
+                Vector3 nudgeForce = (_nudgeDirection.x * transform.right) + (_nudgeDirection.y * Vector3.up);
                 
                 // Max nudge magnitude is 1, since nudgeDirection is already normalised
                 float nudgeMagnitude = nudgeForce.magnitude;
@@ -109,6 +108,29 @@ namespace AmalgamGames.Abilities
             }
         }
 
+        #endregion
+
+        #region Level State
+        
+        public void OnLevelStateChanged(LevelState levelState)
+        {
+            switch(levelState)
+            {
+                case LevelState.Started:
+                    StartLevel();
+                    break;
+            }
+        }
+        
+        private void StartLevel()
+        {
+            _getInputProcessor.RequestDependency(ReceiveInputProcessor);
+
+            HookUpEvents();
+            
+            _hasLevelStarted = true;
+        }
+        
         #endregion
 
         #region Juice
@@ -137,6 +159,20 @@ namespace AmalgamGames.Abilities
             _nudgeDirection = nudgeDelta;
         }
 
+        #endregion
+        
+        #region Config
+        
+        public void SetNudgeDrainPerSecond(float newDrain)
+        {
+            _juiceDrainPerSecond = newDrain;
+        }
+        
+        public void SetNudgeForce(float newForce)
+        {
+            _nudgeForce = newForce;
+        }
+        
         #endregion
 
         #region Charging
@@ -260,11 +296,23 @@ namespace AmalgamGames.Abilities
         }
 
         #endregion
+
+        #region Dependencies
+
+        private void ReceiveInputProcessor(object rawObj)
+        {
+            _inputProcessor = rawObj as IInputProcessor;
+            SubscribeToInput();
+        }
+
+        #endregion
     }
 
     public interface INudger
     {
         public event Action OnNudgeStart;
         public event Action OnNudgeEnd;
+        public void SetNudgeForce(float newForce);
+        public void SetNudgeDrainPerSecond(float newDrain);
     }
 }

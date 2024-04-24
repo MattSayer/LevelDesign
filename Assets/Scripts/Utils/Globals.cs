@@ -23,6 +23,9 @@ namespace AmalgamGames.Utils
         // Countdown events
         public const string COUNTDOWN_CHANGED_KEY = "countdown";
 
+        // Loading screen
+        public const string LOADING_PROGRESS_KEY = "loading_progress";
+
         #endregion
 
         #region Respawning
@@ -43,6 +46,22 @@ namespace AmalgamGames.Utils
         public const float SLOWMO_AUDIO_SCALE = 0.75f;
         public const float SLOWMO_MUSIC_VOLUME = 0.5f;
         public const float PAUSED_MUSIC_VOLUME = 0.5f;
+
+        #endregion
+
+        #region Scenes
+
+        public const string LOADING_SCREEN_SCENE = "LoadingScreen";
+        public const string MAIN_MENU_SCENE = "MainMenu";
+        public const string LEVEL_SELECT_SCENE = "LevelSelect";
+
+        #endregion
+
+        #region UI
+
+        // UI Switcher
+        public const string LEVEL_SELECT_KEY = "level_select";
+        public const string MAIN_MENU_KEY = "main_menu";
 
         #endregion
 
@@ -82,6 +101,8 @@ namespace AmalgamGames.Utils
         public const string TRIGGER_ROTATION = "trigger_rotation";
         public const string TRIGGER_SPAWNING = "trigger_spawning";
         public const string TRIGGER_MOVING = "trigger_moving";
+        public const string TRIGGER_ACTIVATE = "trigger_activate";
+        public const string TRIGGER_DEACTIVATE = "trigger_deactivate";
 
         #endregion
 

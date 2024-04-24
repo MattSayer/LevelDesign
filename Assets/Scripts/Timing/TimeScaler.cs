@@ -37,6 +37,7 @@ namespace AmalgamGames.Timing
             else
             {
                 Destroy(gameObject);
+                return;
             }
 
             SubscribeToDependencyRequests();

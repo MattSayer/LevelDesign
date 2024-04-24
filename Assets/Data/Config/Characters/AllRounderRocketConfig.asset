@@ -9,7 +9,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e4f412f2ff7b2b2479faefc14058d11d, type: 3}
-  m_Name: BroacastLevelState_CompleteSuccess_TriggerFunction
+  m_Script: {fileID: 11500000, guid: 998630291a6a1f44dab88602b8efb425, type: 3}
+  m_Name: AllRounderRocketConfig
   m_EditorClassIdentifier: 
-  _stateToBroadcast: 1
+  _chargeDeltaThreshold: 0.1
+  _playerChargeForce: 80
+  _minChargeForce: 70
+  _engineBurnTime: 1.5
+  _minEngineBurnTime: 1
+  _engineBurnForce: 100

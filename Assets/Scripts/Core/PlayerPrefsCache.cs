@@ -43,6 +43,7 @@ namespace AmalgamGames.Core
             else
             {
                 Destroy(gameObject);
+                return;
             }
 
             SubscribeToDependencyRequests();

@@ -10,8 +10,10 @@ namespace AmalgamGames.DebugTools
     public class JuiceRefiller : MonoBehaviour
     {
         [Title("Components")]
-        [SerializeField] private GameObject _rocketObject;
         [SerializeField] private SharedFloatValue _juice;
+        [Space]
+        [Title("Dependencies")]
+        [SerializeField] private DependencyRequest _getInputProcessor;
 
         // Subscriptions
         private bool _isSubscribedToInput = false;
@@ -23,9 +25,7 @@ namespace AmalgamGames.DebugTools
 
         private void Start()
         {
-            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketObject.transform);
-
-            SubscribeToInput();
+            _getInputProcessor.RequestDependency(ReceiveInputProcessor);
         }
 
         private void OnEnable()
@@ -72,6 +72,16 @@ namespace AmalgamGames.DebugTools
                 _inputProcessor.OnRefillJuice += RefillJuice;
                 _isSubscribedToInput = true;
             }
+        }
+
+        #endregion
+
+        #region Dependencies
+
+        private void ReceiveInputProcessor(object rawObj)
+        {
+            _inputProcessor = rawObj as IInputProcessor;
+            SubscribeToInput();
         }
 
         #endregion

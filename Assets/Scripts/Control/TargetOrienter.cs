@@ -87,6 +87,11 @@ namespace AmalgamGames.Control
 
         #region Rotation
 
+        public void SetRotateSpeed(float rotateSpeed)
+        {
+            _rotateSpeed = rotateSpeed;
+        }
+
         private void ResetSourceToTargetRotation()
         {
             Vector3 targetForward = _targetToOrient.forward;
@@ -152,5 +157,6 @@ namespace AmalgamGames.Control
     {
         public void ToggleMode(OrientMode newMode);
         public void ToggleEnabled(bool toActivate);
+        public void SetRotateSpeed(float rotateSpeed);
     }
 }

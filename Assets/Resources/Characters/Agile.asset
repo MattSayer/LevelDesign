@@ -1,0 +1,29 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a887ae98ca487c245998b5a60eca9455, type: 3}
+  m_Name: Agile
+  m_EditorClassIdentifier: 
+  _character: 0
+  _characterName: Agile
+  _turnSpeed: 30
+  _horizontalCameraSpeed: 350
+  _verticalCameraSpeed: 300
+  _rocketConfig: {fileID: 11400000, guid: d4741eadb9b30b449a571ce69d2fb941, type: 2}
+  _nudgeForce: 4000
+  _nudgeJuiceDrainPerSecond: 10
+  _slowmoTimeScale: 0.2
+  _slowmoJuiceDrainPerSecond: 4
+  _meshPrefab: {fileID: 1492807910840766019, guid: cd3d047b2acb52b4babd4d73a4516539,
+    type: 3}
+  _power: 0
+  _control: 1
+  _technique: 1

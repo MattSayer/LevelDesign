@@ -152,6 +152,7 @@ namespace AmalgamGames.Audio
             else
             {
                 Destroy(gameObject);
+                return;
             }
 
             InitialiseAudioDictionary();

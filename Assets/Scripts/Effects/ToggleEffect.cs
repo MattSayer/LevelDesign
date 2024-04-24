@@ -6,10 +6,11 @@ using AmalgamGames.Utils;
 using AmalgamGames.Conditionals;
 using Technie.PhysicsCreator;
 using AmalgamGames.Core;
+using AmalgamGames.Control;
 
 namespace AmalgamGames.Effects
 {
-    public abstract class ToggleEffect : MonoBehaviour, IRespawnable
+    public abstract class ToggleEffect : MonoBehaviour, IRespawnable, ITriggerable
     {
         [FoldoutGroup("Events")] [SerializeField] private DynamicEventsWithDelay[] _activateEvents;
         [FoldoutGroup("Events")] [SerializeField] private DynamicEventsWithDelay[] _deactivateEvents;
@@ -67,6 +68,23 @@ namespace AmalgamGames.Effects
             {
                 StopCoroutine(_effectRoutine);
                 _effectRoutine = null;
+            }
+        }
+
+        #endregion
+
+        #region Triggerable
+
+        public void Trigger(string triggerKey)
+        {
+            switch(triggerKey)
+            {
+                case Globals.TRIGGER_ACTIVATE:
+                    ActivateEffect();
+                    break;
+                case Globals.TRIGGER_DEACTIVATE:
+                    DeactivateEffect();
+                    break;
             }
         }
 

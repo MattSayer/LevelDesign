@@ -10,7 +10,6 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: e4f412f2ff7b2b2479faefc14058d11d, type: 3}
-  m_Name: BroacastLevelState_CompleteFailure_TriggerFunction
+  m_Name: BroacastLevelState_CompletedUnsuccessfully_TriggerFunction
   m_EditorClassIdentifier: 
-  _stateToBroadcast: 1
-  _successfulCompletion: 0
+  _stateToBroadcast: 3

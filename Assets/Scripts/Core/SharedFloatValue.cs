@@ -190,6 +190,16 @@ namespace AmalgamGames.Core
 
             return true;
         }
+        
+        public void SetMaxValue(float newMaxValue)
+        {
+            _maxValue = newMaxValue;
+        }
+        
+        public void SetMinValue(float newMinValue)
+        {
+            _minValue = newMinValue;
+        }
 
         #endregion
 

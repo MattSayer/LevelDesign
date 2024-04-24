@@ -1,0 +1,25 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 423501db10ef7814b948261fb95dc578, type: 3}
+  m_Name: TestLevel
+  m_EditorClassIdentifier: 
+  _levelID: test-level
+  _levelName: Test level
+  _thumbnail: {fileID: 0}
+  _oneStarThreshold: 1000
+  _twoStarThreshold: 2000
+  _threeStarThreshold: 5000
+  _thresholdTime: 60
+  _thresholdRespawns: 1
+  _thresholdLaunches: 10
+  _maxJuice: 100
+  _sceneName: SampleScene

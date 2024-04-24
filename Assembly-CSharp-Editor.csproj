@@ -1,21 +1,18 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+﻿<Project ToolsVersion="Current" Sdk="Microsoft.NET.Sdk">
   <!-- Generated file, do not modify, your changes will be overwritten (use AssetPostprocessor.OnGeneratedCSProject) -->
   <PropertyGroup>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <EnableDefaultItems>false</EnableDefaultItems>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <LangVersion>9.0</LangVersion>
-  </PropertyGroup>
-  <PropertyGroup>
+    <Configurations>Debug;Release</Configurations>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProductVersion>10.0.20506</ProductVersion>
-    <SchemaVersion>2.0</SchemaVersion>
     <RootNamespace></RootNamespace>
-    <ProjectGuid>{753820C5-36AB-67F7-E080-325DF8EA7F2C}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <AssemblyName>Assembly-CSharp-Editor</AssemblyName>
-    <TargetFrameworkVersion>v4.7.1</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
+    <TargetFramework>netstandard2.1</TargetFramework>
     <BaseDirectory>.</BaseDirectory>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -39,14 +36,13 @@
     <AllowUnsafeBlocks>False</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
-    <NoConfig>true</NoConfig>
+    <NoStandardLibraries>true</NoStandardLibraries>
     <NoStdLib>true</NoStdLib>
-    <AddAdditionalExplicitAssemblyReferences>false</AddAdditionalExplicitAssemblyReferences>
-    <ImplicitlyExpandNETStandardFacades>false</ImplicitlyExpandNETStandardFacades>
-    <ImplicitlyExpandDesignTimeFacades>false</ImplicitlyExpandDesignTimeFacades>
+    <NoConfig>true</NoConfig>
+    <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
+    <MSBuildWarningsAsMessages>MSB3277</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <PropertyGroup>
-    <ProjectTypeGuids>{E097FAD1-6243-4DAD-9C02-E9B9EFC3FFC1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
     <UnityProjectGenerator>Package</UnityProjectGenerator>
     <UnityProjectGeneratorVersion>2.0.21</UnityProjectGeneratorVersion>
     <UnityProjectType>Editor:5</UnityProjectType>
@@ -54,7 +50,7 @@
     <UnityVersion>2021.3.31f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\Extensions\Microsoft\Visual Studio Tools for Unity\Analyzers\Microsoft.Unity.Analyzers.dll" />
+    <Analyzer Include="C:\Users\macka\.vscode\extensions\visualstudiotoolsforunity.vstuc-1.0.1\Analyzers\Microsoft.Unity.Analyzers.dll" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Scripts\Editor\RequireInterfaceDrawer.cs" />
@@ -885,38 +881,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="Assembly-CSharp.csproj">
-      <Project>{6F4463E7-3050-4780-D9CE-1B33995EB729}</Project>
-      <Name>Assembly-CSharp</Name>
-    </ProjectReference>
-    <ProjectReference Include="Sirenix.OdinInspector.Modules.UnityMathematics.csproj">
-      <Project>{F8760440-CAE8-FBC7-F51F-A9A3CF0E7CA5}</Project>
-      <Name>Sirenix.OdinInspector.Modules.UnityMathematics</Name>
-    </ProjectReference>
-    <ProjectReference Include="PathCreatorEditor.csproj">
-      <Project>{E93B410B-CECF-3014-070C-F6BFC47C73DF}</Project>
-      <Name>PathCreatorEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="TechniePhysicsCreatorEditor.csproj">
-      <Project>{BC6A9E54-5CF6-6245-CD10-7858251363B0}</Project>
-      <Name>TechniePhysicsCreatorEditor</Name>
-    </ProjectReference>
-    <ProjectReference Include="TechniePhysicsCreator.csproj">
-      <Project>{1CF66045-339D-037A-5953-155AB51200E9}</Project>
-      <Name>TechniePhysicsCreator</Name>
-    </ProjectReference>
-    <ProjectReference Include="PathCreator.csproj">
-      <Project>{CC3E22C5-8A55-B897-584C-4BB8C7C3BE3C}</Project>
-      <Name>PathCreator</Name>
-    </ProjectReference>
+    <ProjectReference Include="Assembly-CSharp.csproj" />
+    <ProjectReference Include="Sirenix.OdinInspector.Modules.UnityMathematics.csproj" />
+    <ProjectReference Include="PathCreatorEditor.csproj" />
+    <ProjectReference Include="TechniePhysicsCreatorEditor.csproj" />
+    <ProjectReference Include="TechniePhysicsCreator.csproj" />
+    <ProjectReference Include="PathCreator.csproj" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <Target Name="GenerateTargetFrameworkMonikerAttribute" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
 </Project>

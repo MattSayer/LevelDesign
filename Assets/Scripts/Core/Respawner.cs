@@ -11,7 +11,7 @@ using AmalgamGames.Timing;
 namespace AmalgamGames.Core
 {
     [RequireComponent(typeof(Rigidbody))]
-    public class Respawner : MonoBehaviour, IValueProvider
+    public class Respawner : MonoBehaviour, IValueProvider, ILevelStateListener
     {
 
         [Title("Respawning")]
@@ -19,12 +19,14 @@ namespace AmalgamGames.Core
         [Space]
         [Title("Components")]
         [SerializeField] private GameObject _meshObject;
-        [SerializeField] private Transform _rocketTransform;
         [SerializeField] private TriggerProxy _checkpointTrigger;
         [SerializeField] private Countdown _countdown;
         [Space]
         [Title("Spawning")]
         [SerializeField] private Transform _initialSpawnPoint;
+        [Space]
+        [Title("Dependencies")]
+        [SerializeField] private DependencyRequest _getInputProcessor;
 
         // EVENTS
         public event Action<RespawnEventInfo> OnRespawnEvent;
@@ -43,6 +45,9 @@ namespace AmalgamGames.Core
         private bool _canCollide = true;
         private bool _isRespawning = false;
 
+        // Level state
+        private bool _hasLevelStarted = false;
+
         // Tracking
         private Transform _lastCheckpoint;
         private int _numRespawns = 0;
@@ -54,12 +59,6 @@ namespace AmalgamGames.Core
 
         private void Start()
         {
-            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketTransform);
-            SubscribeToInput();
-
-            SubscribeToTrigger();
-            _lastCheckpoint = _initialSpawnPoint;
-
             // Get all respawnables in the level
             _respawnables = new List<IRespawnable>();
             var respawnables = FindObjectsByType<MonoBehaviour>(FindObjectsSortMode.None).OfType<IRespawnable>();
@@ -67,15 +66,16 @@ namespace AmalgamGames.Core
             {
                 _respawnables.Add(respawnable);
             }
-
-            Respawn(true);
         }
 
         private void OnEnable()
         {
-            SubscribeToInput();
+            if(_hasLevelStarted)
+            {
+                SubscribeToInput();
 
-            SubscribeToTrigger();
+                SubscribeToTrigger();
+            }
         }
 
         private void OnDisable()
@@ -88,6 +88,32 @@ namespace AmalgamGames.Core
         {
             UnsubscribeFromInput();
             UnsubscribeFromTrigger();
+        }
+
+        #endregion
+
+        #region Level state
+
+        public void OnLevelStateChanged(LevelState levelState)
+        {
+            switch(levelState)
+            {
+                case LevelState.Started:
+                    StartLevel();
+                    break;
+            }
+        }
+
+        private void StartLevel()
+        {
+            _getInputProcessor.RequestDependency(ReceiveInputProcessor);
+            
+            SubscribeToTrigger();
+            _lastCheckpoint = _initialSpawnPoint;
+
+            Respawn(true);
+            
+            _hasLevelStarted = true;
         }
 
         #endregion
@@ -301,6 +327,16 @@ namespace AmalgamGames.Core
                     OnNumRespawnsChanged -= callback;
                     break;
             }
+        }
+
+        #endregion
+
+        #region Dependencies
+
+        private void ReceiveInputProcessor(object rawObj)
+        {
+            _inputProcessor = rawObj as IInputProcessor;
+            SubscribeToInput();
         }
 
         #endregion

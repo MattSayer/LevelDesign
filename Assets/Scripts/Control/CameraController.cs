@@ -7,11 +7,12 @@ using Sirenix.OdinInspector;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using UnityEngine;
 
 namespace AmalgamGames.Control
 {
-    public class CameraController : ManagedBehaviour, IPausable, IRespawnable, ICameraController
+    public class CameraController : ManagedBehaviour, IPausable, IRespawnable, ICameraController, ILevelStateListener
     {
         [Title("Speed")]
         [SerializeField] private float _horizontalSpeed;
@@ -31,6 +32,10 @@ namespace AmalgamGames.Control
         [SerializeField] private float _chargingCamDistance = 5;
         [SerializeField] private Vector3 _chargeOffset = Vector3.zero;
         [SerializeField] private float _offsetLerpTime = 1;
+        [Title("Orbit camera")]
+        [SerializeField] private float _orbitDistance = 20;
+        [SerializeField] private float _orbitHeight = 5;
+        [SerializeField] private float _orbitRotateSpeed = 90;
         [Space]
         [Title("Damping")]
         [SerializeField] private float _launchDamping = 3;
@@ -38,9 +43,11 @@ namespace AmalgamGames.Control
         [Title("Components")]
         [SerializeField] private Transform _followTarget;
         [SerializeField] private CinemachineVirtualCamera _playerCam;
-        [SerializeField] private GameObject _rocketObject;
         [Space]
         [FoldoutGroup("Dynamic Events")][SerializeField] private EventHookup[] _hookupEvents;
+        [Space]
+        [Title("Dependencies")]
+        [SerializeField] private DependencyRequest _getInputProcessor;
 
 
         // STATE
@@ -64,6 +71,10 @@ namespace AmalgamGames.Control
         private Coroutine _speedLimitRoutine = null;
         private Coroutine _offsetRoutine = null;
         private Coroutine _dampingRoutine = null;
+        private Coroutine _orbitRoutine = null;
+
+        // Level state
+        private bool _hasLevelStarted = false;
 
         // Respawning
         private bool _isActive = true;
@@ -84,20 +95,20 @@ namespace AmalgamGames.Control
 
         private void Start()
         {
-            _inputProcessor = Tools.GetFirstComponentInHierarchy<IInputProcessor>(_rocketObject.transform);
             _bodyTransposer = _playerCam?.GetCinemachineComponent<CinemachineTransposer>();
-
-            SubscribeToInput();
-            HookUpEvents();
-
             _initialForward = transform.forward;
+            
+            StartOrbitingPlayer();
         }
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            SubscribeToInput();
-            HookUpEvents();
+            if(_hasLevelStarted)
+            {
+                SubscribeToInput();
+                HookUpEvents();
+            }
         }
 
         protected override void OnDisable()
@@ -116,7 +127,7 @@ namespace AmalgamGames.Control
 
         public override void ManagedUpdate(float deltaTime)
         {
-            if(_isActive)
+            if(_isActive && _hasLevelStarted)
             {
                 UpdatePosition(Time.unscaledDeltaTime);
                 UpdateCameraRotation(Time.unscaledDeltaTime * _timeScaleSpeedMultiplier.Evaluate(Time.timeScale));
@@ -137,6 +148,54 @@ namespace AmalgamGames.Control
             _isActive = true;
         }
 
+        #endregion
+
+        #region Level State
+        
+        public void OnLevelStateChanged(LevelState levelState)
+        {
+            switch(levelState)
+            {
+                case LevelState.Started:
+                    StartLevel();
+                    break;
+            }
+        }
+        
+        private void StartLevel()
+        {
+            _getInputProcessor.RequestDependency(ReceiveInputProcessor);
+            
+            HookUpEvents();
+            
+            StopOrbitingPlayer();
+            
+            _hasLevelStarted = true;
+        }
+        
+        #endregion
+        
+        #region Orbit cam
+        
+        private void StartOrbitingPlayer()
+        {
+            // Set transposer distance to orbit distance
+            // Start coroutine to rotate transform around Y axis
+            
+            _bodyTransposer.m_FollowOffset = new Vector3(0, _orbitHeight, _orbitDistance);
+            _orbitRoutine = StartCoroutine(rotateAroundPlayer());
+        }
+        
+        private void StopOrbitingPlayer()
+        {
+            // Lerp transposer distance back to normal distance
+            // Lerp transform forward back to initial forward
+            StopCoroutine(_orbitRoutine);
+            _orbitRoutine = null;
+            _bodyTransposer.m_FollowOffset = new Vector3(0, 0, _normalCamDistance);
+            transform.forward = _initialForward;
+        }
+        
         #endregion
 
         #region Respawning
@@ -401,6 +460,16 @@ namespace AmalgamGames.Control
                 _speedLimitRoutine = null;
             }));
         }
+        
+        public void SetHorizontalSpeed(float newSpeed)
+        {
+            _horizontalSpeed = newSpeed;
+        }
+        
+        public void SetVerticalSpeed(float newSpeed)
+        {
+            _verticalSpeed = newSpeed;
+        }
 
         #endregion
 
@@ -435,6 +504,16 @@ namespace AmalgamGames.Control
 
         #endregion
 
+        #region Dependencies
+
+        private void ReceiveInputProcessor(object rawObj)
+        {
+            _inputProcessor = rawObj as IInputProcessor;
+            SubscribeToInput();
+        }
+
+        #endregion
+
         #region Coroutines
 
         private IEnumerator updateCameraDistance(float newDistance)
@@ -456,6 +535,15 @@ namespace AmalgamGames.Control
 
             _zoomRoutine = null;
         }
+        
+        private IEnumerator rotateAroundPlayer()
+        {
+            while(!_hasLevelStarted) 
+            {
+                transform.Rotate(Vector3.up * _orbitRotateSpeed * Time.deltaTime);
+                yield return null;
+            }
+        }
 
         #endregion
     }
@@ -464,5 +552,7 @@ namespace AmalgamGames.Control
     {
         public void RemoveSpeedLimit(bool removeImmediately = false);
         public void ResetRotation();
+        public void SetHorizontalSpeed(float newSpeed);
+        public void SetVerticalSpeed(float newSpeed);
     }
 }
