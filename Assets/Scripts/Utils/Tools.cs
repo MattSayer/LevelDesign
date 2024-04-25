@@ -1,4 +1,6 @@
 using AmalgamGames.Conditionals;
+using AmalgamGames.Config;
+using AmalgamGames.Saving;
 using AmalgamGames.Utils;
 using System;
 using System.Collections;
@@ -88,6 +90,72 @@ namespace AmalgamGames.Utils
 
         #endregion
 
+        #region String formatting
+
+        /// <summary>
+        /// Converts the specified value in seconds to a digital clock display MM:SS:mm
+        /// </summary>
+        /// <param name="seconds"></param>
+        /// <returns></returns>
+        public static string FormatNumberAsClock(float seconds, bool trimLeadingZeroes)
+        {
+            float rawHours = seconds / 3600f;
+            float rawMins = seconds / 60.0f;
+            int justHours = Mathf.FloorToInt(rawHours);
+            int justMins = Mathf.FloorToInt(rawMins);
+            int justSeconds = Mathf.FloorToInt(seconds % 60f);
+
+            float milliseconds = (float)Math.Round(seconds % 1, 2, MidpointRounding.AwayFromZero);
+            // If milliseconds equals 1, then it was rounded up, so display as 0.99 instead since the seconds won't have incremented yet
+            if(milliseconds == 1)
+            {
+                milliseconds = 0.99f;
+            }
+            int justMilliseconds = Mathf.FloorToInt(milliseconds * 100);
+            
+            if(trimLeadingZeroes)
+            {
+                // If hours are greater than 0, show every field
+                if(justHours > 0)
+                {
+                    return String.Format("{0:00}:{1:00}:{2:00}:{3:00}", justHours, justMins, justSeconds, justMilliseconds);
+                }
+                else
+                {
+                    // Can hide hours, now check mins
+                    if(justMins > 0)
+                    {
+                        return String.Format("{0:00}:{1:00}:{2:00}", justMins, justSeconds, justMilliseconds);
+                    }
+                    else
+                    {
+                        // Can hide mins, check seconds
+                        if(justSeconds > 0)
+                        {
+                            return String.Format("{0:00}:{1:00}", justSeconds, justMilliseconds);
+                        }
+                        else
+                        {
+                            // Can hide seconds, check milliseconds
+                            if(justMilliseconds > 0)
+                            {
+                                return String.Format("{0:00}", justMilliseconds);
+                            }
+                            else
+                            {
+                                return String.Empty;
+                            }
+                        }
+                    }
+                }
+            }
+            else
+            {
+                return String.Format("{0:00}:{1:00}:{2:00}:{3:00}", justHours, justMins, justSeconds, justMilliseconds);
+            }
+        }
+
+        #endregion
 
         #region Layers and flags
 
@@ -587,6 +655,23 @@ namespace AmalgamGames.Utils
             action?.Invoke();
         }
 
+        #endregion
+
+        #region Save data
+        
+        public static LevelSaveData GetLevelSaveData(SaveData saveData, string levelID)
+        {
+            foreach(LevelSaveData data in saveData.CompletedLevels)
+            {
+                if(data.LevelID == levelID)
+                {
+                    return data;
+                }
+            }
+            
+            return null;
+        }
+                
         #endregion
 
         #region Property Dictionaries

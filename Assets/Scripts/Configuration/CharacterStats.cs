@@ -32,9 +32,6 @@ namespace AmalgamGames.Config
         [Title("Slowmo")]
         [SerializeField] private float _slowmoTimeScale = 0.1f;
         [SerializeField] private float _slowmoJuiceDrainPerSecond = 5f;
-        [Space]
-        [Title("Mesh")]
-        [SerializeField] private GameObject _meshPrefab;
 
         // Display stats
         [SerializeField] [ReadOnly]
@@ -58,7 +55,6 @@ namespace AmalgamGames.Config
         public float NudgeJuiceDrainPerSecond { get { return _nudgeJuiceDrainPerSecond; } }
         public float SlowmoTimeScale { get { return _slowmoTimeScale; } }
         public float SlowmoJuiceDrainPerSecond { get { return _slowmoJuiceDrainPerSecond; } }
-        public GameObject MeshPrefab { get { return _meshPrefab; } }
 
         public float Power { get { return _power; } }
         public float Control { get { return _control; } }   
@@ -137,6 +133,7 @@ namespace AmalgamGames.Config
                 float burnTimeScore = CalculateScoreForField(character, CharacterStatsFields.BurnTime);
 
                 float powerScore = (launchScore + burnForceScore + burnTimeScore) / 3f;
+                powerScore = (powerScore * 4) + 1;
 
                 character._power = powerScore;
 
@@ -146,6 +143,7 @@ namespace AmalgamGames.Config
                 float verticalTurnScore = CalculateScoreForField(character, CharacterStatsFields.VerticalCameraSpeed);
 
                 float controlScore = (turnSpeedScore + horizontalTurnScore + verticalTurnScore) / 3f;
+                controlScore = (controlScore * 4) + 1;
 
                 character._control = controlScore;
 
@@ -156,6 +154,7 @@ namespace AmalgamGames.Config
                 float slowmoDrainScore = 1 - CalculateScoreForField(character, CharacterStatsFields.SlowmoJuiceDrainPerSecond);
 
                 float techniqueScore = (nudgeForceScore + nudgeDrainScore + slowmoScore + slowmoDrainScore) / 4f;
+                techniqueScore = (techniqueScore * 4) + 1;
 
                 character._technique = techniqueScore;
                 

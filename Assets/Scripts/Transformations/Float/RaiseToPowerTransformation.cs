@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Transformation
 {
-    [CreateAssetMenu(menuName ="Transformations/RaiseToPower", fileName ="RaiseToPowerTransformation")]
+    [CreateAssetMenu(menuName ="Transformations/Numbers/RaiseToPower", fileName ="RaiseToPowerTransformation")]
     public class RaiseToPowerTransformation : Transformation
     {
         [SerializeField] private float _exponent = 1;

@@ -49,7 +49,10 @@ namespace AmalgamGames.Effects
         {
             SubscribeToDependencyRequests();
             _screenShake = _playerCam?.GetCinemachineComponent<CinemachineBasicMultiChannelPerlin>();
-
+        }
+        
+        private void Start() 
+        {
             _getPlayerPrefsCache.RequestDependency(ReceivePlayerPrefsCache);
         }
 

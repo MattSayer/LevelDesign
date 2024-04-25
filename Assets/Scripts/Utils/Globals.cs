@@ -26,6 +26,9 @@ namespace AmalgamGames.Utils
         // Loading screen
         public const string LOADING_PROGRESS_KEY = "loading_progress";
 
+        // Timer
+        public const string TIMER_CHANGED_KEY = "timer";
+        
         #endregion
 
         #region Respawning

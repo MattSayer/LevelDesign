@@ -83,15 +83,7 @@ namespace AmalgamGames.Control
         {
             if (_moveOnStart && _pathInitialised)
             {
-                if (_activationRoutine == null)
-                {
-                    _activationRoutine = StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
-                    {
-                        _isActive = true;
-                        StartMoving();
-                        _activationRoutine = null;
-                    }));
-                }
+                Activate();
             }
         }
 
@@ -179,17 +171,9 @@ namespace AmalgamGames.Control
 
         private void CheckMoveOnStart()
         {
-            if (_moveOnStart && _activationRoutine == null)
+            if (_moveOnStart)
             {
-                if (_activationRoutine == null)
-                {
-                    _activationRoutine = StartCoroutine(Tools.delayThenAction(_activationDelay, () =>
-                    {
-                        _isActive = true;
-                        StartMoving();
-                        _activationRoutine = null;
-                    }));
-                }
+                Activate();
             }
         }
 

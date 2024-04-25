@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Transformation
 {
-    [CreateAssetMenu(menuName ="Transformations/VectorMultiplication", fileName ="VectorMultiplyTransformation")]
+    [CreateAssetMenu(menuName ="Transformations/Vector/VectorMultiplication", fileName ="VectorMultiplyTransformation")]
     public class VectorMultiplyTransformation : Transformation
     {
         [Title("Vector")]

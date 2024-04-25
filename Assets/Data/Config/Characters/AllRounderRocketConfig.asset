@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: AllRounderRocketConfig
   m_EditorClassIdentifier: 
   _chargeDeltaThreshold: 0.1
-  _playerChargeForce: 80
-  _minChargeForce: 70
+  _playerChargeForce: 100
+  _minChargeForce: 80
   _engineBurnTime: 1.5
   _minEngineBurnTime: 1
   _engineBurnForce: 100

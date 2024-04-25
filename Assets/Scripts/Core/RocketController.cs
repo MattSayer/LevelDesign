@@ -152,6 +152,8 @@ namespace AmalgamGames.Core
 
             _getInputProcessor.RequestDependency(ReceiveInputProcessor);
             
+            ResetRocket();
+            
             _hasLevelStarted = true;
         }
 
@@ -190,6 +192,7 @@ namespace AmalgamGames.Core
                     ResetRocket();
                     break;
                 case RespawnEvent.OnRespawnEnd:
+                case RespawnEvent.OnInitialSpawnEnded:
                     RestartRocket();
                     break;
             }

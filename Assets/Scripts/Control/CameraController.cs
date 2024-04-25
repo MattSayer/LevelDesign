@@ -182,7 +182,7 @@ namespace AmalgamGames.Control
             // Set transposer distance to orbit distance
             // Start coroutine to rotate transform around Y axis
             
-            _bodyTransposer.m_FollowOffset = new Vector3(0, _orbitHeight, _orbitDistance);
+            _bodyTransposer.m_FollowOffset = new Vector3(0, _orbitHeight, -_orbitDistance);
             _orbitRoutine = StartCoroutine(rotateAroundPlayer());
         }
         
@@ -192,8 +192,8 @@ namespace AmalgamGames.Control
             // Lerp transform forward back to initial forward
             StopCoroutine(_orbitRoutine);
             _orbitRoutine = null;
-            _bodyTransposer.m_FollowOffset = new Vector3(0, 0, _normalCamDistance);
-            transform.forward = _initialForward;
+            _bodyTransposer.m_FollowOffset = new Vector3(0, 0, -_normalCamDistance);
+            transform.forward = _followTarget.forward;
         }
         
         #endregion

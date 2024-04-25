@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Transformation
 {
-    [CreateAssetMenu(menuName ="Transformations/IsolateVectorComponent", fileName ="IsolateVectorComponentTransformation")]
+    [CreateAssetMenu(menuName ="Transformations/Extractors/IsolateVectorComponent", fileName ="IsolateVectorComponentTransformation")]
     public class IsolateVectorComponentTransformation : Transformation
     {
         [SerializeField] private VectorComponent _vectorComponent;

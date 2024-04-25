@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Transformation
 {
-    [CreateAssetMenu(menuName = "Transformations/AddVector", fileName ="AddVectorTransformation")]
+    [CreateAssetMenu(menuName = "Transformations/Vector/AddVector", fileName ="AddVectorTransformation")]
     public class AddVectorTransformation : Transformation
     {
         [SerializeField] private Vector3 _vectorToAdd = Vector3.zero;

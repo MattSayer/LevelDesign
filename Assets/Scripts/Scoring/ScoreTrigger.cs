@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Interactables
 {
-    public class ScoreTrigger : Interactable, IRespawnable
+    public class ScoreTrigger : Interactable
     {
         [Title("Score")]
         [SerializeField] private int _scoreValue;

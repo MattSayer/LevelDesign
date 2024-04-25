@@ -18,12 +18,10 @@ MonoBehaviour:
   _horizontalCameraSpeed: 250
   _verticalCameraSpeed: 200
   _rocketConfig: {fileID: 11400000, guid: 3f644a3298c3bca43b96c69b923519cb, type: 2}
-  _nudgeForce: 2000
+  _nudgeForce: 1000
   _nudgeJuiceDrainPerSecond: 10
   _slowmoTimeScale: 0.1
   _slowmoJuiceDrainPerSecond: 5
-  _meshPrefab: {fileID: 1492807910840766019, guid: cd3d047b2acb52b4babd4d73a4516539,
-    type: 3}
-  _power: NaN
-  _control: 0
-  _technique: NaN
+  _power: 3.6666667
+  _control: 1
+  _technique: 1

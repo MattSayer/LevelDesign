@@ -31,6 +31,7 @@ namespace AmalgamGames.Control
             {
                 _targetRB.freezeRotation = true;
             }
+            ResetSourceToTargetRotation();
         }
 
         public override void ManagedUpdate(float deltaTime)

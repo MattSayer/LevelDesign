@@ -111,7 +111,9 @@ namespace AmalgamGames.Core
             SubscribeToTrigger();
             _lastCheckpoint = _initialSpawnPoint;
 
-            Respawn(true);
+            //Respawn(true);
+            
+            StartCountdown();
             
             _hasLevelStarted = true;
         }
@@ -128,15 +130,12 @@ namespace AmalgamGames.Core
             }
         }
 
-        private void Respawn(bool isFirstRespawn = false)
+        private void Respawn()
         {
             _isRespawning = true;
-
-            if (!isFirstRespawn)
-            {
-                _numRespawns++;
-                OnNumRespawnsChanged?.Invoke(_numRespawns);
-            }
+            
+            _numRespawns++;
+            OnNumRespawnsChanged?.Invoke(_numRespawns);
 
             foreach (IRespawnable respawnable in _respawnables)
             {
@@ -159,26 +158,9 @@ namespace AmalgamGames.Core
             OnRespawnEvent?.Invoke(new RespawnEventInfo(RespawnEvent.OnRespawnStart));
 
             // Fade screen back up
-
-            if(isFirstRespawn)
-            {
-                // Countdown
-
-                _countdown.OnCountdownFinished += OnCountdownFinished;
-                _countdown.StartCountdown(Globals.COUNTDOWN_DURATION);
-            }
-            else
-            {
-                FinishRespawning();
-            }
-        }
-
-        private void OnCountdownFinished()
-        {
-            _countdown.OnCountdownFinished -= OnCountdownFinished;
-
             FinishRespawning();
         }
+        
 
         private void FinishRespawning()
         {
@@ -192,6 +174,30 @@ namespace AmalgamGames.Core
             _isRespawning = false;
         }
 
+        #endregion
+
+        #region Countdown
+        
+        private void StartCountdown()
+        {
+            // Countdown
+
+                _countdown.OnCountdownFinished += OnCountdownFinished;
+                _countdown.StartCountdown(Globals.COUNTDOWN_DURATION);
+        }
+
+        private void OnCountdownFinished()
+        {
+            _countdown.OnCountdownFinished -= OnCountdownFinished;
+
+            foreach(IRespawnable respawnable in _respawnables)
+            {
+                respawnable.OnRespawnEvent(RespawnEvent.OnInitialSpawnEnded);
+            }
+            
+            OnRespawnEvent?.Invoke(new RespawnEventInfo(RespawnEvent.OnInitialSpawnEnded));
+        }
+        
         #endregion
 
         #region Input

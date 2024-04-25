@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using AmalgamGames.Abilities;
@@ -14,7 +15,7 @@ namespace AmalgamGames.LevelManagement
     public class LevelInitialiser : MonoBehaviour
     {
         [Title("Components")]
-        [SerializeField] private Transform _meshContainer;
+        [SerializeField] private CharacterModel[] _characters;
         [RequireInterface(typeof(IRocketController))]
         [SerializeField] private UnityEngine.Object _rocketControllerObj;
         [SerializeField] private SharedFloatValue _juice;
@@ -76,7 +77,17 @@ namespace AmalgamGames.LevelManagement
             _slowmo.SetJuiceDrainPerSecond(characterStats.SlowmoJuiceDrainPerSecond);
             
             // Mesh
-            GameObject meshObj = Instantiate(characterStats.MeshPrefab,_meshContainer);
+            foreach(CharacterModel model in _characters)
+            {
+                if(model.Character == characterStats.Character)
+                {
+                    model.Model.SetActive(true);
+                }
+                else
+                {
+                    model.Model.SetActive(false);
+                }
+            }
         }
 
         #endregion
@@ -90,5 +101,12 @@ namespace AmalgamGames.LevelManagement
         }
 
         #endregion
+        
+        [Serializable]
+        private class CharacterModel 
+        {
+            public RocketCharacter Character;
+            public GameObject Model;
+        }
     }
 }

@@ -22,6 +22,9 @@ namespace AmalgamGames.LevelManagement
         [Space]
         [Title("Dependencies")]
         [SerializeField] private DependencyRequest _getInputProcessor;
+        [Space]
+        [Title("Debug")]
+        [SerializeField] private RocketCharacter _testCharacter = RocketCharacter.AllRounder;
 
         // Singleton
         private static LevelManager _instance;
@@ -44,6 +47,8 @@ namespace AmalgamGames.LevelManagement
         // Public accessors
         public LevelConfig CurrentLevelConfig { get { return _currentLevelConfig; } }
         public CharacterStats CurrentCharacterStats { get { return _currentCharacterStats; } }
+        public LevelHierarchyConfig LevelHierarchyConfig { get { return _levelHierarchyConfig; } }
+        public int CurrentThemeIndex { get { return _currentThemeIndex; } }
 
         // Dependency state
         private bool _isSubscribedToDependencyRequests = false;
@@ -87,7 +92,9 @@ namespace AmalgamGames.LevelManagement
                 {
                     if(level.SceneName == currentSceneName)
                     {
+                        _currentLevelConfig = level;
                         InitialiseLevel(level);
+                        _currentCharacterStats = CharacterStats.GetCharacterStats(_testCharacter);
                         return;
                     }
                 }
@@ -187,13 +194,16 @@ namespace AmalgamGames.LevelManagement
 
             _inputProcessor = GameObject.FindObjectOfType<InputProcessor>();
 
-            _inputProcessor.OnConfirm += StartLevel;
+            //_inputProcessor.OnConfirm += StartLevel;
+            _inputProcessor.OnAny += StartLevel;
+            _inputProcessor.SubscribeToAnyButtonPress();
 
         }
 
         private void StartLevel()
         {
-            _inputProcessor.OnConfirm -= StartLevel;
+            //_inputProcessor.OnConfirm -= StartLevel;
+            _inputProcessor.OnAny -= StartLevel;
 
             // Get all ILevelStateListeners and update them that level has started
 
@@ -261,6 +271,8 @@ namespace AmalgamGames.LevelManagement
     {
         public LevelConfig CurrentLevelConfig {get; }
         public CharacterStats CurrentCharacterStats { get; }
+        public LevelHierarchyConfig LevelHierarchyConfig { get; }
+        public int CurrentThemeIndex { get; }
         
         /// <summary>
         /// Loads the next level in sequence, based on the current active Level

@@ -7,6 +7,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Utilities;
 
 namespace AmalgamGames.Core
 {
@@ -17,6 +18,7 @@ namespace AmalgamGames.Core
 
         // State
         private bool _isSubscribedToDependencyRequests = false;
+        private bool _isSubscribedToAnyButtonPress = false;
 
         #region Public interface
 
@@ -25,6 +27,7 @@ namespace AmalgamGames.Core
         public event Action<float> OnChargeInputChange;
         public event Action<float> OnSlowmoInputChange;
         public event Action OnConfirm;
+        public event Action OnAny;
         public event Action OnRespawn;
         public event Action OnRestart;
         public event Action OnRefillJuice;
@@ -112,7 +115,26 @@ namespace AmalgamGames.Core
                 OnConfirm?.Invoke();
             }
         }
+        
+        public void OnAnyInput(InputControl control)
+        {
+            OnAny?.Invoke();
+            _isSubscribedToAnyButtonPress = false;
+        }
 
+        #endregion
+
+        #region Subscriptions
+        
+        public void SubscribeToAnyButtonPress()
+        {
+            if(!_isSubscribedToAnyButtonPress)
+            {
+                InputSystem.onAnyButtonPress.CallOnce(ctrl => OnAnyInput(ctrl));
+                _isSubscribedToAnyButtonPress = true;
+            }
+        }
+        
         #endregion
 
         #region Dependency requests

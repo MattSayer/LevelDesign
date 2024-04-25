@@ -11,7 +11,8 @@ namespace AmalgamGames.Core
         OnRespawnStart,
         OnRespawnEnd,
         BeforeRespawn,
-        OnCheckpoint
+        OnCheckpoint,
+        OnInitialSpawnEnded
     }
 
     public class RespawnEventInfo

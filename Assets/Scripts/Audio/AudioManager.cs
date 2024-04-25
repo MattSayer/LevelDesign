@@ -351,7 +351,8 @@ namespace AmalgamGames.Audio
             switch(evt)
             {
                 case RespawnEvent.OnRespawnStart:
-                    StopAllActiveAudio();
+                    // Should we stop all active audio on respawning?
+                    //StopAllActiveAudio();
                     break;
             }
         }

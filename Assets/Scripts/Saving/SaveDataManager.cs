@@ -226,5 +226,6 @@ namespace AmalgamGames.Saving
         public void CreateNewSave(int slot);
         public LevelSaveData GetLevelSaveData(string levelID);
         public SaveSlotSummary[] GetSaveSlotSummary();
+        public SaveData CurrentSaveData { get; }
     }
 }

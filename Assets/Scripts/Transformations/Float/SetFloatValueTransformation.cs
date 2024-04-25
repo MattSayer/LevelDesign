@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 namespace AmalgamGames.Transformation
 {
-    [CreateAssetMenu(menuName ="Transformations/SetFloatValue", fileName ="SetFloatValueTransformation")]
+    [CreateAssetMenu(menuName ="Transformations/Numbers/SetFloatValue", fileName ="SetFloatValueTransformation")]
     public class SetFloatValueTransformation : Transformation
     {
         [Title("Fixed value")]

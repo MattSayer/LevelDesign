@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Transformation
 {
-    [CreateAssetMenu(menuName = "Transformations/GetClosestRigidbody", fileName = "GetClosestRigidbody_Transformation")]
+    [CreateAssetMenu(menuName = "Transformations/Hierarchy/GetClosestRigidbody", fileName = "GetClosestRigidbody_Transformation")]
     public class GetClosestRigidbodyTransformation : Transformation
     {
         public override object TransformInput(object input)

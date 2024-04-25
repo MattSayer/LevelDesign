@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Transformation
 {
-    [CreateAssetMenu(menuName = "Transformations/ColourIntensity", fileName = "ColourIntensity_Transformation")]
+    [CreateAssetMenu(menuName = "Transformations/Colour/ColourIntensity", fileName = "ColourIntensity_Transformation")]
     public class ColourIntensityTransformation : Transformation
     {
         [SerializeField] private Color _colour;

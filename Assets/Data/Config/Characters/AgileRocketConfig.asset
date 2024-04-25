@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: AgileRocketConfig
   m_EditorClassIdentifier: 
   _chargeDeltaThreshold: 0.1
-  _playerChargeForce: 60
-  _minChargeForce: 40
-  _engineBurnTime: 1
-  _minEngineBurnTime: 0.75
-  _engineBurnForce: 50
+  _playerChargeForce: 80
+  _minChargeForce: 70
+  _engineBurnTime: 1.5
+  _minEngineBurnTime: 1
+  _engineBurnForce: 80

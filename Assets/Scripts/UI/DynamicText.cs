@@ -3,6 +3,7 @@ using AmalgamGames.Core;
 using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
+using AmalgamGames.Transformation;
 
 namespace AmalgamGames.UI
 {
@@ -13,10 +14,8 @@ namespace AmalgamGames.UI
         [SerializeField] private UnityEngine.Object valueProvider;
         [SerializeField] private string _valueKey;
         [Space]
-        [Title("Settings")]
-        [SerializeField] private ConversionType _convertTo;
-        [SerializeField] private string _formatString;
-        [Space]
+        [Title("Transformation")]
+        [SerializeField] private ConditionalTransformation[] _transformations;
         [Title("UI")]
         [SerializeField] private TMPro.TextMeshProUGUI _text;
 
@@ -59,25 +58,14 @@ namespace AmalgamGames.UI
 
         private void OnValueChanged(object value)
         {
-            string finalString = "";
+            object finalValue = value;
 
-            switch(_convertTo)
+            foreach(ConditionalTransformation transformation in _transformations)
             {
-                case ConversionType.Date:
-                    finalString = _formatString.Length > 0 ? string.Format(_formatString, (DateTime)value) : ((DateTime)value).ToString();
-                    break;
-                case ConversionType.String:
-                    finalString = _formatString.Length > 0 ? string.Format(_formatString, value.ToString()) : value.ToString();
-                    break;
-                case ConversionType.Integer:
-                    finalString = _formatString.Length > 0 ? string.Format(_formatString, (int)value) : ((int)value).ToString();
-                    break;
-                case ConversionType.Float:
-                    finalString = _formatString.Length > 0 ? string.Format(_formatString, (float)value) : ((float)value).ToString();
-                    break;
+                finalValue = transformation.TransformObject(finalValue);
             }
-
-            _text.text = finalString;
+            
+            _text.text = Convert.ToString(finalValue);
         }
 
         #endregion

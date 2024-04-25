@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace AmalgamGames.Transformation
 {
-    [CreateAssetMenu(menuName ="Transformations/Normalize", fileName ="NormalizeTransformation")]
+    [CreateAssetMenu(menuName ="Transformations/Vector/Normalize", fileName ="NormalizeTransformation")]
     public class NormalizeTransformation : Transformation
     {
         public override object TransformInput(object input)
