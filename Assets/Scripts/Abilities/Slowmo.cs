@@ -5,6 +5,7 @@ using AmalgamGames.Audio;
 using AmalgamGames.Conditionals;
 using AmalgamGames.Core;
 using AmalgamGames.Effects;
+using AmalgamGames.Input;
 using AmalgamGames.Timing;
 using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
@@ -471,7 +472,7 @@ namespace AmalgamGames.Abilities
         {
             if (_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnSlowmoInputChange -= OnSlowmoInputChange;
+                _inputProcessor.OnSlowmoInput -= OnSlowmoInputChange;
                 _isSubscribedToInput = false;
             }
         }
@@ -480,7 +481,7 @@ namespace AmalgamGames.Abilities
         {
             if (!_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnSlowmoInputChange += OnSlowmoInputChange;
+                _inputProcessor.OnSlowmoInput += OnSlowmoInputChange;
                 _isSubscribedToInput = true;
             }
         }

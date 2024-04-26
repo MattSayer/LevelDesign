@@ -5,4 +5,12 @@ namespace AmalgamGames.Helpers.Classes
         Increment,
         Decrement
     }
+    
+    public enum FlatDirection
+    {
+        Up,
+        Down,
+        Left,
+        Right
+    }
 }

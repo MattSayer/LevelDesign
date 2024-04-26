@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
+using AmalgamGames.Input;
 
 namespace AmalgamGames.DebugTools
 {

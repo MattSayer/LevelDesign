@@ -1,5 +1,6 @@
 using AmalgamGames.Core;
 using AmalgamGames.Effects;
+using AmalgamGames.Input;
 using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Cinemachine;
@@ -359,7 +360,7 @@ namespace AmalgamGames.Control
         {
             if (_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnCameraInputChange -= OnCameraInput;
+                _inputProcessor.OnCameraInput -= OnCameraInput;
                 _isSubscribedToInput = false;
             }
         }
@@ -368,7 +369,7 @@ namespace AmalgamGames.Control
         {
             if (!_isSubscribedToInput && _inputProcessor != null)
             { 
-                _inputProcessor.OnCameraInputChange += OnCameraInput;
+                _inputProcessor.OnCameraInput += OnCameraInput;
                 _isSubscribedToInput = true;
             }
         }

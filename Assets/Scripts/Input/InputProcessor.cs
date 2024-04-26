@@ -9,7 +9,7 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.Utilities;
 
-namespace AmalgamGames.Core
+namespace AmalgamGames.Input
 {
     public class InputProcessor : MonoBehaviour, IInputProcessor
     {
@@ -22,14 +22,14 @@ namespace AmalgamGames.Core
 
         #region Public interface
 
-        public event Action<Vector2> OnCameraInputChange;
-        public event Action<Vector2> OnNudgeInputChange;
-        public event Action<float> OnChargeInputChange;
-        public event Action<float> OnSlowmoInputChange;
-        public event Action OnConfirm;
-        public event Action OnAny;
-        public event Action OnRespawn;
-        public event Action OnRestart;
+        public event Action<Vector2> OnCameraInput;
+        public event Action<Vector2> OnNudgeInput;
+        public event Action<float> OnChargeInput;
+        public event Action<float> OnSlowmoInput;
+        public event Action OnConfirmInput;
+        public event Action OnAnyInput;
+        public event Action OnRespawnInput;
+        public event Action OnRestartInput;
         public event Action OnRefillJuice;
 
         #endregion
@@ -60,43 +60,43 @@ namespace AmalgamGames.Core
 
         #region Input events
 
-        public void OnCameraInput(InputAction.CallbackContext context)
+        public void OnCameraInputChange(InputAction.CallbackContext context)
         {
             Vector2 rawInput = context.ReadValue<Vector2>();
-            OnCameraInputChange?.Invoke(rawInput);
+            OnCameraInput?.Invoke(rawInput);
         }
 
-        public void OnSlowmoInput(InputAction.CallbackContext context)
+        public void OnSlowmoInputChange(InputAction.CallbackContext context)
         {
             float rawInput = context.ReadValue<float>();
-            OnSlowmoInputChange?.Invoke(rawInput);
+            OnSlowmoInput?.Invoke(rawInput);
         }
 
-        public void OnChargeInput(InputAction.CallbackContext context)
+        public void OnChargeInputChange(InputAction.CallbackContext context)
         {
             float rawInput = context.ReadValue<float>();
-            OnChargeInputChange?.Invoke(rawInput);
+            OnChargeInput?.Invoke(rawInput);
         }
 
-        public void OnRespawnInput(InputAction.CallbackContext context)
+        public void OnRespawnInputChange(InputAction.CallbackContext context)
         {
             if (context.phase == InputActionPhase.Started)
             {
-                OnRespawn?.Invoke();
+                OnRespawnInput?.Invoke();
             }
         }
 
-        public void OnNudgeInput(InputAction.CallbackContext context)
+        public void OnNudgeInputChange(InputAction.CallbackContext context)
         {
             Vector2 rawInput = context.ReadValue<Vector2>();
-            OnNudgeInputChange?.Invoke(rawInput);
+            OnNudgeInput?.Invoke(rawInput);
         }
 
-        public void OnRestartInput(InputAction.CallbackContext context)
+        public void OnRestartInputChange(InputAction.CallbackContext context)
         {
             if(context.phase == InputActionPhase.Started)
             {
-                OnRestart?.Invoke();
+                OnRestartInput?.Invoke();
             }
         }
 
@@ -108,17 +108,17 @@ namespace AmalgamGames.Core
             }
         }
 
-        public void OnConfirmInput(InputAction.CallbackContext context)
+        public void OnConfirmInputChange(InputAction.CallbackContext context)
         {
             if(context.phase == InputActionPhase.Started)
             {
-                OnConfirm?.Invoke();
+                OnConfirmInput?.Invoke();
             }
         }
         
-        public void OnAnyInput(InputControl control)
+        public void OnAnyInputChange(InputControl control)
         {
-            OnAny?.Invoke();
+            OnAnyInput?.Invoke();
             _isSubscribedToAnyButtonPress = false;
         }
 
@@ -130,7 +130,7 @@ namespace AmalgamGames.Core
         {
             if(!_isSubscribedToAnyButtonPress)
             {
-                InputSystem.onAnyButtonPress.CallOnce(ctrl => OnAnyInput(ctrl));
+                InputSystem.onAnyButtonPress.CallOnce(ctrl => OnAnyInputChange(ctrl));
                 _isSubscribedToAnyButtonPress = true;
             }
         }
@@ -168,12 +168,12 @@ namespace AmalgamGames.Core
 
     public interface IInputProcessor
     {
-        public event Action<Vector2> OnCameraInputChange;
-        public event Action<Vector2> OnNudgeInputChange;
-        public event Action<float> OnSlowmoInputChange;
-        public event Action<float> OnChargeInputChange;
-        public event Action OnRespawn;
-        public event Action OnRestart;
+        public event Action<Vector2> OnCameraInput;
+        public event Action<Vector2> OnNudgeInput;
+        public event Action<float> OnSlowmoInput;
+        public event Action<float> OnChargeInput;
+        public event Action OnRespawnInput;
+        public event Action OnRestartInput;
         public event Action OnRefillJuice;
     }
 }

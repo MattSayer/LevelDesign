@@ -7,6 +7,7 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using System;
 using AmalgamGames.Timing;
+using AmalgamGames.Input;
 
 namespace AmalgamGames.Core
 {
@@ -206,7 +207,7 @@ namespace AmalgamGames.Core
         {
             if (_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnRespawn -= OnRespawnInput;
+                _inputProcessor.OnRespawnInput -= OnRespawnInput;
                 _isSubscribedToInput = false;
             }
         }
@@ -215,7 +216,7 @@ namespace AmalgamGames.Core
         {
             if (!_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnRespawn += OnRespawnInput;
+                _inputProcessor.OnRespawnInput += OnRespawnInput;
                 _isSubscribedToInput = true;
             }
         }

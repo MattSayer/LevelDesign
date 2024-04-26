@@ -3,7 +3,10 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AmalgamGames.Config;
+using AmalgamGames.Control;
+using AmalgamGames.Effects;
 using AmalgamGames.Helpers.Classes;
+using AmalgamGames.Input;
 using AmalgamGames.Saving;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
@@ -16,17 +19,21 @@ namespace AmalgamGames.LevelManagement
         [Title("Dependencies")]
         [SerializeField] private DependencyRequest _getLevelManager;
         [SerializeField] private DependencyRequest _getSaveDataManager;
-        [SerializeField] private DependencyRequest _getUISwitcher;
+        [SerializeField] private DependencyRequest _getObjectSwitcher;
+        [SerializeField] private DependencyRequest _getUIInputProcessor;
         
         // Events
-        public event Action OnThemeChanged;
+        public event Action<bool> OnThemeChanged;
         public event Action<object[]> OnLevelSelected;
         
         // Components
         private ILevelManager _levelManager;
         private ISaveDataManager _saveDataManager;
+        private IObjectSwitcher _objectSwitcher;
+        private IUIInputProcessor _uiInputProcessor;
         
         // State
+        private bool _isSubscribedToInput = false;
         private int _currentThemeIndex = 0;
         private ThemeConfig _currentTheme;
         private SaveData _currentSaveData;
@@ -36,10 +43,30 @@ namespace AmalgamGames.LevelManagement
         public SaveData CurrentSaveData { get { return _currentSaveData; } }
         
         #region Lifecycle
+
+        private void OnEnable()
+        {
+            SubscribeToInput();
+        }
+        
+        private void OnDisable() 
+        {
+            UnsubscribeFromInput();
+        }
+        
+        private void OnDestroy()
+        {
+            UnsubscribeFromInput();
+        }
         
         private void Start()
         {
             StartDependencyRequestChain();
+            
+            // ObjectSwitcher and UIInputProcessor are not required for initialisation, so we can request
+            // the dependencies separately
+            _getObjectSwitcher.RequestDependency(ReceiveObjectSwitcher);
+            _getUIInputProcessor.RequestDependency(ReceiveUIInputProcessor);
         }
         
         #endregion
@@ -49,12 +76,42 @@ namespace AmalgamGames.LevelManagement
         private void InitialiseMenu()
         {
             // Default current theme to the last theme played
-            _currentThemeIndex = _saveDataManager.CurrentSaveData.LastThemePlayed;
+            _currentSaveData = _saveDataManager.CurrentSaveData;
+            _currentThemeIndex = _currentSaveData.LastThemePlayed;
             _currentTheme = _levelManager.LevelHierarchyConfig.Themes[_currentThemeIndex];
             _levelManager.ChangeCurrentTheme(_currentThemeIndex);
             
-            OnThemeChanged?.Invoke();
+            OnThemeChanged?.Invoke(false);
             
+            // Check whether player has unlocked a new theme since LevelSelect was last loaded
+            if(_currentSaveData.HasNewTheme)
+            {
+                // Play unlock animation for new theme
+                // New theme is last in array with unlocked star requirement
+                
+                int totalStarsUnlocked = _currentSaveData.TotalStarsUnlocked;
+                
+                ThemeConfig latestConfig = _currentTheme;
+                int latestThemeIndex = _currentThemeIndex;
+                for(int i = _currentThemeIndex + 1; i < _levelManager.LevelHierarchyConfig.Themes.Length; i++)
+                {
+                    ThemeConfig thisConfig = _levelManager.LevelHierarchyConfig.Themes[i];
+                    if(totalStarsUnlocked >= thisConfig.StarRequirement)
+                    {
+                        latestConfig = thisConfig;
+                        latestThemeIndex = i;
+                    }
+                }
+                
+                _currentThemeIndex = latestThemeIndex;
+                _currentTheme = latestConfig;
+                _levelManager.ChangeCurrentTheme(_currentThemeIndex);
+                
+                OnThemeChanged?.Invoke(true);
+                
+                // reset to false
+                _currentSaveData.HasNewTheme = false;
+            }
             
         }
         
@@ -90,25 +147,72 @@ namespace AmalgamGames.LevelManagement
             
             _currentTheme = _levelManager.LevelHierarchyConfig.Themes[_currentThemeIndex];
             
-            OnThemeChanged?.Invoke();
+            OnThemeChanged?.Invoke(false);
         }
         
         #endregion
         
-        #region Levels
+        #region Input
         
-        public void SelectLevel(LevelConfig levelConfig, LevelSaveData levelSaveData)
+        private void OnBackInput()
+        {
+            _levelManager.LoadScene(Globals.MAIN_MENU_SCENE);
+        }
+        
+        #endregion
+        
+        #region Level selection
+        
+        public void SelectLevel(int levelIndex, LevelConfig levelConfig, LevelSaveData levelSaveData)
         {
             // Provide selected level data for data providers
             OnLevelSelected?.Invoke(new object[] {levelConfig, levelSaveData});
             
-            // Switch to Level Details panel
+            // Set selected level and level index on LevelManager, for use if 
+            // player clicks the Play button
+            _levelManager.SetSelectedLevel(levelConfig);
+            _levelManager.UpdateCurrentLevelIndex(levelIndex);
             
+            // Switch to Level Details panel
+            _objectSwitcher.SwitchTo(Globals.LEVEL_DETAILS_PANEL);
+        }
+        
+        #endregion
+        
+        #region Subscriptions
+        
+        private void UnsubscribeFromInput()
+        {
+            if (_isSubscribedToInput && _uiInputProcessor != null)
+            {
+                _uiInputProcessor.OnBackInput -= OnBackInput;
+                _isSubscribedToInput = false;
+            }
+        }
+
+        private void SubscribeToInput()
+        {
+            if (!_isSubscribedToInput && _uiInputProcessor != null)
+            {
+                _uiInputProcessor.OnBackInput += OnBackInput;
+                _isSubscribedToInput = true;
+            }
         }
         
         #endregion
         
         #region Dependencies
+        
+        private void ReceiveObjectSwitcher(object rawObj)
+        {
+            _objectSwitcher = rawObj as IObjectSwitcher;
+        }
+        
+        private void ReceiveUIInputProcessor(object rawObj)
+        {
+            _uiInputProcessor = rawObj as IUIInputProcessor;
+            SubscribeToInput();
+        }
         
         private void StartDependencyRequestChain()
         {

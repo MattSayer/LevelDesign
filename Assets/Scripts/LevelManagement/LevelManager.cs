@@ -8,6 +8,7 @@ using UnityEngine;
 using AmalgamGames.Config;
 using UnityEngine.SceneManagement;
 using AmalgamGames.Core;
+using AmalgamGames.Input;
 
 namespace AmalgamGames.LevelManagement
 {
@@ -195,7 +196,7 @@ namespace AmalgamGames.LevelManagement
             _inputProcessor = GameObject.FindObjectOfType<InputProcessor>();
 
             //_inputProcessor.OnConfirm += StartLevel;
-            _inputProcessor.OnAny += StartLevel;
+            _inputProcessor.OnAnyInput += StartLevel;
             _inputProcessor.SubscribeToAnyButtonPress();
 
         }
@@ -203,7 +204,7 @@ namespace AmalgamGames.LevelManagement
         private void StartLevel()
         {
             //_inputProcessor.OnConfirm -= StartLevel;
-            _inputProcessor.OnAny -= StartLevel;
+            _inputProcessor.OnAnyInput -= StartLevel;
 
             // Get all ILevelStateListeners and update them that level has started
 

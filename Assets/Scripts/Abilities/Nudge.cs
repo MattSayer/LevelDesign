@@ -1,4 +1,5 @@
 using AmalgamGames.Core;
+using AmalgamGames.Input;
 using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
@@ -262,7 +263,7 @@ namespace AmalgamGames.Abilities
         {
             if (_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnNudgeInputChange -= OnNudge;
+                _inputProcessor.OnNudgeInput -= OnNudge;
                 _isSubscribedToInput = false;
             }
         }
@@ -271,7 +272,7 @@ namespace AmalgamGames.Abilities
         {
             if (!_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnNudgeInputChange += OnNudge;
+                _inputProcessor.OnNudgeInput += OnNudge;
                 _isSubscribedToInput = true;
             }
         }

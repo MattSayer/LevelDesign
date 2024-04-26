@@ -62,9 +62,10 @@ namespace AmalgamGames.Utils
 
         #region UI
 
-        // UI Switcher
-        public const string LEVEL_SELECT_KEY = "level_select";
-        public const string MAIN_MENU_KEY = "main_menu";
+        // UI Panels
+        public const string LEVEL_SELECT_PANEL = "LevelSelect";
+        public const string LEVEL_DETAILS_PANEL = "LevelDetails";
+        public const string MAIN_MENU_PANEL = "MainMenu";
 
         #endregion
 

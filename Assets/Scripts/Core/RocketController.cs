@@ -7,6 +7,7 @@ using UnityEngine;
 using AmalgamGames.Utils;
 using AmalgamGames.UI;
 using AmalgamGames.Config;
+using AmalgamGames.Input;
 
 namespace AmalgamGames.Core
 {
@@ -571,7 +572,7 @@ namespace AmalgamGames.Core
         {
             if (_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnChargeInputChange -= OnChargeInputChange;
+                _inputProcessor.OnChargeInput -= OnChargeInputChange;
                 _isSubscribedToInput = false;
             }
         }
@@ -580,7 +581,7 @@ namespace AmalgamGames.Core
         {
             if (!_isSubscribedToInput && _inputProcessor != null)
             {
-                _inputProcessor.OnChargeInputChange += OnChargeInputChange;
+                _inputProcessor.OnChargeInput += OnChargeInputChange;
                 _isSubscribedToInput = true;
             }
         }
