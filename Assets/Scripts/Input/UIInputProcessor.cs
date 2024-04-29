@@ -77,7 +77,7 @@ namespace AmalgamGames.Input
             {
                 float inputVal = context.ReadValue<float>();
                 
-                OnTabInput?.Invoke(inputVal > 0 ? FlatDirection.Right : FlatDirection.Left);
+                OnLeftRightInput?.Invoke(inputVal > 0 ? FlatDirection.Right : FlatDirection.Left);
             }
         }
         

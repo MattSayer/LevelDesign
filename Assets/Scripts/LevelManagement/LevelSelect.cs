@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Xml.Serialization;
 using AmalgamGames.Config;
 using AmalgamGames.Control;
 using AmalgamGames.Effects;
@@ -154,9 +155,22 @@ namespace AmalgamGames.LevelManagement
         
         #region Input
         
-        private void OnBackInput()
+        public void BackToMainMenu()
         {
             _levelManager.LoadScene(Globals.MAIN_MENU_SCENE);
+        }
+        
+        private void ChangeTheme(FlatDirection direction)
+        {
+            switch(direction)
+            {
+                case FlatDirection.Left:
+                    ChangeTheme(TallyOperation.Decrement);
+                    break;
+                case FlatDirection.Right:
+                    ChangeTheme(TallyOperation.Increment);
+                    break;
+            }
         }
         
         #endregion
@@ -185,7 +199,8 @@ namespace AmalgamGames.LevelManagement
         {
             if (_isSubscribedToInput && _uiInputProcessor != null)
             {
-                _uiInputProcessor.OnBackInput -= OnBackInput;
+                _uiInputProcessor.OnBackInput -= BackToMainMenu;
+                _uiInputProcessor.OnLeftRightInput -= ChangeTheme;
                 _isSubscribedToInput = false;
             }
         }
@@ -194,7 +209,8 @@ namespace AmalgamGames.LevelManagement
         {
             if (!_isSubscribedToInput && _uiInputProcessor != null)
             {
-                _uiInputProcessor.OnBackInput += OnBackInput;
+                _uiInputProcessor.OnBackInput += BackToMainMenu;
+                _uiInputProcessor.OnLeftRightInput += ChangeTheme;
                 _isSubscribedToInput = true;
             }
         }

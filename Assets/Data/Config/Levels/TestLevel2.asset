@@ -10,11 +10,11 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 423501db10ef7814b948261fb95dc578, type: 3}
-  m_Name: TestLevel
+  m_Name: TestLevel2
   m_EditorClassIdentifier: 
-  _levelID: test-level
-  _levelName: Test level
-  _thumbnail: {fileID: 21300000, guid: 37f5831bdd6405343b31af4e735580ff, type: 3}
+  _levelID: test-level-2
+  _levelName: Test level 2
+  _thumbnail: {fileID: 21300000, guid: e1c1bcc458eb08042a2949fa48e1f18e, type: 3}
   _oneStarThreshold: 1000
   _twoStarThreshold: 2000
   _threeStarThreshold: 5000

@@ -8,6 +8,8 @@ using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
+using AmalgamGames.Helpers.Classes;
+using TMPro;
 
 namespace AmalgamGames.UI
 {
@@ -22,6 +24,13 @@ namespace AmalgamGames.UI
         [Space]
         [Title("Containers")]
         [SerializeField] private RectTransform _themeContainer;
+        [Space]
+        [Title("Buttons")]
+        [SerializeField] private Button _previousThemeButton;
+        [SerializeField] private Button _nextThemeButton;
+        [Space]
+        [Title("Text")]
+        [SerializeField] private TextMeshProUGUI _themeTitle;
         
         
         #region Lifecycle
@@ -29,6 +38,12 @@ namespace AmalgamGames.UI
         private void Awake() 
         {
             _levelSelect.OnThemeChanged += OnThemeChanged;
+        }
+        
+        private void Start()
+        {
+            _previousThemeButton.onClick.AddListener(() => _levelSelect.ChangeTheme(TallyOperation.Decrement));
+            _nextThemeButton.onClick.AddListener(() => _levelSelect.ChangeTheme(TallyOperation.Increment));
         }
         
         #endregion
@@ -44,14 +59,17 @@ namespace AmalgamGames.UI
             // Clear existing content
             for(int i = 0; i < _themeContainer.childCount; i++)
             {
-                Destroy(_themeContainer.GetChild(i));
+                Destroy(_themeContainer.GetChild(i).gameObject);
             }
+            
+            // Update title
+            _themeTitle.text = currentTheme.Name;
             
             bool isThemeUnlocked = saveData.TotalStarsUnlocked >= currentTheme.StarRequirement;
             
             if(!isThemeUnlocked)
             {
-                GameObject lockObject = Instantiate(_lockPrefab);
+                GameObject lockObject = Instantiate(_lockPrefab, _themeContainer);
                 DataProvider lockProvider = lockObject.GetComponent<DataProvider>();
                 
                 lockProvider.ProvideData(new object[] { currentTheme });

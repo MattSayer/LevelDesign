@@ -1,19 +1,17 @@
-using AmalgamGames.Editor;
+using System.Collections;
+using System.Collections.Generic;
+using System.Net.NetworkInformation;
 using AmalgamGames.Core;
+using AmalgamGames.Editor;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
-namespace AmalgamGames.UI
+namespace AmalgamGames
 {
-    public class DynamicFilledImage : MonoBehaviour
+    public class DynamicImage : MonoBehaviour
     {
-        [Title("Expected values")]
-        [SerializeField] private float _inputMin = 0;
-        [SerializeField] private float _inputMax = 100;
-        [PropertyRange("_inputMin", "_inputMax")]
-        [SerializeField] private float _defaultValue = 100;
-        [Space]
+        
         [Title("Target")]
         [RequireInterface(typeof(IValueProvider))]
         [SerializeField] private UnityEngine.Object valueProvider;
@@ -24,25 +22,10 @@ namespace AmalgamGames.UI
 
         // STATE
         private bool _isSubscribed = false;
-        private float _inputRange;
-
-        private int FILL_PROP = Shader.PropertyToID("_Fill");
-
-        private Material _imageMaterial;
-
         private IValueProvider _valueProvider => valueProvider as IValueProvider;
 
 
         #region Lifecycle
-
-        private void Awake()
-        {
-            _inputRange = _inputMax - _inputMin;
-            // Create new instance of material so property changes aren't shared
-            _imageMaterial = Instantiate(_image.material);
-            _image.material = _imageMaterial;
-            _imageMaterial.SetFloat(FILL_PROP, _defaultValue);
-        }
 
         private void OnEnable()
         {
@@ -65,13 +48,9 @@ namespace AmalgamGames.UI
 
         private void OnValueChanged(object rawValue)
         {
-            if(rawValue.GetType() == typeof(float))
+            if(rawValue.GetType() == typeof(Sprite))
             {
-                float floatVal = (float)rawValue;
-
-                float normalizedVal = ((floatVal - _inputMin) / _inputRange);
-
-                _imageMaterial.SetFloat(FILL_PROP, normalizedVal);
+                _image.sprite = (Sprite)rawValue;
             }
         }
 
@@ -98,6 +77,5 @@ namespace AmalgamGames.UI
         }
 
         #endregion
-
     }
 }

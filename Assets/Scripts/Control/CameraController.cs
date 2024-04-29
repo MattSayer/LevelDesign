@@ -64,7 +64,6 @@ namespace AmalgamGames.Control
 
         // Subscriptions
         private bool _isSubscribedToInput = false;
-        private bool _isSubscribedToCharging = false;
         private bool _isSubscribedToEvents = false;
 
         // Coroutines

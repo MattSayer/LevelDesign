@@ -18,3 +18,8 @@ MonoBehaviour:
     _colourScheme: {r: 0.5754717, g: 0.09500711, b: 0.09500711, a: 1}
     _levels:
     - {fileID: 11400000, guid: c23c589ae2fffc943804457a4ded5d44, type: 2}
+  - _name: Action
+    _starRequirement: 7
+    _colourScheme: {r: 0.8773585, g: 0.8475563, b: 0.086908154, a: 1}
+    _levels:
+    - {fileID: 11400000, guid: 3f2ee54076f19fd40b2ca0eeca5219ca, type: 2}

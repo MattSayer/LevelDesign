@@ -76,10 +76,12 @@
     <Compile Include="Assets\Scripts\UI\DynamicText.cs" />
     <Compile Include="Assets\Scripts\LevelManagement\LevelInitialiser.cs" />
     <Compile Include="Assets\Scripts\Utils\Globals.cs" />
+    <Compile Include="Assets\Scripts\UI\DynamicImage.cs" />
     <Compile Include="Assets\Scripts\Effects\DynamicEventsEffect.cs" />
     <Compile Include="Assets\Scripts\Configuration\LevelHierarchyConfig.cs" />
     <Compile Include="Assets\Scripts\Audio\AudioDatabase.cs" />
     <Compile Include="Assets\Scripts\Abilities\Nudge.cs" />
+    <Compile Include="Assets\Scripts\Input\UIInputProcessor.cs" />
     <Compile Include="Assets\Scripts\UI\DynamicFilledImage.cs" />
     <Compile Include="Assets\Scripts\Effects\Rumble\RumbleController.cs" />
     <Compile Include="Assets\Scripts\Core\IRestartable.cs" />
@@ -87,6 +89,7 @@
     <Compile Include="Assets\Scripts\Control\TriggerZone.cs" />
     <Compile Include="Assets\Scripts\Transformations\StringFormatters\NumberToStringTransformation.cs" />
     <Compile Include="Assets\Scripts\Helpers\HelperClasses.cs" />
+    <Compile Include="Assets\Scripts\UI\PopupHelper.cs" />
     <Compile Include="Assets\Scripts\Transformations\Transformation.cs" />
     <Compile Include="Assets\Scripts\Timing\TimedFunctionTrigger.cs" />
     <Compile Include="Assets\Scripts\Scoring\ScoreTrigger.cs" />
@@ -183,7 +186,6 @@
     <Compile Include="Assets\Scripts\Saving\SaveSystem.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\Rumble\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Input\UIInputProcessor.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

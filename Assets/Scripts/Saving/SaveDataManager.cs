@@ -29,8 +29,17 @@ namespace AmalgamGames.Saving
         private SaveData _currentSaveData;
         private GlobalSaveData _globalSaveData;
 
-        public SaveData CurrentSaveData { get { return _currentSaveData; } }
-
+        public SaveData CurrentSaveData 
+        { 
+            get 
+            { 
+                if(_currentSaveData == null)
+                {
+                    _currentSaveData = new SaveData();
+                }
+                return _currentSaveData;
+            } 
+        }
 
 
         #region Lifecycle
@@ -57,6 +66,8 @@ namespace AmalgamGames.Saving
         private void OnDestroy()
         {
             SaveGlobalData();
+            
+            SaveCurrentSlotData();
         }
 
         #endregion
@@ -76,16 +87,11 @@ namespace AmalgamGames.Saving
 
         public void SaveToFile()
         {
-            // Update the total time played
-            float timeSinceLastSave = Time.time - _timeOnLoad;
-            _currentSaveData.TotalTimePlayed += timeSinceLastSave;
-            _timeOnLoad = Time.time;
-
             // Flatten current save data object into dictionary
             //Dictionary<string, object> flattenedDictionary = Tools.GetPropertyDictionary(new object[] { _currentSaveData });
 
-            // Write dictionary out to save file
-            SaveSystem.SaveFile(GetSaveFileFromSlot(_currentSaveSlot),_currentSaveData);
+            // Write data out to save file
+            SaveCurrentSlotData();
         }
 
         public void LoadSaveSlot(int slot)
@@ -151,6 +157,17 @@ namespace AmalgamGames.Saving
             return _globalSaveData.MostRecentSaveSlot;
         }
 
+        private void SaveCurrentSlotData()
+        {
+            // Update the total time played
+            float timeSinceLastSave = Time.time - _timeOnLoad;
+            _currentSaveData.TotalTimePlayed += timeSinceLastSave;
+            _timeOnLoad = Time.time;
+            
+            // Write data out to disk
+            SaveSystem.SaveFile(GetSaveFileFromSlot(_currentSaveSlot),_currentSaveData);
+        }
+
         private void SaveGlobalData()
         {
             _globalSaveData.MostRecentSaveSlot = _currentSaveSlot;
@@ -160,6 +177,11 @@ namespace AmalgamGames.Saving
         private void LoadGlobalSaveData()
         {
             _globalSaveData = (GlobalSaveData)SaveSystem.LoadFile(GLOBAL_SAVE_FILE);
+            if(_globalSaveData == null)
+            {
+                _globalSaveData = new GlobalSaveData();
+                _globalSaveData.MostRecentSaveSlot = 0;
+            }
         }
 
         #endregion

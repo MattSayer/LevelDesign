@@ -87,6 +87,7 @@ namespace AmalgamGames.Saving
         }
     }
 
+    [Serializable]
     public class GlobalSaveData
     {
         public int MostRecentSaveSlot { get; set; }

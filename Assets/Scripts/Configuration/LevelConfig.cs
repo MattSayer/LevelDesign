@@ -13,7 +13,7 @@ namespace AmalgamGames.Config
         [Title("Details")]
         [SerializeField] private string _levelID;
         [SerializeField] private string _levelName;
-        [SerializeField] private Image _thumbnail;
+        [SerializeField] private Sprite _thumbnail;
         [Space]
         [Title("Points Thresholds")]
         [SerializeField] private int _oneStarThreshold;
@@ -34,7 +34,7 @@ namespace AmalgamGames.Config
         // Public accessors
         public string LevelID { get { return _levelID; } }
         public string LevelName { get { return _levelName; } }
-        public Image Thumbnail { get { return _thumbnail; } }
+        public Sprite Thumbnail { get { return _thumbnail; } }
         public int OneStarPointsThreshold {  get { return _oneStarThreshold; } }
         public int TwoStarPointsThreshold { get { return _twoStarThreshold; } }
         public int ThreeStarPointsThreshold { get { return _threeStarThreshold; } }

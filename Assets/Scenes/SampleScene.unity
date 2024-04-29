@@ -11323,6 +11323,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inputMin: 0
   _inputMax: 1
+  _defaultValue: 100
   valueProvider: {fileID: 1180817167}
   _valueKey: charge_level
   _image: {fileID: 605060665}
@@ -32500,8 +32501,8 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1180817160}
-        m_TargetAssemblyTypeName: AmalgamGames.Control.InputProcessor, Assembly-CSharp
-        m_MethodName: OnCameraInput
+        m_TargetAssemblyTypeName: AmalgamGames.Input.InputProcessor, Assembly-CSharp
+        m_MethodName: OnCameraInputChange
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -32516,8 +32517,8 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1180817160}
-        m_TargetAssemblyTypeName: AmalgamGames.Core.InputProcessor, Assembly-CSharp
-        m_MethodName: OnChargeInput
+        m_TargetAssemblyTypeName: AmalgamGames.Input.InputProcessor, Assembly-CSharp
+        m_MethodName: OnChargeInputChange
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -32532,8 +32533,8 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1180817160}
-        m_TargetAssemblyTypeName: AmalgamGames.Core.InputProcessor, Assembly-CSharp
-        m_MethodName: OnSlowmoInput
+        m_TargetAssemblyTypeName: AmalgamGames.Input.InputProcessor, Assembly-CSharp
+        m_MethodName: OnSlowmoInputChange
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -32548,8 +32549,8 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1180817160}
-        m_TargetAssemblyTypeName: AmalgamGames.Core.InputProcessor, Assembly-CSharp
-        m_MethodName: OnRespawnInput
+        m_TargetAssemblyTypeName: AmalgamGames.Input.InputProcessor, Assembly-CSharp
+        m_MethodName: OnRespawnInputChange
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -32564,8 +32565,8 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1180817160}
-        m_TargetAssemblyTypeName: AmalgamGames.Core.InputProcessor, Assembly-CSharp
-        m_MethodName: OnNudgeInput
+        m_TargetAssemblyTypeName: AmalgamGames.Input.InputProcessor, Assembly-CSharp
+        m_MethodName: OnNudgeInputChange
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -32600,8 +32601,8 @@ MonoBehaviour:
   - m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 1180817160}
-        m_TargetAssemblyTypeName: AmalgamGames.Core.InputProcessor, Assembly-CSharp
-        m_MethodName: OnConfirmInput
+        m_TargetAssemblyTypeName: AmalgamGames.Input.InputProcessor, Assembly-CSharp
+        m_MethodName: OnConfirmInputChange
         m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -37898,6 +37899,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _inputMin: 0
   _inputMax: 100
+  _defaultValue: 100
   valueProvider: {fileID: 1895693083}
   _valueKey: juice_level
   _image: {fileID: 1429476583}
@@ -53791,7 +53793,7 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2022211158}
-  m_LocalRotation: {x: 0.30604526, y: -0.00000026433096, z: 0.00000008497457, w: 0.952017}
+  m_LocalRotation: {x: 0.30604526, y: -0.00000021799917, z: 0.00000007008027, w: 0.952017}
   m_LocalPosition: {x: 0.0000015199207, y: 2.5, z: 0.8999939}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0

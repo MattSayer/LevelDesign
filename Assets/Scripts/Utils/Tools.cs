@@ -5,9 +5,12 @@ using AmalgamGames.Utils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using System.Reflection.Emit;
+using UnityEditor;
 using UnityEditor.Experimental.GraphView;
+using UnityEditor.SearchService;
 using UnityEngine;
 
 namespace AmalgamGames.Utils
@@ -705,8 +708,13 @@ namespace AmalgamGames.Utils
             {
                 return;
             }
-
+            
             visitedObjects.Add(obj);
+            
+            if(IsUnityType(obj))
+            {
+                return;
+            }
 
             foreach (PropertyInfo prop in obj.GetType().GetProperties(BindingFlags.Public | BindingFlags.Instance))
             {
@@ -763,8 +771,17 @@ namespace AmalgamGames.Utils
             return obj.GetType().IsPrimitive || obj is string || obj is decimal;
         }
 
-        #endregion
+        private static bool IsUnityType(object obj)
+        {
+            Type[] unityTypes = new Type[] { typeof(Sprite) };
+            
+            Type type = obj.GetType();
+            
+            return unityTypes.Contains(type);
+        }
 
+        #endregion
+        
 
     }
 
