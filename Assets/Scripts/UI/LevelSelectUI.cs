@@ -10,6 +10,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using AmalgamGames.Helpers.Classes;
 using TMPro;
+using AmalgamGames.Menus;
 
 namespace AmalgamGames.UI
 {

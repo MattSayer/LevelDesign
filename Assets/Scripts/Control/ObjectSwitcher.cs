@@ -4,18 +4,23 @@ using System.Collections.Generic;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace AmalgamGames.Control
 {
     public class ObjectSwitcher : MonoBehaviour, IObjectSwitcher
     {
+        [Title("Switch history")]
+        [SerializeField] private UnityEvent _noHistoryAction;
+        [Space]
         [Title("Dependency provider")]
         [SerializeField] private DependencyRequest _getObjectSwitcher;
         
         // State
         private bool _isSubscribedToDependencyRequests = false;
+        private Stack<string> _switchHistory = new Stack<string>();
         
-        private Dictionary<string, GameObject> _panels = new Dictionary<string, GameObject>();
+        private Dictionary<string, GameObject> _objects = new Dictionary<string, GameObject>();
 
         #region Lifecycle
         
@@ -23,7 +28,7 @@ namespace AmalgamGames.Control
         {
             foreach(Transform child in transform)
             {
-                _panels[child.name] = child.gameObject;
+                _objects[child.name] = child.gameObject;
             }
             
             SubscribeToDependencyRequests();
@@ -48,23 +53,47 @@ namespace AmalgamGames.Control
 
         #region Switching
         
-        public void SwitchTo(string panelName)
+        public void SwitchTo(string objectName)
         {
-            if(!_panels.ContainsKey(panelName))
+            if(!_objects.ContainsKey(objectName))
             {
                 return;
             }
             
-            foreach(string childName in _panels.Keys)
+            foreach(string childName in _objects.Keys)
             {
-                if(childName == panelName)
+                if(childName == objectName)
                 {
-                    _panels[childName].SetActive(true);
+                    _objects[childName].SetActive(true);
                 }
                 else
                 {
-                    _panels[childName].SetActive(false);
+                    _objects[childName].SetActive(false);
                 }
+            }
+            _switchHistory.Push(objectName);
+        }
+        
+        public void SwitchBack()
+        {
+            if(_switchHistory.Count > 0)
+            {
+                string previousObject = _switchHistory.Pop();
+                foreach(string childName in _objects.Keys)
+                {
+                    if(childName == previousObject)
+                    {
+                        _objects[childName].SetActive(true);
+                    }
+                    else
+                    {
+                        _objects[childName].SetActive(false);
+                    }
+                }
+            }
+            else
+            {
+                _noHistoryAction?.Invoke();
             }
         }
         
@@ -101,5 +130,6 @@ namespace AmalgamGames.Control
     public interface IObjectSwitcher
     {
         public void SwitchTo(string panelName);
+        public void SwitchBack();
     }
 }

@@ -25,7 +25,7 @@ namespace AmalgamGames.Saving
         // State
         private bool _isSubscribedToDependencyRequests = false;
         private int _currentSaveSlot = 0;
-        private float _timeOnLoad = 0;
+        private long _timeOnLoad = 0;
         private SaveData _currentSaveData;
         private GlobalSaveData _globalSaveData;
 
@@ -76,9 +76,13 @@ namespace AmalgamGames.Saving
 
         private void InitialiseSettings()
         {
-            _timeOnLoad = Time.time;
+            //_timeOnLoad = Time.time;
+            _timeOnLoad = DateTime.Now.ToFileTime();
 
             LoadGlobalSaveData();
+            
+            // DEBUG
+            LoadSaveSlot(_currentSaveSlot);
         }
 
         #endregion
@@ -103,7 +107,8 @@ namespace AmalgamGames.Saving
             _currentSaveSlot = slot;
             
             // Reset time since last load
-            _timeOnLoad = Time.time;
+            //_timeOnLoad = Time.time;
+            _timeOnLoad = DateTime.Now.Ticks;
         }
 
         public void CreateNewSave(int slot)
@@ -160,9 +165,11 @@ namespace AmalgamGames.Saving
         private void SaveCurrentSlotData()
         {
             // Update the total time played
-            float timeSinceLastSave = Time.time - _timeOnLoad;
+            long timeSinceLastSave = DateTime.Now.Ticks - _timeOnLoad;
             _currentSaveData.TotalTimePlayed += timeSinceLastSave;
-            _timeOnLoad = Time.time;
+            _timeOnLoad = DateTime.Now.Ticks;
+            
+            Debug.Log($"Total time played: {TimeSpan.FromTicks(_currentSaveData.TotalTimePlayed).TotalSeconds}");
             
             // Write data out to disk
             SaveSystem.SaveFile(GetSaveFileFromSlot(_currentSaveSlot),_currentSaveData);

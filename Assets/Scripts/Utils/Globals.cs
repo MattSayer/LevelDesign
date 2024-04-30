@@ -53,10 +53,13 @@ namespace AmalgamGames.Utils
         #endregion
 
         #region Scenes
-
-        public const string LOADING_SCREEN_SCENE = "LoadingScreen";
-        public const string MAIN_MENU_SCENE = "MainMenu";
-        public const string LEVEL_SELECT_SCENE = "LevelSelect";
+        
+        public const string SCENE_LEVELS_DIRECTORY = "Scenes/Levels/";
+        public const string SCENE_MENUS_DIRECTORY = "Scenes/Menus/";
+        public const string SCENE_UTILITY_DIRECTORY = "Scenes/Utility/";
+        public const string LOADING_SCREEN_SCENE = SCENE_UTILITY_DIRECTORY + "LoadingScreen";
+        public const string MAIN_MENU_SCENE = SCENE_MENUS_DIRECTORY + "MainMenu";
+        public const string LEVEL_SELECT_SCENE = SCENE_MENUS_DIRECTORY + "LoadedMenu";
 
         #endregion
 

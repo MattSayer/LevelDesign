@@ -17,6 +17,25 @@ namespace AmalgamGames.Core
         
         private Dictionary<string, EventContainer> _events = new Dictionary<string, EventContainer>();
         
+        #region Lifecycle
+        
+        private void OnEnable()
+        {
+            SubscribeToEvents();
+        }
+        
+        private void OnDisable()
+        {
+            UnsubscribeFromEvents();
+        }
+        
+        private void OnDestroy()
+        {
+            UnsubscribeFromEvents();
+        }
+        
+        #endregion
+        
         #region Data Provider
         
         public void ProvideData(object[] data)

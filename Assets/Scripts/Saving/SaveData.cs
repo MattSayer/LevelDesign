@@ -13,7 +13,7 @@ namespace AmalgamGames.Saving
         public int TotalStarsUnlocked {  get; set; }
         public List<LevelSaveData> CompletedLevels { get; set; }
         public int TotalCollectiblesFound { get; set; }
-        public float TotalTimePlayed { get; set; }
+        public long TotalTimePlayed { get; set; }
         public bool HasNewTheme { get; set; }
 
 
@@ -34,7 +34,7 @@ namespace AmalgamGames.Saving
         public int SaveSlot { get; set; }
         public int NumStarsCollected { get; set; }
         public int NumCollectiblesFound {  get; set; }
-        public float TotalTimePlayed {  get; set; }
+        public long TotalTimePlayed {  get; set; }
 
         public SaveSlotSummary(int slot)
         {

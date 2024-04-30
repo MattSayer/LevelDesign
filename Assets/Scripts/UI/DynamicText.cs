@@ -18,6 +18,7 @@ namespace AmalgamGames.UI
         [SerializeField] private ConditionalTransformation[] _transformations;
         [Title("UI")]
         [SerializeField] private TMPro.TextMeshProUGUI _text;
+        [SerializeField] private string _defaultValue = "";
 
         // STATE
         private bool _isSubscribed = false;
@@ -28,8 +29,8 @@ namespace AmalgamGames.UI
 
         private void OnEnable()
         {
-            _valueProvider.SubscribeToValue(_valueKey, OnValueChanged);
-            _isSubscribed = true;
+            ResetToDefaultValue();
+            SubscribeToValue();
         }
 
         private void OnDisable()
@@ -40,6 +41,19 @@ namespace AmalgamGames.UI
         private void OnDestroy()
         {
             UnsubscribeFromValue();
+        }
+        
+        #endregion
+        
+        #region Subscriptions
+        
+        private void SubscribeToValue()
+        {
+            if(!_isSubscribed)
+            {
+                _valueProvider.SubscribeToValue(_valueKey, OnValueChanged);
+                _isSubscribed = true;
+            }
         }
 
 
@@ -55,6 +69,11 @@ namespace AmalgamGames.UI
         #endregion
 
         #region UI
+
+        private void ResetToDefaultValue()
+        {
+            _text.text = _defaultValue;
+        }
 
         private void OnValueChanged(object value)
         {

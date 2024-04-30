@@ -11,6 +11,8 @@ namespace AmalgamGames.Transformation
     {
         [Title("Settings")]
         [SerializeField] private int _numDecimalPlaces = 0;
+        [SerializeField] private string _prefix = "";
+        [SerializeField] private string _suffix = "";
         
         public override object TransformInput(object input)
         {
@@ -19,7 +21,7 @@ namespace AmalgamGames.Transformation
             {
                 float inputFloat = Convert.ToSingle(input);
                 
-                return String.Format("{0:N" + _numDecimalPlaces + "}",inputFloat);
+                return _prefix + String.Format("{0:N" + _numDecimalPlaces + "}",inputFloat) + _suffix;
             }
             
             return input;

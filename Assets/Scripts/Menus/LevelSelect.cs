@@ -8,12 +8,13 @@ using AmalgamGames.Control;
 using AmalgamGames.Effects;
 using AmalgamGames.Helpers.Classes;
 using AmalgamGames.Input;
+using AmalgamGames.LevelManagement;
 using AmalgamGames.Saving;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-namespace AmalgamGames.LevelManagement
+namespace AmalgamGames.Menus
 {
     public class LevelSelect : MonoBehaviour
     {
@@ -25,7 +26,7 @@ namespace AmalgamGames.LevelManagement
         
         // Events
         public event Action<bool> OnThemeChanged;
-        public event Action<object[]> OnLevelSelected;
+        public event Action<object> OnLevelSelected;
         
         // Components
         private ILevelManager _levelManager;
@@ -180,7 +181,9 @@ namespace AmalgamGames.LevelManagement
         public void SelectLevel(int levelIndex, LevelConfig levelConfig, LevelSaveData levelSaveData)
         {
             // Provide selected level data for data providers
-            OnLevelSelected?.Invoke(new object[] {levelConfig, levelSaveData});
+            // Raise two separate events, since DynamicEvents are set up for non-array object parameters
+            OnLevelSelected?.Invoke(levelConfig);
+            OnLevelSelected?.Invoke(levelSaveData);
             
             // Set selected level and level index on LevelManager, for use if 
             // player clicks the Play button
@@ -200,7 +203,7 @@ namespace AmalgamGames.LevelManagement
             if (_isSubscribedToInput && _uiInputProcessor != null)
             {
                 _uiInputProcessor.OnBackInput -= BackToMainMenu;
-                _uiInputProcessor.OnLeftRightInput -= ChangeTheme;
+                _uiInputProcessor.OnTabInput -= ChangeTheme;
                 _isSubscribedToInput = false;
             }
         }
@@ -210,7 +213,7 @@ namespace AmalgamGames.LevelManagement
             if (!_isSubscribedToInput && _uiInputProcessor != null)
             {
                 _uiInputProcessor.OnBackInput += BackToMainMenu;
-                _uiInputProcessor.OnLeftRightInput += ChangeTheme;
+                _uiInputProcessor.OnTabInput += ChangeTheme;
                 _isSubscribedToInput = true;
             }
         }
