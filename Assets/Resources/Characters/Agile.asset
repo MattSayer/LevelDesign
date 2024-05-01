@@ -13,7 +13,8 @@ MonoBehaviour:
   m_Name: Agile
   m_EditorClassIdentifier: 
   _character: 0
-  _characterName: Agile
+  _characterName: Cobra
+  _characterClass: Agile
   _turnSpeed: 30
   _horizontalCameraSpeed: 350
   _verticalCameraSpeed: 300

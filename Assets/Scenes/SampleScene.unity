@@ -6746,10 +6746,13 @@ MonoBehaviour:
   valueProvider: {fileID: 352057716}
   _valueKey: timer
   _transformations:
-  - _conditionals:
-      OrChecks: []
-    _transformation: {fileID: 11400000, guid: e8c1ed66cfa59294dab5e799eee2a5e6, type: 2}
+  - _conditionalTransformations:
+    - _conditionals:
+        OrChecks: []
+      _transformation: {fileID: 11400000, guid: e8c1ed66cfa59294dab5e799eee2a5e6,
+        type: 2}
   _text: {fileID: 541461280}
+  _defaultValue: 
 --- !u!114 &541461279
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -11326,6 +11329,7 @@ MonoBehaviour:
   _defaultValue: 100
   valueProvider: {fileID: 1180817167}
   _valueKey: charge_level
+  _transformations: []
   _image: {fileID: 605060665}
 --- !u!1 &605383730
 GameObject:
@@ -12926,6 +12930,7 @@ MonoBehaviour:
   _valueKey: fps
   _transformations: []
   _text: {fileID: 741110648}
+  _defaultValue: 
 --- !u!114 &741110647
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -37038,10 +37043,13 @@ MonoBehaviour:
   valueProvider: {fileID: 1180817167}
   _valueKey: velocity
   _transformations:
-  - _conditionals:
-      OrChecks: []
-    _transformation: {fileID: 11400000, guid: 0a83a5138853bc34a9edf02ec462625c, type: 2}
+  - _conditionalTransformations:
+    - _conditionals:
+        OrChecks: []
+      _transformation: {fileID: 11400000, guid: 0a83a5138853bc34a9edf02ec462625c,
+        type: 2}
   _text: {fileID: 1376921986}
+  _defaultValue: 
 --- !u!1 &1381103637
 GameObject:
   m_ObjectHideFlags: 0
@@ -37902,6 +37910,7 @@ MonoBehaviour:
   _defaultValue: 100
   valueProvider: {fileID: 1895693083}
   _valueKey: juice_level
+  _transformations: []
   _image: {fileID: 1429476583}
 --- !u!1 &1431101205
 GameObject:
@@ -41100,10 +41109,13 @@ MonoBehaviour:
   valueProvider: {fileID: 1143896362}
   _valueKey: countdown
   _transformations:
-  - _conditionals:
-      OrChecks: []
-    _transformation: {fileID: 11400000, guid: 0a83a5138853bc34a9edf02ec462625c, type: 2}
+  - _conditionalTransformations:
+    - _conditionals:
+        OrChecks: []
+      _transformation: {fileID: 11400000, guid: 0a83a5138853bc34a9edf02ec462625c,
+        type: 2}
   _text: {fileID: 1697005689}
+  _defaultValue: 
 --- !u!114 &1697005689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -46249,10 +46261,13 @@ MonoBehaviour:
   valueProvider: {fileID: 2044498368}
   _valueKey: score
   _transformations:
-  - _conditionals:
-      OrChecks: []
-    _transformation: {fileID: 11400000, guid: 0a83a5138853bc34a9edf02ec462625c, type: 2}
+  - _conditionalTransformations:
+    - _conditionals:
+        OrChecks: []
+      _transformation: {fileID: 11400000, guid: 0a83a5138853bc34a9edf02ec462625c,
+        type: 2}
   _text: {fileID: 1778900874}
+  _defaultValue: 
 --- !u!114 &1778900873
 MonoBehaviour:
   m_ObjectHideFlags: 0

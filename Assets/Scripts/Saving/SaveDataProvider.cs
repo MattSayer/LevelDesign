@@ -15,6 +15,7 @@ namespace AmalgamGames.Saving
         [Title("Dependencies")]
         [SerializeField] private DependencyRequest _getSaveDataManager;
         
+        // Components
         private ISaveDataManager _saveDataManager;
         
         #region Lifecycle

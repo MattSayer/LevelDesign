@@ -29,6 +29,9 @@ namespace AmalgamGames.Utils
         // Timer
         public const string TIMER_CHANGED_KEY = "timer";
         
+        // Character
+        public const string CHARACTER_CHANGED_KEY = "character_changed";
+        
         #endregion
 
         #region Respawning

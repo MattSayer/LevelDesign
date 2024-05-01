@@ -1,8 +1,10 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using AmalgamGames.Config;
 using AmalgamGames.Control;
+using AmalgamGames.Core;
 using AmalgamGames.Helpers.Classes;
 using AmalgamGames.Input;
 using AmalgamGames.LevelManagement;
@@ -12,22 +14,32 @@ using UnityEngine;
 
 namespace AmalgamGames.Menus
 {
-    public class CharacterSelector : MonoBehaviour
+    public class CharacterSelector : MonoBehaviour, IValueProvider
     {
+        [Title("Settings")]
+        [SerializeField] private float _modelSwitchTime;
+        [Space]
         [Title("Dependencies")]
         [SerializeField] private DependencyRequest _getUIInputProcessor;
         [SerializeField] private DependencyRequest _getObjectSwitcher;
         [SerializeField] private DependencyRequest _getLevelManager;
         
+        // Events
+        public event Action<object> OnCharacterChanged;
+        
         // State
         private bool _isSubscribedToInput = false;
         private CharacterStats[] _allCharacters;
         private int _currentCharacterIndex = 0;
+        private bool _canChangeCharacter = true;
         
         // Components
         private IUIInputProcessor _uiInputProcessor;
         private IObjectSwitcher _objectSwitcher;
         private ILevelManager _levelManager;
+        
+        // Coroutines
+        private Coroutine _changeRoutine = null;
         
         #region Lifecycle
         
@@ -61,6 +73,12 @@ namespace AmalgamGames.Menus
         
         private void ChangeCharacter(FlatDirection direction)
         {
+            if(!_canChangeCharacter || _changeRoutine != null)
+            {
+                return;
+            }
+            
+            bool wasChanged = false;
             switch(direction)
             {
                 case FlatDirection.Left:
@@ -72,6 +90,7 @@ namespace AmalgamGames.Menus
                     {
                         _currentCharacterIndex--;
                     }
+                    wasChanged = true;
                     break;
                 case FlatDirection.Right:
                     if(_currentCharacterIndex >= _allCharacters.Length - 1)
@@ -82,7 +101,15 @@ namespace AmalgamGames.Menus
                     {
                         _currentCharacterIndex++;
                     }
+                    wasChanged = true;
                     break;
+            }
+            
+            if(wasChanged)
+            {
+                OnCharacterChanged?.Invoke(_allCharacters[_currentCharacterIndex]);
+                _canChangeCharacter = false;
+                _changeRoutine = StartCoroutine(characterChangeTimeout());
             }
             
         }
@@ -96,6 +123,41 @@ namespace AmalgamGames.Menus
         {
             _levelManager.SetCharacter(_allCharacters[_currentCharacterIndex].Character);
             _levelManager.LoadSelectedLevel();
+        }
+        
+        #endregion
+        
+        #region Coroutines
+        
+        private IEnumerator characterChangeTimeout()
+        {
+            yield return new WaitForSeconds(_modelSwitchTime);
+            _canChangeCharacter = true;
+            _changeRoutine = null;
+        }
+        
+        #endregion
+        
+        #region Value provider
+        
+        public void SubscribeToValue(string key, Action<object> callback)
+        {
+            switch(key)
+            {
+                case Globals.CHARACTER_CHANGED_KEY:
+                    OnCharacterChanged += callback;
+                    break;
+            }
+        }
+        
+        public void UnsubscribeFromValue(string key, Action<object> callback)
+        {
+            switch(key)
+            {
+                case Globals.CHARACTER_CHANGED_KEY:
+                    OnCharacterChanged -= callback;
+                    break;
+            }
         }
         
         #endregion

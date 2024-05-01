@@ -727,7 +727,7 @@ namespace AmalgamGames.Utils
                 }
                 else if (propValue != null)
                 {
-                    if (propValue.GetType().IsArray)
+                    if (propValue.GetType().IsArray || propValue.GetType().IsGenericList())
                     {
                         GetPropertyDictionaryArrayValues(propValue, dict, visitedObjects, propName + "_");
                     }
@@ -764,6 +764,23 @@ namespace AmalgamGames.Utils
                     counter++;
                 }
             }
+            else if(obj.GetType().IsGenericList())
+            {
+                var listObj = (IList)obj;
+                int counter = 0;
+                foreach(var item in listObj)
+                {
+                    if (IsPrimitiveType(item))
+                    {
+                        dict[prefix + counter] = item;
+                    }
+                    else
+                    {
+                        GetPropertyDictionary(item, dict, visitedObjects, prefix + counter + "_");
+                    }
+                    counter++;
+                }
+            }
         }
 
         public static bool IsPrimitiveType(object obj)
@@ -778,6 +795,11 @@ namespace AmalgamGames.Utils
             Type type = obj.GetType();
             
             return unityTypes.Contains(type);
+        }
+        
+        public static bool IsGenericList(this Type type)
+        {
+            return type.IsGenericType && type.GetGenericTypeDefinition() == typeof(List<>);
         }
 
         #endregion

@@ -70,6 +70,7 @@
     <Compile Include="Assets\Scripts\Interactables\LaunchPickup.cs" />
     <Compile Include="Assets\Scripts\Transformations\Extractors\ExtractLaunchInfoComponentTransformation.cs" />
     <Compile Include="Assets\Scripts\LevelManagement\LevelManager.cs" />
+    <Compile Include="Assets\Scripts\Menus\CharacterSelector.cs" />
     <Compile Include="Assets\Scripts\Transformations\Vectors\NormalizeTransformation.cs" />
     <Compile Include="Assets\Scripts\Transformations\Vectors\VectorMultiplyTransformation.cs" />
     <Compile Include="Assets\Scripts\Transformations\Float\SetFloatValueTransformation.cs" />
@@ -98,6 +99,7 @@
     <Compile Include="Assets\Scripts\Effects\Transforms\TransformPositionEffect.cs" />
     <Compile Include="Assets\Scripts\Timing\Countdown.cs" />
     <Compile Include="Assets\Scripts\Interactables\DisplacementOutline.cs" />
+    <Compile Include="Assets\Scripts\Saving\SaveDataProvider.cs" />
     <Compile Include="Assets\Scripts\Visualisation\BezierPathVisualisation.cs" />
     <Compile Include="Assets\Scripts\ParticleSystemPropertyModifier\ParticleSystemPropertyModifier.cs" />
     <Compile Include="Assets\Scripts\Core\SharedFloatValue.cs" />
@@ -111,6 +113,7 @@
     <Compile Include="Assets\Scripts\Effects\Materials\MaterialPropertyEffect.cs" />
     <Compile Include="Assets\Scripts\Timing\Timer.cs" />
     <Compile Include="Assets\Scripts\Effects\PostProcessing\VignetteEffect.cs" />
+    <Compile Include="Assets\Scripts\Menus\ModelSelector.cs" />
     <Compile Include="Assets\Scripts\Effects\ScreenShake\ContinuousScreenShakeEffect.cs" />
     <Compile Include="Assets\Scripts\Saving\SaveDataManager.cs" />
     <Compile Include="Assets\Scripts\Effects\LevelState\LevelStateTrigger.cs" />
@@ -138,6 +141,7 @@
     <Compile Include="Assets\Scripts\Transformations\Vectors\IsolateVectorComponentTransformation.cs" />
     <Compile Include="Assets\Scripts\UI\LevelSelectUI.cs" />
     <Compile Include="Assets\Scripts\LevelManagement\LoadingScreen.cs" />
+    <Compile Include="Assets\Scripts\Menus\ModelRotator.cs" />
     <Compile Include="Assets\Scripts\Input\InputProcessor.cs" />
     <Compile Include="Assets\Scripts\Utils\ExternalTimeProvider.cs" />
     <Compile Include="Assets\Scripts\Core\IValueProvider.cs" />
@@ -188,8 +192,6 @@
     <Compile Include="Assets\Scripts\Saving\SaveSystem.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\Rumble\RocketRumble.cs" />
-    <Compile Include="Assets\Scripts\Saving\SaveDataProvider.cs" />
-    <Compile Include="Assets\Scripts\Menus\CharacterSelector.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

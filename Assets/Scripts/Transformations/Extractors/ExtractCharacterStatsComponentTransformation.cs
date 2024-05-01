@@ -28,18 +28,19 @@ namespace AmalgamGames.Transformation
     }
     
     public enum CharacterStatsComponent
-        {
-            CharacterName,
-            TurnSpeed,
-            HorizontalCameraSpeed,
-            VerticalCameraSpeed,
-            RocketConfig,
-            NudgeForce,
-            NudgeJuiceDrainPerSecond,
-            SlowmoTimeScale,
-            SlowmoJuiceDrainPerSecond,
-            Power,
-            Control,
-            Technique
-        }
+    {
+        CharacterName,
+        TurnSpeed,
+        HorizontalCameraSpeed,
+        VerticalCameraSpeed,
+        RocketConfig,
+        NudgeForce,
+        NudgeJuiceDrainPerSecond,
+        SlowmoTimeScale,
+        SlowmoJuiceDrainPerSecond,
+        Power,
+        Control,
+        Technique,
+        CharacterClass,
+    }
 }

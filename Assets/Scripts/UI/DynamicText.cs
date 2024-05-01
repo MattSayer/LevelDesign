@@ -4,6 +4,7 @@ using Sirenix.OdinInspector;
 using System;
 using UnityEngine;
 using AmalgamGames.Transformation;
+using AmalgamGames.Utils;
 
 namespace AmalgamGames.UI
 {
@@ -15,7 +16,7 @@ namespace AmalgamGames.UI
         [SerializeField] private string _valueKey;
         [Space]
         [Title("Transformation")]
-        [SerializeField] private ConditionalTransformation[] _transformations;
+        [SerializeField] private ConditionalTransformationGroup[] _transformations;
         [Title("UI")]
         [SerializeField] private TMPro.TextMeshProUGUI _text;
         [SerializeField] private string _defaultValue = "";
@@ -79,11 +80,12 @@ namespace AmalgamGames.UI
         {
             object finalValue = value;
 
-            foreach(ConditionalTransformation transformation in _transformations)
+            for(int i = 0; i < _transformations.Length; i++)
             {
-                finalValue = transformation.TransformObject(finalValue);
+                ConditionalTransformationGroup t = _transformations[i];
+                finalValue = t.TransformObject(finalValue);
             }
-            
+
             _text.text = Convert.ToString(finalValue);
         }
 

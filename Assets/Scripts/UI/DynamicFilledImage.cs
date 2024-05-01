@@ -3,6 +3,8 @@ using AmalgamGames.Core;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
+using AmalgamGames.Transformation;
+using AmalgamGames.Utils;
 
 namespace AmalgamGames.UI
 {
@@ -18,6 +20,8 @@ namespace AmalgamGames.UI
         [RequireInterface(typeof(IValueProvider))]
         [SerializeField] private UnityEngine.Object valueProvider;
         [SerializeField] private string _valueKey;
+        [Title("Transformation")]
+        [SerializeField] private ConditionalTransformationGroup[] _transformations;
         [Space]
         [Title("UI")]
         [SerializeField] private Image _image;
@@ -65,11 +69,18 @@ namespace AmalgamGames.UI
 
         private void OnValueChanged(object rawValue)
         {
-            if(rawValue.GetType() == typeof(float))
+            object finalValue = rawValue;
+            
+            for(int i = 0; i < _transformations.Length; i++)
             {
-                float floatVal = (float)rawValue;
+                finalValue = _transformations[i].TransformObject(finalValue);
+            }
+            
+            if(finalValue.GetType() == typeof(float))
+            {
+                float floatVal = (float)finalValue;
 
-                float normalizedVal = ((floatVal - _inputMin) / _inputRange);
+                float normalizedVal = (floatVal - _inputMin) / _inputRange;
 
                 _imageMaterial.SetFloat(FILL_PROP, normalizedVal);
             }

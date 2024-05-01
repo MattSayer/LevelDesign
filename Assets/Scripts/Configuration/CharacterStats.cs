@@ -14,6 +14,7 @@ namespace AmalgamGames.Config
         [Title("Details")]
         [SerializeField] private RocketCharacter _character;
         [SerializeField] private string _characterName;
+        [SerializeField] private string _characterClass;
         [Space]
         [Title("Aiming")]
         [SerializeField] private float _turnSpeed = 20;
@@ -43,6 +44,7 @@ namespace AmalgamGames.Config
 
         public RocketCharacter Character { get { return _character; } }
         public string CharacterName { get { return _characterName; } }
+        public string CharacterClass { get { return _characterClass; } }
         public float TurnSpeed { get { return _turnSpeed; } }
         public float HorizontalCameraSpeed { get { return _horizontalCameraSpeed; } }
         public float VerticalCameraSpeed { get { return _verticalCameraSpeed; } }
