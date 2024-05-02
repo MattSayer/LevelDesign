@@ -66,6 +66,7 @@ namespace AmalgamGames.Config
         private static Dictionary<RocketCharacter, CharacterStats> _characters;
         private static Dictionary<string, float[]> _minMaxValues;
 
+        private static int _maxStatsScore = 9;
 
         #region Debug
         [Title("Debug")]
@@ -96,6 +97,10 @@ namespace AmalgamGames.Config
 
         public static CharacterStats[] GetAllCharacters()
         {
+            if(_allCharacters == null)
+            {
+                LoadCharacters();
+            }
             return _allCharacters;
         }
 
@@ -135,9 +140,9 @@ namespace AmalgamGames.Config
                 float burnTimeScore = CalculateScoreForField(character, CharacterStatsFields.BurnTime);
 
                 float powerScore = (launchScore + burnForceScore + burnTimeScore) / 3f;
-                powerScore = (powerScore * 4) + 1;
+                powerScore = (powerScore * (_maxStatsScore-1)) + 1;
 
-                character._power = powerScore;
+                character._power = Mathf.RoundToInt(powerScore);
 
                 // Control
                 float turnSpeedScore = CalculateScoreForField(character, CharacterStatsFields.TurnSpeed);
@@ -145,9 +150,9 @@ namespace AmalgamGames.Config
                 float verticalTurnScore = CalculateScoreForField(character, CharacterStatsFields.VerticalCameraSpeed);
 
                 float controlScore = (turnSpeedScore + horizontalTurnScore + verticalTurnScore) / 3f;
-                controlScore = (controlScore * 4) + 1;
+                controlScore = (controlScore * (_maxStatsScore-1)) + 1;
 
-                character._control = controlScore;
+                character._control = Mathf.RoundToInt(controlScore);
 
                 // Technique
                 float nudgeForceScore = CalculateScoreForField(character, CharacterStatsFields.NudgeForce);
@@ -156,9 +161,9 @@ namespace AmalgamGames.Config
                 float slowmoDrainScore = 1 - CalculateScoreForField(character, CharacterStatsFields.SlowmoJuiceDrainPerSecond);
 
                 float techniqueScore = (nudgeForceScore + nudgeDrainScore + slowmoScore + slowmoDrainScore) / 4f;
-                techniqueScore = (techniqueScore * 4) + 1;
+                techniqueScore = (techniqueScore * (_maxStatsScore-1)) + 1;
 
-                character._technique = techniqueScore;
+                character._technique = Mathf.RoundToInt(techniqueScore);
                 
             }
 

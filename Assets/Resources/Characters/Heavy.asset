@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a887ae98ca487c245998b5a60eca9455, type: 3}
+  m_Name: Heavy
+  m_EditorClassIdentifier: 
+  _character: 1
+  _characterName: Diesel
+  _characterClass: Heavy
+  _turnSpeed: 10
+  _horizontalCameraSpeed: 200
+  _verticalCameraSpeed: 150
+  _rocketConfig: {fileID: 11400000, guid: 672c897e662b7d14c911eba171193862, type: 2}
+  _nudgeForce: 800
+  _nudgeJuiceDrainPerSecond: 12
+  _slowmoTimeScale: 0.2
+  _slowmoJuiceDrainPerSecond: 5
+  _power: 9
+  _control: 1
+  _technique: 3

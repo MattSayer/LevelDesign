@@ -31,6 +31,7 @@ namespace AmalgamGames.Utils
         
         // Character
         public const string CHARACTER_CHANGED_KEY = "character_changed";
+        public const string MODEL_CHANGED_KEY = "model_changed";
         
         #endregion
 

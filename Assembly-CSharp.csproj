@@ -188,10 +188,12 @@
     <Compile Include="Assets\Scripts\Control\ObjectRotator.cs" />
     <Compile Include="Assets\Scripts\Control\ObjectSpawner.cs" />
     <Compile Include="Assets\Scripts\Timing\TimeStopper.cs" />
+    <Compile Include="Assets\Scripts\Transformations\Converters\EnumToStringTransformation.cs" />
     <Compile Include="Assets\Scripts\Conditionals\Float\FloatConditional.cs" />
     <Compile Include="Assets\Scripts\Saving\SaveSystem.cs" />
     <Compile Include="Assets\Scripts\Effects\ToggleEffect.cs" />
     <Compile Include="Assets\Scripts\Effects\Rumble\RocketRumble.cs" />
+    <Compile Include="Assets\Scripts\Configuration\StringDatabase.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

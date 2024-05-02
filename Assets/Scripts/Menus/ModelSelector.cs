@@ -5,16 +5,17 @@ using AmalgamGames.Config;
 using AmalgamGames.Core;
 using AmalgamGames.Editor;
 using AmalgamGames.Transformation;
+using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using Sirenix.OdinInspector.Editor;
 using UnityEngine;
 
 namespace AmalgamGames.Menus
 {
-    public class ModelSelector : MonoBehaviour
+    public class ModelSelector : MonoBehaviour, IValueProvider
     {
         [Title("Models")]
-        [SerializeField] private GameObject[] _modelPrefabs;
+        [SerializeField] private ModelWithKey[] _modelPrefabs;
         [Space]
         [Title("Subscriptions")]
         [RequireInterface(typeof(IValueProvider))]
@@ -35,8 +36,8 @@ namespace AmalgamGames.Menus
         
         // State
         private bool _isSubscribed = false;
-        private Transform[] _models;
-        private float[] _modelAngles;
+        private Dictionary<string, Transform> _models = new Dictionary<string, Transform>();
+        private Dictionary<string, float> _modelAngles = new Dictionary<string, float>();
         private Vector3 _initialForward;
         
         // Coroutines        
@@ -44,24 +45,24 @@ namespace AmalgamGames.Menus
         
         #region Lifecycle
         
-        private void Start()
+        private void Awake()
         {
             InitialiseModels();
         }
         
         private void OnEnable()
         {
-            SubscribeToValue();
+            SubscribeToModelKeyChanged();
         }
         
         private void OnDisable()
         {
-            UnsubscribeFromValue();
+            UnsubscribeFromModelKeyChanged();
         }
         
         private void OnDestroy()
         {
-            UnsubscribeFromValue();
+            UnsubscribeFromModelKeyChanged();
         }
         
         #endregion
@@ -74,29 +75,30 @@ namespace AmalgamGames.Menus
             _initialForward = -Camera.main.transform.forward;
             
             int numModels = _modelPrefabs.Length;
-            _models = new Transform[numModels];
-            _modelAngles = new float[numModels];
             
             float angleBetween = 360f / numModels;
             for(int i = 0; i < numModels; i++)
             {
-                _models[i] = Instantiate(_modelPrefabs[i], _centrePoint).transform;
+                string key = _modelPrefabs[i].Key;
+                GameObject prefab = _modelPrefabs[i].Model;
+                _models[key] = Instantiate(prefab, _centrePoint).transform;
                 
                 // Space evenly around centre point
                 float angle = angleBetween * i;
-                _modelAngles[i] = angle;
+                _modelAngles[key] = angle;
                 
                 Vector3 directionFromCentre = Quaternion.AngleAxis(angle, Vector3.up) * _initialForward;
                 
-                _models[i].position = _centrePoint.position + (directionFromCentre * _distFromCentre);
+                _models[key].position = _centrePoint.position + (directionFromCentre * _distFromCentre);
             }
+            
         }
         
         #endregion
         
         #region Model change
         
-        private void OnModelIndexChanged(object value)
+        private void OnModelKeyChanged(object value)
         {
             object finalValue = value;
 
@@ -105,9 +107,9 @@ namespace AmalgamGames.Menus
                 finalValue = transformation.TransformObject(finalValue);
             }
             
-            if(finalValue.GetType() == typeof(int))
+            if(finalValue.GetType() == typeof(string))
             {
-                int newIndex = Convert.ToInt32(finalValue);
+                string newKey = finalValue.ToString();
                 
                 // Rotate centre point to bring model to front of camera
                 
@@ -116,9 +118,9 @@ namespace AmalgamGames.Menus
                     StopCoroutine(_rotateRoutine);
                 }
                 
-                _rotateRoutine = StartCoroutine(rotateModelToFront(_modelAngles[newIndex]));
+                _rotateRoutine = StartCoroutine(rotateModelToFront(_modelAngles[newKey]));
                 
-                OnModelChanged?.Invoke(_models[newIndex]);
+                OnModelChanged?.Invoke(_models[newKey]);
             }
         }
         
@@ -130,8 +132,8 @@ namespace AmalgamGames.Menus
         {
             float rotateLerp = 0;
             
-            Vector3 targetDirection = Quaternion.AngleAxis(angle, Vector3.up) * _initialForward;
-            Quaternion targetRotation = Quaternion.LookRotation(targetDirection,Vector3.up);
+            Vector3 targetDirection = Quaternion.AngleAxis(-angle, Vector3.up) * _initialForward;
+            Quaternion targetRotation = Quaternion.LookRotation(-targetDirection,Vector3.up);
             Quaternion currentRotation = _centrePoint.rotation;
             while(rotateLerp < _rotationTime)
             {
@@ -145,29 +147,60 @@ namespace AmalgamGames.Menus
         
         #endregion
         
+        #region Value provider
+        
+        public void SubscribeToValue(string key, Action<object> callback)
+        {
+            switch(key)
+            {
+                case Globals.MODEL_CHANGED_KEY:
+                    OnModelChanged += callback;
+                    break;
+            }
+        }
+        
+        public void UnsubscribeFromValue(string key, Action<object> callback)
+        {
+            switch(key)
+            {
+                case Globals.MODEL_CHANGED_KEY:
+                    OnModelChanged -= callback;
+                    break;
+            }
+        }
+        
+        #endregion
+        
         #region Subscriptions
         
-        private void SubscribeToValue()
+        private void SubscribeToModelKeyChanged()
         {
             if(!_isSubscribed)
             {
-                _valueProvider.SubscribeToValue(_valueKey, OnModelIndexChanged);
+                _valueProvider.SubscribeToValue(_valueKey, OnModelKeyChanged);
                 _isSubscribed = true;
             }
         }
 
 
-        private void UnsubscribeFromValue()
+        private void UnsubscribeFromModelKeyChanged()
         {
             if (_isSubscribed)
             {
-                _valueProvider.UnsubscribeFromValue(_valueKey, OnModelIndexChanged);
+                _valueProvider.UnsubscribeFromValue(_valueKey, OnModelKeyChanged);
                 _isSubscribed = false;
             }
         }
 
         
         #endregion
+        
+        [Serializable]
+        private class ModelWithKey
+        {
+            public string Key;
+            public GameObject Model;
+        }
     }
     
 }

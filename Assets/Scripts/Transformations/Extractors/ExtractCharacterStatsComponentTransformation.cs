@@ -42,5 +42,6 @@ namespace AmalgamGames.Transformation
         Control,
         Technique,
         CharacterClass,
+        Character
     }
 }

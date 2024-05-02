@@ -27,6 +27,7 @@ namespace AmalgamGames.Menus
         // Events
         public event Action<object> OnCharacterChanged;
         
+        
         // State
         private bool _isSubscribedToInput = false;
         private CharacterStats[] _allCharacters;
@@ -50,6 +51,8 @@ namespace AmalgamGames.Menus
             _getLevelManager.RequestDependency(ReceiveLevelManager);
             
             _allCharacters = CharacterStats.GetAllCharacters();
+            
+            OnCharacterChanged?.Invoke(_allCharacters[0]);
         }
         
         private void OnEnable()
@@ -81,7 +84,7 @@ namespace AmalgamGames.Menus
             bool wasChanged = false;
             switch(direction)
             {
-                case FlatDirection.Left:
+                case FlatDirection.Right:
                     if(_currentCharacterIndex <= 0)
                     {
                         _currentCharacterIndex = _allCharacters.Length - 1;
@@ -92,7 +95,7 @@ namespace AmalgamGames.Menus
                     }
                     wasChanged = true;
                     break;
-                case FlatDirection.Right:
+                case FlatDirection.Left:
                     if(_currentCharacterIndex >= _allCharacters.Length - 1)
                     {
                         _currentCharacterIndex = 0;
