@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace AmalgamGames.Utils
 {
@@ -25,6 +26,7 @@ namespace AmalgamGames.Utils
 
         // Loading screen
         public const string LOADING_PROGRESS_KEY = "loading_progress";
+        public const string LOADING_TIP_KEY = "loading_tip";
 
         // Timer
         public const string TIMER_CHANGED_KEY = "timer";
@@ -73,6 +75,10 @@ namespace AmalgamGames.Utils
         public const string LEVEL_SELECT_PANEL = "LevelSelect";
         public const string LEVEL_DETAILS_PANEL = "LevelDetails";
         public const string MAIN_MENU_PANEL = "MainMenu";
+        public const string NEW_GAME_PANEL = "NewGame";
+        public const string LOAD_GAME_PANEL = "LoadGame";
+        public const string OPTIONS_PANEL = "Options";
+        public const string CREDITS_PANEL = "Credits";
 
         #endregion
 

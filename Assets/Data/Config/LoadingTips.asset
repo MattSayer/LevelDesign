@@ -15,4 +15,7 @@ MonoBehaviour:
   _strings:
   - Did you know that this loading tip was written early in development and was never
     removed?
-  - 
+  - 'Finding a particular section tricky? Try feathering the trigger for a shorter
+    launch. '
+  - Some vehicles are better suited to certain levels than others. Experiment with
+    each to find the one that works best.

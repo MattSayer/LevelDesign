@@ -8,6 +8,11 @@ namespace AmalgamGames.Saving
 {
     public static class SaveSystem
     {
+        public static bool DoesFileExist(string saveFile)
+        {
+            return File.Exists(GetPathFromSaveFile(saveFile));
+        }
+        
         public static object LoadFile(string saveFile)
         {
             string path = GetPathFromSaveFile(saveFile);

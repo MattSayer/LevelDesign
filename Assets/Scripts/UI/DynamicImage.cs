@@ -3,13 +3,14 @@ using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using AmalgamGames.Core;
 using AmalgamGames.Editor;
+using AmalgamGames.UpdateLoop;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.UI;
 
 namespace AmalgamGames
 {
-    public class DynamicImage : MonoBehaviour
+    public class DynamicImage : MonoBehaviour, IInitialisable
     {
         
         [Title("Target")]
@@ -19,13 +20,38 @@ namespace AmalgamGames
         [Space]
         [Title("UI")]
         [SerializeField] private Image _image;
-
+        [Space]
+        [Title("Settings")]
+        [SerializeField] private bool _staySubscribedWhileDisabled = true;
+        [SerializeField] private bool _subscribeOnStart = true;
+        
         // STATE
         private bool _isSubscribed = false;
         private IValueProvider _valueProvider => valueProvider as IValueProvider;
 
 
         #region Lifecycle
+
+        public void OnInitialisation(InitialisationPhase phase)
+        {
+            switch(phase)
+            {
+                case InitialisationPhase.Start:
+                    if(_subscribeOnStart)
+                    {
+                        SubscribeToValue();
+                    }
+                    break;
+            }
+        }
+
+        private void Start()
+        {
+            if(_subscribeOnStart)
+            {
+                SubscribeToValue();
+            }
+        }
 
         private void OnEnable()
         {
@@ -34,7 +60,10 @@ namespace AmalgamGames
 
         private void OnDisable()
         {
-            UnsubscribeFromValue();
+            if(!_staySubscribedWhileDisabled)
+            {
+                UnsubscribeFromValue();
+            }
         }
 
         private void OnDestroy()

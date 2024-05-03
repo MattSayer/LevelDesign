@@ -1,16 +1,21 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using AmalgamGames.UpdateLoop;
 using AmalgamGames.Utils;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace AmalgamGames.Core
 {
-    public class DataProvider : MonoBehaviour, IValueProvider, IDataProvider
+    public class DataProvider : MonoBehaviour, IValueProvider, IDataProvider, IInitialisable
     {
         [Title("Data events")]
         [SerializeField] private DynamicEvent[] _dataEvents;
+        [Space]
+        [Title("Settings")]
+        [SerializeField] private bool _staySubscribedWhileDisabled = true;
+        [SerializeField] private bool _subscribeOnStart = true;
         
         // State
         private bool _isSubscribedToEvents = false;
@@ -18,15 +23,39 @@ namespace AmalgamGames.Core
         private Dictionary<string, EventContainer> _events = new Dictionary<string, EventContainer>();
         
         #region Lifecycle
+
+        public void OnInitialisation(InitialisationPhase phase)
+        {
+            switch(phase)
+            {
+                case InitialisationPhase.Start:
+                    if(_subscribeOnStart)
+                    {
+                        SubscribeToEvents();
+                    }
+                    break;
+            }            
+        }
         
         private void OnEnable()
         {
             SubscribeToEvents();
         }
         
+        private void Start()
+        {
+            if(_subscribeOnStart)
+            {
+                SubscribeToEvents();
+            }
+        }
+        
         private void OnDisable()
         {
-            UnsubscribeFromEvents();
+            if(!_staySubscribedWhileDisabled)
+            {
+                UnsubscribeFromEvents();
+            }
         }
         
         private void OnDestroy()

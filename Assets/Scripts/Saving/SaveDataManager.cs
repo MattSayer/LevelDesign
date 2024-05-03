@@ -89,6 +89,19 @@ namespace AmalgamGames.Saving
 
         #region Saving
 
+        public bool DoSaveFilesExist()
+        {
+            for(int i = 0; i < NUM_SAVE_SLOTS; i++)
+            {
+                string fileName = GetSaveFileFromSlot(i);
+                if(SaveSystem.DoesFileExist(fileName))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
         public void SaveToFile()
         {
             // Flatten current save data object into dictionary
@@ -109,6 +122,21 @@ namespace AmalgamGames.Saving
             // Reset time since last load
             //_timeOnLoad = Time.time;
             _timeOnLoad = DateTime.Now.Ticks;
+        }
+        
+        public void LoadMostRecentSave()
+        {
+            int mostRecentSaveSlot = _globalSaveData.MostRecentSaveSlot;
+            string fileName = GetSaveFileFromSlot(mostRecentSaveSlot);
+            if(SaveSystem.DoesFileExist(fileName))
+            {
+                LoadSaveSlot(mostRecentSaveSlot);
+            }
+            else
+            {
+                Debug.LogError("Save file for most recent save slot does not exist");
+            }
+            
         }
 
         public void CreateNewSave(int slot)
@@ -250,7 +278,9 @@ namespace AmalgamGames.Saving
 
     public interface ISaveDataManager
     {
+        public bool DoSaveFilesExist();
         public void SaveToFile();
+        public void LoadMostRecentSave();
         public void LoadSaveSlot(int slot);
         public void CreateNewSave(int slot);
         public LevelSaveData GetLevelSaveData(string levelID);

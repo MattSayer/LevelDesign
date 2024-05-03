@@ -53,11 +53,13 @@ namespace AmalgamGames.Menus
         private void OnEnable()
         {
             SubscribeToModelKeyChanged();
+            ShowModels();
         }
         
         private void OnDisable()
         {
             UnsubscribeFromModelKeyChanged();
+            HideModels();
         }
         
         private void OnDestroy()
@@ -92,6 +94,20 @@ namespace AmalgamGames.Menus
                 _models[key].position = _centrePoint.position + (directionFromCentre * _distFromCentre);
             }
             
+        }
+        
+        #endregion
+        
+        #region Showing/Hiding
+        
+        private void ShowModels()
+        {
+            _centrePoint.gameObject.SetActive(true);
+        }
+        
+        private void HideModels()
+        {
+            _centrePoint.gameObject.SetActive(false);            
         }
         
         #endregion

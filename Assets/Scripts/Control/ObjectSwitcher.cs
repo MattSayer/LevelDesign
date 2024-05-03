@@ -11,6 +11,7 @@ namespace AmalgamGames.Control
     public class ObjectSwitcher : MonoBehaviour, IObjectSwitcher
     {
         [Title("Switch history")]
+        [SerializeField] private string _defaultObject;
         [SerializeField] private UnityEvent _noHistoryAction;
         [Space]
         [Title("Dependency provider")]
@@ -21,15 +22,38 @@ namespace AmalgamGames.Control
         private Stack<string> _switchHistory = new Stack<string>();
         
         private Dictionary<string, GameObject> _objects = new Dictionary<string, GameObject>();
-
+        private string _currentObject = "";
+        
         #region Lifecycle
         
         private void Awake()
         {
+            string defaultObject = _defaultObject;
             foreach(Transform child in transform)
             {
+                if(String.IsNullOrEmpty(defaultObject))
+                {
+                    if(child.gameObject.activeSelf)
+                    {
+                        defaultObject = child.gameObject.name;
+                    }
+                }
                 _objects[child.name] = child.gameObject;
             }
+            
+            foreach(Transform child in transform)
+            {
+                if(child.gameObject.name == defaultObject)
+                {
+                    child.gameObject.SetActive(true);
+                }
+                else
+                {
+                    child.gameObject.SetActive(false);
+                }
+            }
+            
+            _currentObject = defaultObject;
             
             SubscribeToDependencyRequests();
         }
@@ -71,7 +95,13 @@ namespace AmalgamGames.Control
                     _objects[childName].SetActive(false);
                 }
             }
-            _switchHistory.Push(objectName);
+            
+            if(!String.IsNullOrEmpty(_currentObject))
+            {
+                _switchHistory.Push(_currentObject);
+            }
+            
+            _currentObject = objectName;
         }
         
         public void SwitchBack()
@@ -90,6 +120,8 @@ namespace AmalgamGames.Control
                         _objects[childName].SetActive(false);
                     }
                 }
+                
+                _currentObject = previousObject;
             }
             else
             {

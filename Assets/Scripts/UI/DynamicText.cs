@@ -5,10 +5,11 @@ using System;
 using UnityEngine;
 using AmalgamGames.Transformation;
 using AmalgamGames.Utils;
+using AmalgamGames.UpdateLoop;
 
 namespace AmalgamGames.UI
 {
-    public class DynamicText : MonoBehaviour
+    public class DynamicText : MonoBehaviour, IInitialisable
     {
         [Title("Target")]
         [RequireInterface(typeof(IValueProvider))]
@@ -20,6 +21,11 @@ namespace AmalgamGames.UI
         [Title("UI")]
         [SerializeField] private TMPro.TextMeshProUGUI _text;
         [SerializeField] private string _defaultValue = "";
+        [Space]
+        [Title("Settings")]
+        [SerializeField] private bool _subscribeOnStart = true;
+        [SerializeField] private bool _resetToDefaultValueOnEnable = true;
+        [SerializeField] private bool _staySubscribedWhileDisabled = true;
 
         // STATE
         private bool _isSubscribed = false;
@@ -28,15 +34,42 @@ namespace AmalgamGames.UI
 
         #region Lifecycle
 
+        public void OnInitialisation(InitialisationPhase phase)
+        {
+            switch(phase)
+            {
+                case InitialisationPhase.Start:
+                    if(_subscribeOnStart)
+                    {
+                        SubscribeToValue();
+                    }
+                    break;
+            }
+        }
+
+        private void Start()
+        {
+            if(_subscribeOnStart)
+            {
+                SubscribeToValue();
+            }
+        }
+
         private void OnEnable()
         {
-            ResetToDefaultValue();
+            if(_resetToDefaultValueOnEnable)
+            {
+                ResetToDefaultValue();
+            }
             SubscribeToValue();
         }
 
         private void OnDisable()
         {
-            UnsubscribeFromValue();
+            if(!_staySubscribedWhileDisabled)
+            {
+                UnsubscribeFromValue();
+            }
         }
 
         private void OnDestroy()

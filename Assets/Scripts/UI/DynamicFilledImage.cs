@@ -5,10 +5,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using AmalgamGames.Transformation;
 using AmalgamGames.Utils;
+using AmalgamGames.UpdateLoop;
+using Unity.VisualScripting;
 
 namespace AmalgamGames.UI
 {
-    public class DynamicFilledImage : MonoBehaviour
+    public class DynamicFilledImage : MonoBehaviour, IInitialisable
     {
         [Title("Expected values")]
         [SerializeField] private float _inputMin = 0;
@@ -25,6 +27,10 @@ namespace AmalgamGames.UI
         [Space]
         [Title("UI")]
         [SerializeField] private Image _image;
+        [Space]
+        [Title("Settings")]
+        [SerializeField] private bool _staySubscribedWhileDisabled = true;
+        [SerializeField] private bool _subscribeOnStart = true;
 
         // STATE
         private bool _isSubscribed = false;
@@ -36,16 +42,50 @@ namespace AmalgamGames.UI
 
         private IValueProvider _valueProvider => valueProvider as IValueProvider;
 
+        private bool _isInitialised = false;
 
         #region Lifecycle
 
+        public void OnInitialisation(InitialisationPhase phase)
+        {
+            switch(phase)
+            {
+                case InitialisationPhase.Awake:
+                    Initialise();
+                    break;
+                case InitialisationPhase.Start:
+                    if(_subscribeOnStart)
+                    {
+                        SubscribeToValue();
+                    }
+                    break;
+            }
+        }
+
         private void Awake()
         {
-            _inputRange = _inputMax - _inputMin;
-            // Create new instance of material so property changes aren't shared
-            _imageMaterial = Instantiate(_image.material);
-            _image.material = _imageMaterial;
-            _imageMaterial.SetFloat(FILL_PROP, _defaultValue);
+            Initialise();
+        }
+        
+        private void Initialise()
+        {
+            if(!_isInitialised)
+            {
+                _inputRange = _inputMax - _inputMin;
+                // Create new instance of material so property changes aren't shared
+                _imageMaterial = Instantiate(_image.material);
+                _image.material = _imageMaterial;
+                _imageMaterial.SetFloat(FILL_PROP, _defaultValue);
+                _isInitialised = true;
+            }
+        }
+        
+        private void Start()
+        {
+            if(_subscribeOnStart)
+            {
+                SubscribeToValue();
+            }
         }
 
         private void OnEnable()
@@ -55,7 +95,10 @@ namespace AmalgamGames.UI
 
         private void OnDisable()
         {
-            UnsubscribeFromValue();
+            if(!_staySubscribedWhileDisabled)
+            {
+                UnsubscribeFromValue();
+            }
         }
 
         private void OnDestroy()
